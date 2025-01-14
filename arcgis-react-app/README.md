@@ -1,70 +1,142 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# **WV FOODLINK Web Application**
 
-## Available Scripts
+## **Project Overview**
+The **WV FOODLINK web application** is a modern, scalable platform built with **React**, **ArcGIS API for JavaScript**, and **PostgreSQL**. Developed as part of the **WV FOODLINK initiative** at West Virginia University’s Center for Resilient Communities, the application addresses food insecurity through interactive mapping, data visualization, and resource accessibility.
 
-In the project directory, you can run:
+This project is designed for **West Virginia** and serves as a **template** for future implementation in other states and regions. Its modular architecture ensures scalability, efficient updates, and performance optimization.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## **Features**
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 1. **Interactive Mapping**
+- Integration with **ArcGIS API for JavaScript** to render multi-layered, dynamic maps.
+- Features include:
+   - Layer filtering (e.g., food deserts, SNAP-compatible resources).
+   - Location tools for food banks, fresh food outlets, and poverty regions.
+   - Fast, optimized map rendering for smooth user interactions.
 
-### `npm test`
+### 2. **Backend with PostgreSQL**
+- Manages spatial and tabular data.
+- Optimized **API endpoints** to efficiently query and serve data.  
+- Designed for scalability with real-time and batch data updates.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 3. **High Performance**
+- **Lazy loading** and **code splitting** for faster rendering.  
+- Efficient caching and API-driven data retrieval for reduced load times.  
 
-### `npm run build`
+### 4. **Dynamic Data Visualization**
+- Charts and graphs using **Nivo.js** to visualize key trends:
+   - Poverty rates over time.
+   - Food resource availability.
+   - Community-based statistics for actionable insights.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 5. **Scalable and Modular Design**
+- Built as a **template** for easy adaptation to other states or regions.  
+- Modular components for future updates and new feature integration.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 6. **Sustainable Development Goals (SDGs)**
+The project aligns with:  
+- **SDG 1**: No Poverty  
+- **SDG 2**: Zero Hunger  
+- **SDG 3**: Good Health and Well-being  
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## **Tech Stack**
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+| **Technology**      | **Purpose**                     |
+|----------------------|---------------------------------|
+| **React**           | Frontend development            |
+| **ArcGIS API**      | Mapping and spatial analysis    |
+| **PostgreSQL**      | Backend data management         |
+| **Node.js**         | Backend server/API              |
+| **Nivo.js**         | Data visualization (charts)     |
+| **Material-UI**     | UI components and styling       |
+| **Docker**          | Deployment and containerization |
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+---
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## **Installation**
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### **Prerequisites**
+- Node.js >= 16  
+- PostgreSQL installed locally or accessible remotely  
+- ArcGIS API key  
 
-## Learn More
+### **Steps**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/<your-username>/wv-foodlink.git
+   cd wv-foodlink
+   ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
 
-### Code Splitting
+3. **Set up environment variables**:  
+   Create a `.env` file in the project root:
+   ```plaintext
+   REACT_APP_ARCGIS_API_KEY=your_arcgis_api_key
+   DATABASE_URL=postgres://username:password@localhost:5432/your_db_name
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+4. **Set up the PostgreSQL database**:
+   - Create the database schema and tables using provided SQL scripts in the `db` folder.
 
-### Analyzing the Bundle Size
+5. **Start the development server**:
+   ```bash
+   npm start
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+6. **Access the application**:  
+   Open your browser and navigate to:
+   ```
+   http://localhost:3000
+   ```
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## **Usage**
+- Explore interactive maps to locate food resources.  
+- Filter layers for specific resources like SNAP-accepting stores, food deserts, or fresh food outlets.  
+- Analyze trends and insights through dynamic charts and data visualizations.
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## **Future Updates**
+- Expand to support additional states or regions.  
+- Integrate real-time data feeds and third-party APIs for dynamic updates.  
+- Add user authentication and role-based access control.  
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## **Contributing**
 
-### `npm run build` fails to minify
+Contributions are welcome! To contribute:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. Fork the repository.  
+2. Create a feature branch:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add feature: description of feature"
+   ```
+4. Push your branch:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+5. Open a Pull Request.
+
+---
+
+
+
+## **Acknowledgments**
+This project is part of the West Virginia University’s Center for Resilient Communities. 
