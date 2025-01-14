@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
+import FoodFinderMap from "./FoodFinderMap"; // Adjust the path as per your folder structure
 
 const Food = () => {
   return (
@@ -19,6 +20,18 @@ const Food = () => {
       >
         Learn More
       </Button>
+
+      {/* Food Finder Map Section */}
+      <Box sx={{ marginTop: 8 }}>
+        <Typography variant="h4" gutterBottom sx={{ textAlign: "center", fontWeight: "bold" }}>
+          Food Finder Map
+        </Typography>
+        <Typography variant="body1" sx={{ marginBottom: 4, textAlign: "justify" }}>
+          Use the interactive map below to explore food assistance resources, sustainable practices, 
+          and locations supporting food security.
+        </Typography>
+        <FoodFinderMap />
+      </Box>
     </Box>
   );
 };
