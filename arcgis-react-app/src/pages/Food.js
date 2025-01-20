@@ -1,6 +1,11 @@
 import React from "react";
 import { Box, Typography, Button } from "@mui/material";
-import FoodFinderMap from "./FoodFinderMap"; // Adjust the path as per your folder structure
+import FoodFinderMap from "../components/FoodFinderMap"; // Adjust the path as per your folder structure
+import FoodRetailer from "../components/FoodRetailer";
+import CountySummary from "../components/CountySummary";
+import Charities from "../components/Charities";
+import MapTabs from "../components/MapTab";
+import CountyReport from "../components/CountyReport";
 
 const Food = () => {
   return (
@@ -30,7 +35,11 @@ const Food = () => {
           Use the interactive map below to explore food assistance resources, sustainable practices, 
           and locations supporting food security.
         </Typography>
-        <FoodFinderMap />
+        <MapTabs />
+        
+        
+
+
       </Box>
     </Box>
   );
