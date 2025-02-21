@@ -26,7 +26,7 @@ const MenuBar = () => {
           <Button component={Link} to="/about" color="inherit">
             About Us
           </Button>
-          <Button component={Link} to="https://wvu.maps.arcgis.com/home/item.html?id=61e914cf99364188a23f20b46721f2a3" color="inherit">
+          <Button component={Link} to="https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3" color="inherit">
             Food Atlas
           </Button>
           <Button component={Link} to="https://foodlink.wvu.edu/pages/organize" color="inherit">
