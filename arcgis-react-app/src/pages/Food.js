@@ -1,46 +1,92 @@
-import React from "react";
-import { Box, Typography, Button } from "@mui/material";
-import FoodFinderMap from "../components/FoodFinderMap"; // Adjust the path as per your folder structure
-import FoodRetailer from "../components/FoodRetailer";
-import CountySummary from "../components/CountySummary";
-import Charities from "../components/Charities";
-import MapTabs from "../components/MapTab";
-import CountyReport from "../components/CountyReport";
+import React, { useState } from "react";
+import { Box, IconButton, Modal, Typography, Divider } from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import FoodFinderMap from "../components/FoodFinderMap";
+import AssistanceLegend from "../components/AssistanceLegend";
 
 const Food = () => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+
   return (
-    <Box sx={{ padding: 4 }}>
-      <Typography variant="h3" gutterBottom sx={{ textAlign: "center", fontWeight: "bold" }}>
-        Welcome to the Food Page
-      </Typography>
-      <Typography variant="body1" sx={{ marginTop: 2, textAlign: "justify" }}>
-        This page provides information about food systems, sustainable practices, and resources 
-        for food security. Explore the various resources available to support a sustainable and 
-        equitable food system for everyone.
-      </Typography>
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ marginTop: 4, display: "block", marginLeft: "auto", marginRight: "auto" }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "row", // Layout map and food section side by side
+        height: "100vh", // Full viewport height
+        
+      }}
+    >
+      {/* Map Section */}
+      <Box
+        sx={{
+          flex: "1",
+          position: "relative",
+          zIndex: 1, // Ensure map container stays beneath popups
+        }}
       >
-        Learn More
-      </Button>
-
-      {/* Food Finder Map Section */}
-      <Box sx={{ marginTop: 8 }}>
-        <Typography variant="h4" gutterBottom sx={{ textAlign: "center", fontWeight: "bold" }}>
-          Food Finder Map
-        </Typography>
-        <Typography variant="body1" sx={{ marginBottom: 4, textAlign: "justify" }}>
-          Use the interactive map below to explore food assistance resources, sustainable practices, 
-          and locations supporting food security.
-        </Typography>
-        <MapTabs />
-        
-        
-
-
+        <FoodFinderMap />
+        {/* Info Icon Overlay */}
+        <IconButton
+          onClick={handleOpenModal}
+          sx={{
+            position: "absolute",
+            bottom: 16,
+            right: 16,
+            backgroundColor: "white",
+            width: 60,
+            height: 60,
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+            zIndex: 20, // Higher than the map container
+            "&:hover": {
+              backgroundColor: "#f4f6f8",
+            },
+          }}
+        >
+          <InfoIcon sx={{ color: "#007bff", fontSize: 36 }} />
+        </IconButton>
       </Box>
+
+      
+
+      {/* Modal for AssistanceLegend */}
+      <Modal
+        open={openModal}
+        onClose={handleCloseModal}
+        aria-labelledby="assistance-legend-modal"
+        aria-describedby="assistance-legend-description"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Box
+          sx={{
+            width: "90%",
+            maxWidth: "600px",
+            maxHeight: "80%",
+            backgroundColor: "white",
+            padding: 3,
+            borderRadius: "12px",
+            boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.2)",
+            overflowY: "auto",
+            zIndex: 10, // Higher than all other elements
+          }}
+        >
+          <Typography
+            id="assistance-legend-modal"
+            variant="h6"
+            sx={{ marginBottom: 2, fontWeight: "bold", color: "#007bff" }}
+          >
+            Assistance Legend
+          </Typography>
+          <Divider sx={{ marginBottom: 2 }} />
+          <AssistanceLegend />
+        </Box>
+      </Modal>
     </Box>
   );
 };

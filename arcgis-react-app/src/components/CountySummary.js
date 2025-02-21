@@ -3,62 +3,93 @@ import esriConfig from "@arcgis/core/config";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
 import FeatureLayer from "@arcgis/core/layers/FeatureLayer";
-import UniqueValueRenderer from "@arcgis/core/renderers/UniqueValueRenderer";
 import {
   Box,
   Typography,
   Grid,
-  Chip,
+  Paper,
   Avatar,
+  Divider,
   Table,
   TableBody,
   TableCell,
+  TableHead,
   TableRow,
-  Paper,
-  Stack,
+  useTheme,
 } from "@mui/material";
-import LocalGroceryStoreIcon from "@mui/icons-material/LocalGroceryStore";
-import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import LocalConvenienceStoreIcon from "@mui/icons-material/LocalConvenienceStore";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import StorefrontIcon from "@mui/icons-material/Storefront";
-import BusinessIcon from "@mui/icons-material/Business";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import ElderlyIcon from "@mui/icons-material/Elderly";
+import FastfoodIcon from "@mui/icons-material/Fastfood";
+import VolunteerActivismIcon from "@mui/icons-material/VolunteerActivism";
+import WorkIcon from "@mui/icons-material/Work";
+import BackpackIcon from "@mui/icons-material/Backpack";
+import FoodBankIcon from "@mui/icons-material/FoodBank";
+import { ResponsiveBar } from "@nivo/bar";
 
-const categoryStyles = {
-  Grocery: { color: "#4285F4", icon: <LocalGroceryStoreIcon /> },
-  "Farmers Market": { color: "#0F9D58", icon: <ShoppingBasketIcon /> },
-  Convenience: { color: "#F4B400", icon: <LocalConvenienceStoreIcon /> },
-  "Small Box": { color: "#DB4437", icon: <StorefrontIcon /> },
-  Specialty: { color: "#9C27B0", icon: <BusinessIcon /> },
-  "Big Box": { color: "#757575", icon: <BusinessIcon /> },
-};
+const layersConfig = [
+  {
+    id: "6cabc6993a8f44f9aadd1d884cf9cf84",
+    title: "DHHR Offices",
+    icon: <LocalHospitalIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "37ec841dae7e46278d111f26a98b83cb",
+    title: "WIC Offices",
+    icon: <StorefrontIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "fe5b84fd9977470ea0a56be091175356",
+    title: "Family Resource Network Offices",
+    icon: <HomeRepairServiceIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "37fdc5c991f2443e9e30afc80745d00e",
+    title: "Family Support Centers",
+    icon: <RestaurantIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "fdedf6d54b1c4bc9928af7fd3ec520c8",
+    title: "Senior Services",
+    icon: <ElderlyIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "a6ff9a5145eb47f6aadc08170fc53bd5",
+    title: "Food Resources",
+    icon: <FastfoodIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "d16bf58fe37747849a8536c7870c8d80",
+    title: "Charitable Food Programs",
+    icon: <VolunteerActivismIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "82a68c3787dc4efaacdf98e00328ebed",
+    title: "Congregate Meal Program",
+    icon: <WorkIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "bf72aea00c1445cca1356cdcee16aa8a",
+    title: "Backpack Program",
+    icon: <BackpackIcon sx={{ fontSize: 48 }} />,
+  },
+  {
+    id: "b93e8c7152204bfeac14dc9964bb37df",
+    title: "Food Pantry",
+    icon: <FoodBankIcon sx={{ fontSize: 48 }} />,
+  },
+];
 
-const CountySummary = () => {
+const CountyReport = () => {
   const mapDiv = useRef(null);
   const [view, setView] = useState(null);
-  const [selectedCountyStats, setSelectedCountyStats] = useState(null);
-  const [retailers, setRetailers] = useState([]);
-  const [selectedFilters, setSelectedFilters] = useState({ category: "", fresh: false, wic: false });
-  const [allCountyStats, setAllCountyStats] = useState(null);
-  const [countyTotals, setCountyTotals] = useState({ totalCounties: 0 });
+  const [selectedCounty, setSelectedCounty] = useState(null);
+  const [layerData, setLayerData] = useState({});
+  const [layerCounts, setLayerCounts] = useState([]);
 
-  const filterRetailerLayer = () => {
-    if (view) {
-      const retailerLayer = view.map.findLayerById("retailerLayer");
-      let filters = [];
-      if (selectedFilters.category) {
-        filters.push(`Retail_Category = '${selectedFilters.category}'`);
-      }
-      if (selectedFilters.fresh) {
-        filters.push(`Fresh_Produce = 'Yes'`);
-      }
-      if (selectedFilters.wic) {
-        filters.push(`WIC = 'Yes'`);
-      }
-      retailerLayer.definitionExpression = filters.join(" AND ") || ""; // Combine filters
-    }
-  };
+  const theme = useTheme();
 
   useEffect(() => {
     esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
@@ -76,51 +107,20 @@ const CountySummary = () => {
 
     const countyLayer = new FeatureLayer({
       portalItem: { id: "bbc434ff13854e76a9a5acc29bc1e025" },
-    });
-
-    const retailerLayer = new FeatureLayer({
-      portalItem: { id: "a6ff9a5145eb47f6aadc08170fc53bd5" },
-      id: "retailerLayer",
-    });
-
-    const retailerRenderer = new UniqueValueRenderer({
-      field: "Retail_Category",
-      uniqueValueInfos: Object.entries(categoryStyles).map(([category, style]) => ({
-        value: category,
+      renderer: {
+        type: "simple",
         symbol: {
-          type: "simple-marker",
-          color: style.color,
-          size: 8,
-          outline: { color: "#ffffff", width: 1 },
+          type: "simple-fill",
+          color: [0, 0, 0, 0], // Transparent fill
+          outline: {
+            color: "black",
+            width: 2, // Thick black border
+          },
         },
-        label: category,
-      })),
+      },
     });
 
-    retailerLayer.renderer = retailerRenderer;
-
-    map.addMany([countyLayer, retailerLayer]);
-
-    const loadAllPolygonsSummary = async () => {
-      const query = countyLayer.createQuery();
-      query.returnGeometry = false;
-      query.outFields = ["*"];
-
-      const countyStats = await countyLayer.queryFeatures(query);
-      if (countyStats.features.length > 0) {
-        const totalCounties = countyStats.features.length;
-        const totalRetailers = countyStats.features.reduce((sum, feature) => sum + (feature.attributes.Total_Retailers || 0), 0);
-        const freshProduceCount = countyStats.features.reduce((sum, feature) => sum + (feature.attributes.Fresh_Produce_Count || 0), 0);
-        const wicCount = countyStats.features.reduce((sum, feature) => sum + (feature.attributes.WIC_Count || 0), 0);
-
-        setAllCountyStats({
-          totalRetailers,
-          freshProducePercentage: totalRetailers > 0 ? (freshProduceCount / totalRetailers) * 100 : 0,
-          wicPercentage: totalRetailers > 0 ? (wicCount / totalRetailers) * 100 : 0,
-        });
-        setCountyTotals({ totalCounties });
-      }
-    };
+    map.add(countyLayer);
 
     mapView.when(() => {
       setView(mapView);
@@ -140,44 +140,54 @@ const CountySummary = () => {
             { duration: 2000, easing: "ease-in-out" }
           );
 
-          const retailerQuery = retailerLayer.createQuery();
-          retailerQuery.geometry = countyGeometry;
-          retailerQuery.spatialRelationship = "intersects";
-          retailerQuery.returnGeometry = false;
-          retailerQuery.outFields = ["Store_Name", "Address", "Fresh_Produce", "WIC", "Retail_Category"];
+          const counts = await Promise.all(
+            layersConfig.map(async (layer) => {
+              const queryLayer = new FeatureLayer({
+                portalItem: { id: layer.id },
+              });
+              const query = queryLayer.createQuery();
+              query.geometry = countyGeometry;
+              query.spatialRelationship = "intersects";
+              query.returnGeometry = false;
 
-          const retailerStats = await retailerLayer.queryFeatures(retailerQuery);
+              const count = await queryLayer.queryFeatureCount(query);
+              return {
+                title: layer.title,
+                count,
+                icon: layer.icon,
+              };
+            })
+          );
 
-          if (retailerStats.features.length > 0) {
-            const retailersData = retailerStats.features.map((feature) => ({
-              storeName: feature.attributes.Store_Name,
-              address: feature.attributes.Address,
-              freshProduce: feature.attributes.Fresh_Produce,
-              wic: feature.attributes.WIC,
-              category: feature.attributes.Retail_Category,
-            }));
-
-            const categoryCounts = retailersData.reduce((acc, retailer) => {
-              acc[retailer.category] = (acc[retailer.category] || 0) + 1;
-              return acc;
-            }, {});
-
-            setRetailers(retailersData);
-
-            setSelectedCountyStats({
-              countyName: selectedCounty.attributes.County || "Unknown",
-              totalRetailers: retailersData.length,
-              freshProducePercentage:
-                (retailersData.filter((r) => r.freshProduce === "Yes").length / retailersData.length) * 100 || 0,
-              wicPercentage:
-                (retailersData.filter((r) => r.wic === "Yes").length / retailersData.length) * 100 || 0,
-              categoryCounts,
+          const layerQueries = layersConfig.map(async (layer) => {
+            const queryLayer = new FeatureLayer({
+              portalItem: { id: layer.id },
             });
-          }
+            const query = queryLayer.createQuery();
+            query.geometry = countyGeometry;
+            query.spatialRelationship = "intersects";
+            query.returnGeometry = false;
+            query.outFields = ["*"];
+
+            const results = await queryLayer.queryFeatures(query);
+            return {
+              id: layer.id,
+              features: results.features.map((feature) => feature.attributes),
+            };
+          });
+
+          const allLayerData = await Promise.all(layerQueries);
+          const layerDataMap = allLayerData.reduce((acc, { id, features }) => {
+            const layerInfo = layersConfig.find((layer) => layer.id === id);
+            acc[layerInfo.title] = features;
+            return acc;
+          }, {});
+
+          setSelectedCounty({ name: selectedCounty.attributes.County_Nam || "Unknown" });
+          setLayerCounts(counts);
+          setLayerData(layerDataMap);
         }
       });
-
-      loadAllPolygonsSummary();
     });
 
     return () => {
@@ -188,202 +198,232 @@ const CountySummary = () => {
     };
   }, []);
 
-  useEffect(() => {
-    filterRetailerLayer();
-  }, [selectedFilters]);
+  const renderFoodResourcesChart = (features) => {
+    const groupedData = features.reduce((acc, feature) => {
+      const category = feature.Retail_Category;
+      if (!acc[category]) {
+        acc[category] = { category, count: 0 };
+      }
+      acc[category].count += 1;
+      return acc;
+    }, {});
 
-  const toggleFilter = (key, value) => {
-    setSelectedFilters((prev) => ({
-      ...prev,
-      [key]: key === "category" ? (prev[key] === value ? "" : value) : !prev[key],
-    }));
+    const chartData = Object.values(groupedData);
+
+    return (
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Food Resources by Retail Category
+        </Typography>
+        <Box sx={{ height: 300 }}>
+          <ResponsiveBar
+            data={chartData}
+            keys={["count"]}
+            indexBy="category"
+            margin={{ top: 20, right: 30, bottom: 50, left: 60 }}
+            padding={0.3}
+            valueScale={{ type: "linear" }}
+            indexScale={{ type: "band", round: true }}
+            colors={{ scheme: "nivo" }}
+            axisTop={null}
+            axisRight={null}
+            axisBottom={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: "Retail Category",
+              legendPosition: "middle",
+              legendOffset: 32,
+            }}
+            axisLeft={{
+              tickSize: 5,
+              tickPadding: 5,
+              tickRotation: 0,
+              legend: "Count",
+              legendPosition: "middle",
+              legendOffset: -40,
+            }}
+            labelSkipWidth={12}
+            labelSkipHeight={12}
+            labelTextColor={{ from: "color", modifiers: [["darker", 1.6]] }}
+            legends={[]}
+            animate={true}
+          />
+        </Box>
+      </Box>
+    );
   };
 
+  const renderLayerSummary = () => (
+    <Grid container spacing={2}>
+      {layerCounts.map(({ title, count, icon }) => (
+        <Grid item xs={12} sm={6} md={4} key={title}>
+          <Paper
+            sx={{
+              padding: 2,
+              display: "flex",
+              alignItems: "center",
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+          >
+            <Avatar sx={{ backgroundColor: "primary.main", marginRight: 2 }}>
+              {icon}
+            </Avatar>
+            <Box>
+              <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                {title}
+              </Typography>
+              <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                {count}
+              </Typography>
+            </Box>
+          </Paper>
+        </Grid>
+      ))}
+    </Grid>
+  );
+
   return (
-    <div style={{ position: "relative", width: "100%", height: "100%" }}>
-      <div ref={mapDiv} style={{ width: "100%", height: "80vh", position: "relative" }}></div>
+    <Box sx={{ padding: 4 }}>
+      <Typography
+  variant="h4"
+  gutterBottom
+  align="center"
+  sx={{
+    
+    mb: 4,
+  }}
+>
+  Select a county on the map to view the report.
+</Typography>
 
       <Box
         sx={{
-          position: "absolute",
-          top: 20,
-          left: 20,
-          background: "white",
-          padding: 2,
+          position: "relative",
+          width: "100%",
+          height: "70vh",
+          marginBottom: 4,
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: 2,
-          boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
-          zIndex: 1000,
-          maxWidth: 200,
+          overflow: "hidden",
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2 }}>
-          Filters
-        </Typography>
-        <Stack spacing={2}>
-          {Object.entries(categoryStyles).map(([key, style]) => (
-            <Box
-              key={key}
-              display="flex"
-              alignItems="center"
-              sx={{
-                cursor: "pointer",
-                background: selectedFilters.category === key ? style.color : "#f5f5f5",
-                borderRadius: 2,
-                padding: 1,
-                color: selectedFilters.category === key ? "white" : "black",
-              }}
-              onClick={() => toggleFilter("category", key)}
-            >
-              <Avatar
-                sx={{
-                  backgroundColor: selectedFilters.category === key ? "white" : style.color,
-                  color: selectedFilters.category === key ? style.color : "white",
-                  marginRight: 1,
-                }}
-              >
-                {style.icon}
-              </Avatar>
-              <Typography>{key}</Typography>
-            </Box>
-          ))}
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={{
-              cursor: "pointer",
-              background: selectedFilters.fresh ? "#0F9D58" : "#f5f5f5",
-              borderRadius: 2,
-              padding: 1,
-              color: selectedFilters.fresh ? "white" : "black",
-            }}
-            onClick={() => toggleFilter("fresh")}
-          >
-            <Avatar
-              sx={{
-                backgroundColor: selectedFilters.fresh ? "white" : "#0F9D58",
-                color: selectedFilters.fresh ? "#0F9D58" : "white",
-                marginRight: 1,
-              }}
-            >
-              <LocalOfferIcon />
-            </Avatar>
-            <Typography>Fresh Produce</Typography>
-          </Box>
-          <Box
-            display="flex"
-            alignItems="center"
-            sx={{
-              cursor: "pointer",
-              background: selectedFilters.wic ? "#4285F4" : "#f5f5f5",
-              borderRadius: 2,
-              padding: 1,
-              color: selectedFilters.wic ? "white" : "black",
-            }}
-            onClick={() => toggleFilter("wic")}
-          >
-            <Avatar
-              sx={{
-                backgroundColor: selectedFilters.wic ? "white" : "#4285F4",
-                color: selectedFilters.wic ? "#4285F4" : "white",
-                marginRight: 1,
-              }}
-            >
-              <AccessibilityNewIcon />
-            </Avatar>
-            <Typography>WIC</Typography>
-          </Box>
-        </Stack>
+        <div ref={mapDiv} style={{ width: "100%", height: "100%" }}></div>
       </Box>
 
-      {allCountyStats && (
-        <Box
+      {selectedCounty && (
+        <Paper
           sx={{
-            position: "absolute",
-            top: 20,
-            right: 20,
-            background: "white",
-            padding: 2,
+            padding: 3,
+            marginTop: 4,
             borderRadius: 2,
-            boxShadow: "0 2px 5px rgba(0,0,0,0.3)",
-            zIndex: 1000,
-            maxWidth: 300,
+            boxShadow: 4,
           }}
+          elevation={3}
         >
-          <Typography variant="h6">All Counties Summary</Typography>
-          <Typography>Total Counties: {countyTotals.totalCounties}</Typography>
-          <Typography>Total Retailers: {allCountyStats.totalRetailers}</Typography>
-          <Typography>Fresh Produce: {allCountyStats.freshProducePercentage.toFixed(2)}%</Typography>
-          <Typography>WIC: {allCountyStats.wicPercentage.toFixed(2)}%</Typography>
-        </Box>
-      )}
+          
+          
 
-      {selectedCountyStats && (
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            width: "100%",
-            background: "white",
-            padding: 2,
-            borderTop: "1px solid #ddd",
-            boxShadow: "0 -2px 5px rgba(0,0,0,0.3)",
-            zIndex: 1000,
-          }}
-        >
-          <Typography variant="h6" gutterBottom>
-            County Summary
-          </Typography>
-          <Typography>
-            <strong>County:</strong> {selectedCountyStats.countyName}
-          </Typography>
-          <Typography>
-            <strong>Total Retailers:</strong> {selectedCountyStats.totalRetailers}
-          </Typography>
-          <Typography>
-            <strong>Fresh Produce (%):</strong> {selectedCountyStats.freshProducePercentage.toFixed(2)}%
-          </Typography>
-          <Typography>
-            <strong>WIC (%):</strong> {selectedCountyStats.wicPercentage.toFixed(2)}%
-          </Typography>
+          <Box sx={{ marginBottom: 1 }}>
+            <Typography variant="h5" gutterBottom>
+              Summary
+            </Typography>
+            {renderLayerSummary()}
+          </Box>
+
           <Grid container spacing={2}>
-            {Object.entries(selectedCountyStats.categoryCounts).map(([category, count]) => (
-              <Grid item xs={6} key={category}>
-                <Chip
-                  avatar={<Avatar>{categoryStyles[category]?.icon || <BusinessIcon />}</Avatar>}
-                  label={`${category}: ${count}`}
-                  sx={{ backgroundColor: categoryStyles[category]?.color || "#757575", color: "#fff" }}
-                />
+            {Object.entries(layerData).map(([title, features]) => (
+              <Grid item xs={12} key={title}>
+                <Paper
+                  sx={{
+                    padding: 2,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    marginBottom: 2,
+                  }}
+                  elevation={2}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: 2,
+                    }}
+                  >
+                    <Avatar
+                      sx={{ marginRight: 2, backgroundColor: "primary.main" }}
+                    >
+                      {
+                        layersConfig.find(
+                          (layer) => layer.title === title
+                        )?.icon
+                      }
+                    </Avatar>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", flexGrow: 1 }}
+                    >
+                      {title}
+                    </Typography>
+                  </Box>
+                  {features && features.length > 0 ? (
+                    <>
+                      <Table size="small" sx={{ wordBreak: "break-word" }}>
+                        <TableHead>
+                          <TableRow>
+                            {Object.keys(features[0]).map((key) => (
+                              <TableCell
+                                key={key}
+                                sx={{ fontWeight: "bold" }}
+                              >
+                                {key}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {features.map((feature, index) => (
+                            <TableRow key={index}>
+                              {Object.entries(feature).map(
+                                ([key, value]) => (
+                                  <TableCell
+                                    key={key}
+                                    sx={{
+                                      padding: "4px 8px",
+                                      fontSize: "0.875rem",
+                                    }}
+                                  >
+                                    {value}
+                                  </TableCell>
+                                )
+                              )}
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                      {title === "Food Resources" &&
+                        renderFoodResourcesChart(features)}
+                    </>
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      align="center"
+                    >
+                      No data available.
+                    </Typography>
+                  )}
+                </Paper>
               </Grid>
             ))}
           </Grid>
-        </Box>
+        </Paper>
       )}
 
-      {retailers.length > 0 && (
-        <Box sx={{ padding: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Detailed Retailer Information
-          </Typography>
-          <Table component={Paper}>
-            <TableBody>
-              {retailers.map((retailer, index) => (
-                <TableRow key={index}>
-                  <TableCell>{retailer.storeName || "Unknown Store"}</TableCell>
-                  <TableCell>{retailer.address || "No Address"}</TableCell>
-                  <TableCell>
-                    Fresh Produce: {retailer.freshProduce === "Yes" ? "Available" : "Not Available"}
-                  </TableCell>
-                  <TableCell>WIC: {retailer.wic === "Yes" ? "Accepted" : "Not Accepted"}</TableCell>
-                  <TableCell>{retailer.category || "No Category"}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      )}
-    </div>
+      
+    </Box>
   );
 };
 
-export default CountySummary;
+export default CountyReport;

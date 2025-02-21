@@ -37,3 +37,149 @@
   }
 }
 
+.body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+}
+
+/* General styles */
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* Card styles */
+.flip-card {
+  background-color: transparent;
+  width: 100%;
+  height: 400px;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  color: #FFFFFF;
+}
+
+.flip-card-front {
+  background-color: #3498db;
+}
+
+.flip-card-back {
+  background-color: #2ecc71;
+  transform: rotateY(180deg);
+}
+
+/* Card backgrounds */
+.card-bg-1 { background: linear-gradient(135deg, #FF9966, #FF5E62); }
+.card-bg-2 { background: linear-gradient(135deg, #6DD5FA, #2980B9); }
+.card-bg-3 { background: linear-gradient(135deg, #56ab2f, #a8e063); }
+.card-bg-4 { background: linear-gradient(135deg, #4568DC, #B06AB3); }
+.card-bg-5 { background: linear-gradient(135deg, #f2709c, #ff9472); }
+.card-bg-6 { background: linear-gradient(135deg, #7F00FF, #E100FF); }
+
+/* Hover effect */
+.flip-card:hover {
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  transform: translateY(-5px);
+  transition: all 0.3s ease;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .flip-card {
+    height: 300px;
+  }
+}
+
+/* Button styles */
+.button {
+  background-color: #3498db;
+  color: #ffffff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #2980b9;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
+
+/* Card backgrounds */
+.card-poverty {
+  background: linear-gradient(135deg, #FF9966, #FF5E62) !important;
+}
+
+.card-child-poverty {
+  background: linear-gradient(135deg, #6DD5FA, #2980B9) !important;
+}
+
+.card-food-insecurity {
+  background: linear-gradient(135deg, #56ab2f, #a8e063) !important;
+}
+
+.card-fresh-produce {
+  background: linear-gradient(135deg, #4568DC, #B06AB3) !important;
+}
+
+.card-food-desert {
+  background: linear-gradient(135deg, #f2709c, #ff9472) !important;
+}
+
+.card-population-loss {
+  background: linear-gradient(135deg, #7F00FF, #E100FF) !important;
+}

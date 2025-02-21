@@ -11,21 +11,23 @@ import {
   Grid,
   IconButton,
   Button,
-  FormControlLabel,
-  Switch,
+  Modal,
+  Divider,
 } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
+import InfoIcon from "@mui/icons-material/Info";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import ElderlyIcon from "@mui/icons-material/Elderly";
+import AssistanceLegend from "../components/AssistanceLegend";
 
 const resourceStyles = {
   "DHHR Offices": {
     id: "6cabc6993a8f44f9aadd1d884cf9cf84",
     color: "#007bff",
-    icon: <LocalHospitalIcon sx={{ fontSize: 48, color: "#007bff" }} />, 
+    icon: <LocalHospitalIcon sx={{ fontSize: 48, color: "#007bff" }} />,
     symbolUrl: "https://static.arcgis.com/images/Symbols/Shapes/BlueCircleLargeB.png",
   },
   "WIC Offices": {
@@ -47,7 +49,7 @@ const resourceStyles = {
     symbolUrl: "https://static.arcgis.com/images/Symbols/Shapes/RedCircleLargeB.png",
   },
   "Senior Services": {
-    id: "fdedf6d54b1c4bc9928af7fd3ec520c8",
+    id: "548531449ba2479aba6da213908e965f",
     color: "#795548",
     icon: <ElderlyIcon sx={{ fontSize: 48, color: "#795548" }} />,
     symbolUrl: "https://static.arcgis.com/images/Symbols/Shapes/BrownCircleLargeB.png",
@@ -59,14 +61,21 @@ const FoodFinderMap = () => {
   const [view, setView] = useState(null);
   const [activeResource, setActiveResource] = useState(null);
   const [userLocation, setUserLocation] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState(null);
+
+  const openLegendModal = () => {
+    setModalContent({
+      title: "Assistance Legend",
+      content: <AssistanceLegend />,
+    });
+    setModalOpen(true);
+  };
 
   useEffect(() => {
     esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
 
-    const map = new Map({
-      basemap: "arcgis-light-gray",
-    });
-
+    const map = new Map({ basemap: "arcgis-light-gray" });
     const mapView = new MapView({
       container: mapDiv.current,
       map: map,
@@ -77,6 +86,7 @@ const FoodFinderMap = () => {
     Object.entries(resourceStyles).forEach(([key, style]) => {
       const layer = new FeatureLayer({
         portalItem: { id: style.id },
+        outFields: ["*"],
         renderer: new SimpleRenderer({
           symbol: new PictureMarkerSymbol({
             url: style.symbolUrl,
@@ -84,42 +94,53 @@ const FoodFinderMap = () => {
             height: "24px",
           }),
         }),
-        popupTemplate: {
-          title: "<div style='font-size: 16px; font-weight: bold;'>{OFFICE_NAME}</div>",
-          content: `
-            <b>County:</b> {COUNTY}<br>
-            <b>Office Name:</b> {OFFICE_NAME}<br>
-            <b>Physical Address:</b> {PHYS_ADDRESS}<br>
-            <b>City:</b> {City}<br>
-            <b>Phone:</b> {PHONE}<br>
-            <b>Hours Open:</b> {Hours_Open}<br>
-            <b>Hours Close:</b> {Hours_Close}<br>
-            <b>Days:</b> {DAYS}<br>
-            <b>Services:</b> {SERVICES}<br>
-            <b>First Name:</b> {First_Name}<br>
-            <b>Last Name:</b> {Last_Name}<br>
-            <b>Email:</b> {Email}<br>
-            <b>Title:</b> {Title}<br>
-            <b>Region:</b> {Region}<br>
-            <b>Organization:</b> {Organization}<br>
-            <b>Contact:</b> {Contact}<br>
-            <b>Address:</b> {Address}<br>
-            <b>Website:</b> <a href="{Website}" target="_blank">More Info</a><br>
-          `
-        },
-        visible: activeResource === key,
+        visible: false,
       });
       map.add(layer);
     });
 
-    mapView.when(() => setView(mapView));
+    mapView.when(() => {
+      setView(mapView);
+      console.log("Map and View are ready");
+
+      mapView.on("click", (event) => {
+        mapView.hitTest(event).then((response) => {
+          if (response.results.length > 0) {
+            const graphic = response.results[0].graphic;
+            const attributes = graphic.attributes;
+            setModalContent({
+              title: attributes.OFFICE_NAME || attributes.Title || "Resource Information",
+              content: `
+                <p><strong>County:</strong> ${attributes.COUNTY || "N/A"}</p>
+                <p><strong>Address:</strong> ${attributes.PHYS_ADDRESS || ""}, ${
+                attributes.City || ""
+              }</p>
+                <p><strong>Phone:</strong> ${attributes.PHONE || "N/A"}</p>
+                <p><strong>Contact:</strong> ${attributes.MAIL_ADDRESS || "N/A"}</p>
+              `,
+            });
+            setModalOpen(true);
+          }
+        });
+      });
+    });
 
     return () => {
       if (mapView) {
         mapView.destroy();
       }
     };
-  }, [activeResource]);
+  }, []);
+
+  useEffect(() => {
+    if (view) {
+      view.map.layers.forEach((layer) => {
+        if (layer.portalItem) {
+          layer.visible = layer.portalItem.id === resourceStyles[activeResource]?.id;
+        }
+      });
+    }
+  }, [activeResource, view]);
 
   const toggleResource = (key) => {
     setActiveResource((prev) => (prev === key ? null : key));
@@ -139,7 +160,9 @@ const FoodFinderMap = () => {
   const showNearby = async () => {
     if (!userLocation || !activeResource) return;
 
-    const layer = view.map.findLayerById(resourceStyles[activeResource].id);
+    const layer = view.map.layers.find(
+      (layer) => layer.portalItem?.id === resourceStyles[activeResource].id
+    );
     if (layer) {
       const query = layer.createQuery();
       query.geometry = {
@@ -147,27 +170,32 @@ const FoodFinderMap = () => {
         longitude: userLocation.longitude,
         latitude: userLocation.latitude,
       };
-      query.distance = 5000; // 5 km radius
+      query.distance = 5000;
       query.units = "meters";
       query.spatialRelationship = "intersects";
       query.outFields = ["*"];
 
-      const results = await layer.queryFeatures(query);
-      console.log("Nearby resources:", results.features);
+      try {
+        const results = await layer.queryFeatures(query);
+        console.log("Nearby resources:", results.features);
+      } catch (error) {
+        console.error("Error querying nearby features:", error);
+      }
     }
   };
 
   return (
-    <div style={{ position: "relative", width: "100%", height: "100vh" }}>
+    <div style={{ position: "relative", width: "100%", height: "80vh" }}>
       <div ref={mapDiv} style={{ width: "100%", height: "100%" }}></div>
 
+      {/* Resource Buttons */}
       <Box
         sx={{
           position: "absolute",
           bottom: 20,
           left: 20,
           backgroundColor: "rgba(255, 255, 255, 0.9)",
-          padding: 2,
+          padding: 0,
           borderRadius: 2,
           boxShadow: "0 2px 4px rgba(0,0,0,0.3)",
           zIndex: 1000,
@@ -199,6 +227,7 @@ const FoodFinderMap = () => {
         </Grid>
       </Box>
 
+      {/* Locate & Show Nearby Buttons */}
       <Box
         sx={{
           position: "absolute",
@@ -219,7 +248,7 @@ const FoodFinderMap = () => {
             color: "white",
             fontSize: "1rem",
             padding: "0.5rem 1rem",
-            '&:hover': { backgroundColor: "#a00000" },
+            "&:hover": { backgroundColor: "#a00000" },
           }}
         >
           Locate Me
@@ -233,12 +262,85 @@ const FoodFinderMap = () => {
             color: "white",
             fontSize: "1rem",
             padding: "0.5rem 1rem",
-            '&:hover': { backgroundColor: "#a00000" },
+            "&:hover": { backgroundColor: "#a00000" },
           }}
         >
           Show Nearby
         </Button>
       </Box>
+
+      {/* Info Icon for Assistance Legend */}
+      <IconButton
+        onClick={openLegendModal}
+        sx={{
+          position: "absolute",
+          bottom: 20,
+          right: 20,
+          backgroundColor: "white",
+          width: 60,
+          height: 60,
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.2)",
+          zIndex: 1000,
+          "&:hover": { backgroundColor: "#f4f6f8" },
+        }}
+      >
+        <InfoIcon sx={{ color: "#007bff", fontSize: 36 }} />
+      </IconButton>
+
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+      <Box
+    sx={{
+      position: "absolute", // For modal positioning
+      top: "50%", // Center vertically
+      left: "50%", // Center horizontally
+      transform: "translate(-50%, -50%)", // Adjust for width and height
+      width: { xs: "90%", sm: "80%", md: "60%" }, // Responsive width
+      maxHeight: "90vh", // Prevent the modal from exceeding viewport height
+      bgcolor: "background.paper", // Modal background
+      borderRadius: 2, // Rounded corners
+      boxShadow: 24, // Material-UI shadow
+      p: { xs: 2, md: 4 }, // Responsive padding
+      overflowY: "auto", // Enable vertical scrolling if content exceeds height
+      display: "flex", // Flexbox for layout
+      flexDirection: "column", // Vertical stacking
+      gap: 2, // Space between child elements
+    }}
+  >
+    {/* Close Button */}
+    <Box
+      sx={{
+        alignSelf: "flex-end",
+        mb: 1,
+      }}
+    >
+      <Button
+        onClick={() => setModalOpen(false)}
+        variant="text"
+        sx={{
+          fontSize: "1rem",
+          color: "text.secondary",
+          "&:hover": { color: "text.primary" },
+        }}
+      >
+        Close
+      </Button>
+    </Box>
+
+
+    {/* Content */}
+    <Box sx={{ flexGrow: 1 }}>
+      {typeof modalContent?.content === "string" ? (
+        <Typography
+          sx={{ color: "text.secondary", lineHeight: 1.6 }}
+          dangerouslySetInnerHTML={{ __html: modalContent.content }}
+        />
+      ) : (
+        modalContent?.content
+      )}
+    </Box>
+  </Box>
+</Modal>
+
     </div>
   );
 };

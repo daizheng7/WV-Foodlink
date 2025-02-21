@@ -302,7 +302,7 @@ const CountyReport = () => {
         sx={{
           position: "relative",
           width: "100%",
-          height: "70vh",
+          height: "100vh",
           marginBottom: 4,
           border: `1px solid ${theme.palette.divider}`,
           borderRadius: 2,

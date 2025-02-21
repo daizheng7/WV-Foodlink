@@ -56,10 +56,10 @@ const AboutUs = () => {
         <Grid item xs={12} md={6}>
           <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
             <strong>WV FOODLINK</strong> is a project of the Food Justice Lab
-            housed in West Virginia University Center for Resilient Communities.
-            In collaboration with our community partners, we have developed a
-            resource hub and learning commons to support a people-centered,
-            resilient food network in West Virginia.
+            housed in West Virginia University's Center for Resilient
+            Communities. In collaboration with our community partners, we have
+            developed a resource hub and learning commons to support a
+            people-centered, resilient food network in West Virginia.
           </Typography>
           <Typography variant="body1" sx={{ mb: 2, textAlign: "justify" }}>
             Our work is motivated by a vision that all people must have access
@@ -84,12 +84,12 @@ const AboutUs = () => {
                 description: "End poverty in all its forms everywhere.",
               },
               {
-                src: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Sustainable_Development_Goal_01NoPoverty.svg/299px-Sustainable_Development_Goal_01NoPoverty.svg.png",
+                src: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Sustainable_Development_Goal_2.svg/299px-Sustainable_Development_Goal_2.svg.png",
                 title: "Zero Hunger",
                 description: "Achieve food security and improved nutrition.",
               },
               {
-                src: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Sustainable_Development_Goal_01NoPoverty.svg/299px-Sustainable_Development_Goal_01NoPoverty.svg.png",
+                src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Sustainable_Development_Goal_3.svg/299px-Sustainable_Development_Goal_3.svg.png",
                 title: "Good Health",
                 description: "Ensure healthy lives and promote well-being.",
               },

@@ -4,18 +4,17 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 
 import FoodFinderMap from "./FoodFinderMap";
 import FoodRetailer from "./FoodRetailer";
 import CountySummary from "./CountySummary";
 import Charities from "./Charities";
 import HealthInitiativesMap from "./HealthInitiativesMap";
-import CountyReport from "./CountyReport";
+
 const MapTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // Detect small screen sizes
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -24,11 +23,11 @@ const MapTabs = () => {
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
-        return <FoodFinderMap />;
-      case 1:
         return <FoodRetailer />;
+      case 1:
+        return <FoodFinderMap />;
       case 2:
-        return <CountyReport />;
+        return <CountySummary />;
       case 3:
         return <Charities />;
       case 4:
@@ -41,19 +40,38 @@ const MapTabs = () => {
   return (
     <Box
       sx={{
-        height: "100vh",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: "#f0f2f5", // Light gray background for contrast
+        height: "100vh", // Full height of the viewport
+        width: "100vw", // Full width of the viewport
+        position: "relative",
+        
       }}
     >
-      {/* Tabs Header */}
+      {/* Map Content Area */}
       <Box
         sx={{
-          bgcolor: "#8B0000", // Dark red background for tabs
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          position: "relative",
+        }}
+      >
+        {renderTabContent()}
+      </Box>
+
+      {/* Tabs Footer */}
+      <Box
+        sx={{
+          bgcolor: "rgba(0, 0, 0, 0.7)", // Semi-transparent background
           color: "white",
-          padding: isMobile ? 1 : 2,
+          padding: isMobile ? 1 : 1.5,
           boxShadow: 3,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
         }}
       >
         <Tabs
@@ -63,61 +81,41 @@ const MapTabs = () => {
           scrollButtons={isMobile ? "auto" : false}
           indicatorColor="secondary"
           textColor="inherit"
-          centered={!isMobile}
+          sx={{
+            minHeight: isMobile ? 48 : 64,
+          }}
         >
           {[
-            { label: "Assistance", icon: <LocalHospitalIcon /> },
             { label: "Food Retailer", icon: <StorefrontIcon /> },
+            { label: "Assistance", icon: <LocalHospitalIcon /> },
             { label: "County Summary", icon: <HomeRepairServiceIcon /> },
-            { label: "Charities", icon: <RestaurantIcon /> }
-            
+            { label: "Charities", icon: <RestaurantIcon /> },
           ].map((tab, index) => (
             <Tooltip key={tab.label} title={tab.label}>
               <Tab
                 icon={React.cloneElement(tab.icon, {
-                  sx: { fontSize: isMobile ? 40 : 80 },
+                  sx: {
+                    fontSize: isMobile ? 20 : 32, // Slightly smaller icons
+                    color: "white",
+                  },
                 })}
                 label={isMobile ? "" : tab.label}
                 sx={{
-                  fontSize: isMobile ? 12 : 16,
-                  transition: "transform 0.3s, color 0.3s",
+                  fontSize: isMobile ? 10 : 14,
+                  minHeight: isMobile ? 48 : 64,
+                  padding: isMobile ? 0.5 : 1,
+                  transition: "color 0.3s",
                   "&:hover": {
                     color: "#FFD700", // Bright yellow on hover
                   },
                   "&.Mui-selected": {
-                    color: "#FFD700", // Bright yellow for the selected tab
+                    color: "#FFD700", // Bright yellow when selected
                   },
                 }}
               />
             </Tooltip>
           ))}
         </Tabs>
-      </Box>
-
-      {/* Flexible Map Content Area */}
-      <Box
-        sx={{
-          flex: 1, // Expands to fill the remaining vertical space
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: isMobile ? 0.5 : 1,
-          bgcolor: "white",
-        }}
-      >
-        <Box
-          sx={{
-            width: "100%", // Fully utilize available width
-            height: "100%", // Fully utilize available height
-            maxWidth: "1400px", // Optional: Limit maximum width for larger screens
-            bgcolor: "#ffffff",
-            borderRadius: isMobile ? 0 : 2, // Rounded corners for desktop
-            boxShadow: isMobile ? 0 : 2, // Subtle shadow for desktop
-            overflow: "hidden",
-          }}
-        >
-          {renderTabContent()}
-        </Box>
       </Box>
     </Box>
   );
