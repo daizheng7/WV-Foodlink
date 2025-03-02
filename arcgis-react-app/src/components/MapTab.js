@@ -4,12 +4,13 @@ import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
+import DoorSlidingIcon from '@mui/icons-material/DoorSliding';
 
 import FoodFinderMap from "./FoodFinderMap";
 import FoodRetailer from "./FoodRetailer";
 import CountySummary from "./CountySummary";
 import Charities from "./Charities";
-import HealthInitiativesMap from "./HealthInitiativesMap";
+
 
 const MapTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
@@ -31,9 +32,7 @@ const MapTabs = () => {
       case 3:
         return <Charities />;
       case 4:
-        return <HealthInitiativesMap />;
-      default:
-        return null;
+        return <Charities />;
     }
   };
 
@@ -90,6 +89,7 @@ const MapTabs = () => {
             { label: "Assistance", icon: <LocalHospitalIcon /> },
             { label: "County Summary", icon: <HomeRepairServiceIcon /> },
             { label: "Charities", icon: <RestaurantIcon /> },
+            { label: "Food Access", icon: <DoorSlidingIcon /> },
           ].map((tab, index) => (
             <Tooltip key={tab.label} title={tab.label}>
               <Tab
