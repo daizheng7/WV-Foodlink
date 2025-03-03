@@ -11,7 +11,6 @@ import FoodRetailer from "./FoodRetailer";
 import CountySummary from "./CountySummary";
 import Charities from "./Charities";
 
-
 const MapTabs = () => {
   const [selectedTab, setSelectedTab] = useState(0);
   const theme = useTheme();
@@ -33,6 +32,8 @@ const MapTabs = () => {
         return <Charities />;
       case 4:
         return <Charities />;
+      default:
+        return null;
     }
   };
 
@@ -44,15 +45,14 @@ const MapTabs = () => {
         height: "100vh", // Full height of the viewport
         width: "100vw", // Full width of the viewport
         position: "relative",
-        
       }}
     >
       {/* Map Content Area */}
       <Box
         sx={{
           flex: 1,
-          width: "100%",
-          height: "100%",
+          width: "calc(100vw - <scrollbar width>)", // Full viewport width
+          height: "calc(100vh - <scrollbar width>)",
           position: "relative",
         }}
       >
@@ -86,9 +86,9 @@ const MapTabs = () => {
         >
           {[
             { label: "Food Retailer", icon: <StorefrontIcon /> },
-            { label: "Assistance", icon: <LocalHospitalIcon /> },
-            { label: "County Summary", icon: <HomeRepairServiceIcon /> },
-            { label: "Charities", icon: <RestaurantIcon /> },
+            // { label: "Assistance", icon: <LocalHospitalIcon /> },
+            // { label: "County Summary", icon: <HomeRepairServiceIcon /> },
+            // { label: "Charities", icon: <RestaurantIcon /> },
             { label: "Food Access", icon: <DoorSlidingIcon /> },
           ].map((tab, index) => (
             <Tooltip key={tab.label} title={tab.label}>

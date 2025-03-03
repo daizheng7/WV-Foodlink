@@ -14,38 +14,64 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="lg">
-        <Grid container spacing={4} justifyContent="center" alignItems="center">
-          {/* Foodlink Info */}
+        <Grid container spacing={4} justifyContent="center">
+          
+          {/* FoodLink Info */}
           <Grid item xs={12} sm={4} textAlign={{ xs: "center", sm: "left" }}>
             <Typography variant="h5" fontWeight="bold" gutterBottom>
               FoodLink
             </Typography>
-            <Typography variant="body2" color="rgba(255, 255, 255, 0.8)">
+            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
               Connecting communities through food.
             </Typography>
-            <Typography variant="body2" color="rgba(255, 255, 255, 0.8)" mt={2}>
-              A project of <Link href="https://resilientcommunities.wvu.edu/" color="inherit" underline="always">The Center for Resilient Communities, WVU</Link>.
+            <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", mt: 2 }}>
+              A project of{" "}
+              <Link
+                href="https://resilientcommunities.wvu.edu/"
+                color="inherit"
+                underline="always"
+              >
+                The Center for Resilient Communities, WVU
+              </Link>.
             </Typography>
           </Grid>
-          
+
           {/* Quick Links */}
           <Grid item xs={12} sm={4} textAlign="center">
             <Typography variant="h6" fontWeight="bold" gutterBottom>
               Quick Links
             </Typography>
-            <Box>
-              <Link href="/about" color="inherit" underline="none" sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, justifyContent: "center" }}>
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Link
+                href="/about"
+                color="inherit"
+                underline="none"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 1,
+                }}
+              >
                 <Info fontSize="small" /> About Us
               </Link>
-              <Link href="/contact" color="inherit" underline="none" sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, justifyContent: "center" }}>
+              <Link
+                href="/contact"
+                color="inherit"
+                underline="none"
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  mb: 1,
+                }}
+              >
                 <ContactMail fontSize="small" /> Contact
               </Link>
-              <Link href="/privacy" color="inherit" underline="none" sx={{ display: "flex", alignItems: "center", gap: 1, justifyContent: "center" }}>
-                <Policy fontSize="small" /> Privacy Policy
-              </Link>
+              
             </Box>
           </Grid>
-          
+
           {/* Social Media */}
           <Grid item xs={12} sm={4} textAlign={{ xs: "center", sm: "right" }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -64,11 +90,13 @@ const Footer = () => {
             </Box>
           </Grid>
         </Grid>
-        
+
+        {/* Divider */}
         <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", my: 3 }} />
-        
+
+        {/* Copyright */}
         <Box textAlign="center">
-          <Typography variant="body2" color="rgba(255, 255, 255, 0.8)">
+          <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
             &copy; {new Date().getFullYear()} FoodLink. All rights reserved.
           </Typography>
         </Box>

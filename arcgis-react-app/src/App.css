@@ -1,21 +1,17 @@
-.App {
-  text-align: center;
+/* Fix navbar spacing issue */
+body {
+  padding-top: 80px; /* Adjust based on navbar height */
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  color: #333333;
+  line-height: 1.6;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
+/* Remove unnecessary height that could cause extra space */
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,40 +20,19 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.body {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-}
-
-/* General styles */
-body {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
-  color: #333333;
-  line-height: 1.6;
-}
-
+/* Adjust general container spacing */
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 10px 20px; /* Reduced padding to minimize extra space */
 }
 
-/* Typography */
+/* Ensure maptab is not pushed too far down */
+.maptab-container {
+  margin-top: 10px; /* Reduce excess spacing */
+}
+
+/* Typography Fix */
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
@@ -126,10 +101,20 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s ease;
 }
 
-/* Responsive design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .flip-card {
     height: 300px;
+  }
+
+  /* Reduce navbar padding on smaller screens */
+  body {
+    padding-top: 60px; /* Adjust for smaller navbar on mobile */
+  }
+
+  /* Reduce maptab margin on mobile */
+  .maptab-container {
+    margin-top: 5px;
   }
 }
 
@@ -158,7 +143,6 @@ h1, h2, h3, h4, h5, h6 {
   animation: fadeIn 1s ease-in-out;
 }
 
-
 /* Card backgrounds */
 .card-poverty {
   background: linear-gradient(135deg, #FF9966, #FF5E62) !important;
@@ -184,6 +168,7 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, #7F00FF, #E100FF) !important;
 }
 
+/* Video container fix */
 .video-container {
   width: 160px;
   overflow: hidden;
@@ -199,6 +184,8 @@ h1, h2, h3, h4, h5, h6 {
   transform: scale(1.3);
   z-index: 10;
 }
+
+/* Scrolling logos */
 .scrolling-logos {
   display: flex;
   width: max-content;
@@ -230,9 +217,8 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
+/* Footer fix */
 .footer-section {
-  margin-top: 50px;
-  padding: 20px;
   background-color: #f9f9f9;
   text-align: center;
 }
