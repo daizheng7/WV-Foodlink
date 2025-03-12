@@ -52,6 +52,7 @@ const CharitiesPage = () => {
   
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   // Initialize ArcGIS configuration
   useEffect(() => {
@@ -78,6 +79,13 @@ const CharitiesPage = () => {
 
   const handleOpenModal = () => setOpenModal(true);
   const handleCloseModal = () => setOpenModal(false);
+  
+  // Function to determine responsive spacing
+  const getResponsiveSpacing = (mobileSm, tabletMd, desktopLg) => {
+    if (isMobile) return mobileSm;
+    if (isTablet) return tabletMd;
+    return desktopLg;
+  };
 
   return (
     <Box
@@ -88,50 +96,128 @@ const CharitiesPage = () => {
         bgcolor: theme.palette.background.default,
       }}
     >
-      {/* Header with Info - Full Width */}
-      <Box sx={{ width: "100%", px: 2, pt: 2, pb: 1 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" maxWidth="100%">
-          <Typography variant="h1" component="h1" color="primary">
-            Charities Resources
-          </Typography>
-          <Tooltip title="Information about food resources">
-            <IconButton onClick={handleOpenModal} color="primary">
-              <InfoIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-          Find food banks, pantries, and soup kitchens funded by donations in your area by exploring the map or filtering by category.
-        </Typography>
-      </Box>
-      
-      {/* Map Section - Full Width */}
-      <Box
-        sx={{
+      {/* Main content container with proper padding */}
+      <Box 
+        sx={{ 
+          display: "flex",
+          flexDirection: "column",
           width: "100%",
-          height: isMobile ? "50vh" : "70vh",
-          position: "relative",
-          zIndex: 1,
-          mb: 3,
-          overflow: "hidden",
+          padding: getResponsiveSpacing(2, 3, 4),
+          boxSizing: "border-box",
         }}
       >
-        {isLoading ? (
+        {/* Header with Info */}
+        <Box 
+          sx={{
+            padding: getResponsiveSpacing(2, 2.5, 3),
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            boxSizing: "border-box",
+            mb: 2
+          }}
+        >
           <Box 
             display="flex" 
-            justifyContent="center" 
+            flexDirection="row"
+            justifyContent="space-between" 
             alignItems="center" 
-            height="100%"
+            width="100%"
           >
-            <Typography variant="h6">Loading map...</Typography>
+            <Typography 
+              variant="h1" 
+              component="h1" 
+              sx={{ 
+                color: "#99031e",
+                fontSize: isMobile ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
+                lineHeight: 1.2,
+                fontWeight: 700,
+                flexGrow: 1,
+                pr: 2
+              }}
+            >
+              Charities Resources
+            </Typography>
+            <Tooltip title="Information about charity resources">
+              <IconButton 
+                onClick={handleOpenModal}
+                aria-label="information about charity resources"
+                size="large"
+                sx={{ 
+                  backgroundColor: "rgba(153, 3, 30, 0.1)",
+                  padding: isMobile ? 1 : 1.5,
+                  flexShrink: 0,
+                  '&:hover': {
+                    backgroundColor: "rgba(153, 3, 30, 0.2)"
+                  }
+                }}
+              >
+                <InfoIcon sx={{ 
+                  fontSize: isMobile ? 28 : 36, 
+                  color: "#99031e" 
+                }} />
+              </IconButton>
+            </Tooltip>
           </Box>
-        ) : (
-          <Charities
-            onCategorySelect={handleCategorySelect} 
-            onAreaSelect={handleAreaSelect}
-            layerConfigs={foodResourceLayers}
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
+            Find food banks, pantries, and soup kitchens funded by donations in your area by exploring the map or filtering by category.
+          </Typography>
+        </Box>
+        
+        {/* Map Section with proper container */}
+        <Box
+          sx={{
+            width: "100%",
+            height: isMobile ? "50vh" : "70vh",
+            position: "relative",
+            borderRadius: "8px",
+            overflow: "hidden",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            mb: 3,
+            backgroundColor: "#ffffff"
+          }}
+        >
+          {isLoading ? (
+            <Box 
+              display="flex" 
+              justifyContent="center" 
+              alignItems="center" 
+              height="100%"
+            >
+              <Typography variant="h6">Loading map...</Typography>
+            </Box>
+          ) : (
+            <Charities
+              onCategorySelect={handleCategorySelect} 
+              onAreaSelect={handleAreaSelect}
+              layerConfigs={foodResourceLayers}
+            />
+          )}
+        </Box>
+
+        {/* Food Resources Panel - Now with Proper Props */}
+        <Box 
+          sx={{
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            width: "100%",
+            mb: 4,
+            overflow: "hidden"
+          }}
+        >
+          <FoodResourcesPanel 
+            foodResourceLayers={foodResourceLayers}
+            selectedCategory={selectedCategory}
+            selectedArea={selectedArea}
+            onCategorySelect={handleCategorySelect}
+            webmapId={webmapId}
+            isMobile={isMobile}
           />
-        )}
+        </Box>
       </Box>
 
       {/* Information Modal */}
@@ -154,14 +240,13 @@ const CharitiesPage = () => {
             borderRadius: 2,
           }}
         >
-          <Typography id="info-modal-title" variant="h6" component="h2" gutterBottom>
-            About Food Resources
+          <Typography id="info-modal-title" variant="h5" component="h2" sx={{ color: "#99031e", mb: 2, fontWeight: 600 }}>
+            About Charity Resources
           </Typography>
-          <Divider sx={{ mb: 2 }} />
           <Typography id="info-modal-description" sx={{ mb: 2 }}>
             This tool helps you locate food assistance programs in your area. The map displays various types of food resources including:
           </Typography>
-          <Box component="ul" sx={{ pl: 2 }}>
+          <Box component="ul" sx={{ pl: 2, mb: 2 }}>
             {foodResourceLayers.map((layer) => (
               <Box 
                 component="li" 
@@ -187,23 +272,12 @@ const CharitiesPage = () => {
               </Box>
             ))}
           </Box>
+          <Typography>
+            Click on any map marker to view detailed information including contact details and available services. You can also search for locations by address or zip code.
+          </Typography>
         </Paper>
       </Modal>
 
-      {/* Food Resources Panel - Now with Proper Props */}
-      <Container maxWidth="100%" sx={{ mb: 4 }}>
-        <FoodResourcesPanel 
-          foodResourceLayers={foodResourceLayers}
-          selectedCategory={selectedCategory}
-          selectedArea={selectedArea}
-          onCategorySelect={handleCategorySelect}
-          webmapId={webmapId}
-          isMobile={isMobile}
-        />
-      </Container>
-
-      {/* Footer */}
-      <Footer />
     </Box>
   );
 };

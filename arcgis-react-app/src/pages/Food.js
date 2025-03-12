@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState } from "react"; 
 import { 
   Box, 
   IconButton, 
@@ -6,257 +6,170 @@ import {
   Typography, 
   useMediaQuery,
   useTheme,
-  Container,
   Paper,
-  Divider,
-  Tooltip,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  CircularProgress
+  Tooltip
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 
-import Footer from "../components/Footer";
-import esriConfig from "@arcgis/core/config";
-import FoodResourcesPanel from "../components/FoodResourcePanel";
 import FoodRetailer from "../components/FoodRetailer";
 
 const FoodPage = () => {
-  const [openModal, setOpenModal] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedArea, setSelectedArea] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [layerData, setLayerData] = useState([]);
-  const [isTableLoading, setIsTableLoading] = useState(false);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const [openModal, setOpenModal] = useState(false);
 
-  // Initialize ArcGIS configuration
-  useEffect(() => {
-    // Ensure API key is properly set
-    if (process.env.REACT_APP_ARCGIS_API_KEY) {
-      esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
-    } else {
-      console.error("ArcGIS API key is missing!");
-    }
-    
-    // Reduce loading time to make map appear faster
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Load all layer data when the component mounts
-  useEffect(() => {
-    // Set table loading state
-    setIsTableLoading(true);
-    
-    // This will be called after the map and layer are loaded in FoodRetailer
-    const loadAllLayerData = async () => {
-      try {
-        // We'll implement the data loading in FoodRetailer and receive it via callback
-        console.log("Waiting for layer data to load...");
-      } catch (error) {
-        console.error("Error loading layer data:", error);
-        setIsTableLoading(false);
-      }
-    };
-    
-    loadAllLayerData();
-  }, []);
-
-  // Handle category selection
-  const handleCategorySelect = (category) => {
-    console.log("Food category selected:", category);
-    setSelectedCategory(category);
+  const handleOpenModal = () => {
+    setOpenModal(true);
   };
 
-  // Handle area selection from map
-  const handleAreaSelect = (geometry) => {
-    setSelectedArea(geometry);
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
-  // Receive data from the map layer
-  const handleLayerData = (data) => {
-    setLayerData(data);
-    setIsTableLoading(false);
+  // Function to determine responsive spacing (matching HomePage)
+  const getResponsiveSpacing = (mobileSm, tabletMd, desktopLg) => {
+    if (isMobile) return mobileSm;
+    if (isTablet) return tabletMd;
+    return desktopLg;
   };
-
-  // Handle table pagination
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh",
-        bgcolor: theme.palette.background.default,
+        height: "100vh",
+        width: "100%",
+        overflow: "hidden",
+        backgroundColor: "#f9f9f9",
       }}
     >
-      {/* Header with Info - Full Width */}
-      <Box sx={{ width: "100%", px: 2, pt: 2, pb: 1 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" maxWidth="100%">
-          <Typography variant="h1" component="h1" color="primary">
-            Food Resources
-          </Typography>
-          <Tooltip title="Information about food resources">
-            <IconButton onClick={handleOpenModal} color="primary">
-              <InfoIcon />
-            </IconButton>
-          </Tooltip>
-        </Box>
-        <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-        Find food resources by exploring the map or filtering by category. Discover shops that offer fresh produce and accept WIC benefits.
-        </Typography>
-      </Box>
-      
-      {/* Map Section - Full Width with improved visibility */}
-      <Box
-        sx={{
-          width: "100%",
-          height: isMobile ? "60vh" : "calc(100vh - 200px)", // Increased height, subtracting header and footer
-          position: "relative",
-          zIndex: 1,
-          mb: 3,
-          overflow: "visible", // Changed from "hidden" to ensure map controls are visible
+      {/* Main content container with proper padding */}
+      <Box 
+        sx={{ 
           display: "flex",
           flexDirection: "column",
+          height: "100%",
+          width: "100%",
+          padding: getResponsiveSpacing(2, 3, 4),
+          boxSizing: "border-box",
         }}
       >
-        {isLoading ? (
+        {/* Header with Info */}
+        <Box 
+          sx={{
+            padding: getResponsiveSpacing(2, 2.5, 3),
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            display: "flex",
+            flexDirection: "column",
+            width: "100%",
+            boxSizing: "border-box",
+            mb: 2
+          }}
+        >
           <Box 
             display="flex" 
-            justifyContent="center" 
+            flexDirection="row"
+            justifyContent="space-between" 
             alignItems="center" 
-            height="100%"
+            width="100%"
           >
-            <Typography variant="h6">Loading map...</Typography>
+            <Typography 
+              variant="h1" 
+              component="h1" 
+              sx={{ 
+                color: "#99031e",
+                fontSize: isMobile ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
+                lineHeight: 1.2,
+                fontWeight: 700,
+                flexGrow: 1,
+                pr: 2
+              }}
+            >
+              Food Resources
+            </Typography>
+            <Tooltip title="Information about food resources">
+              <IconButton 
+                onClick={handleOpenModal} 
+                aria-label="information about food resources"
+                size="large"
+                sx={{ 
+                  backgroundColor: "rgba(153, 3, 30, 0.1)",
+                  padding: isMobile ? 1 : 1.5,
+                  flexShrink: 0,
+                  '&:hover': {
+                    backgroundColor: "rgba(153, 3, 30, 0.2)"
+                  }
+                }}
+              >
+                <InfoIcon sx={{ 
+                  fontSize: isMobile ? 28 : 36, 
+                  color: "#99031e" 
+                }} />
+              </IconButton>
+            </Tooltip>
           </Box>
-        ) : (
-          <Box sx={{ flexGrow: 1, width: "100%", height: "100%" }}>
-            <FoodRetailer
-              onCategorySelect={handleCategorySelect} 
-              onAreaSelect={handleAreaSelect}
-              onLayerDataLoad={handleLayerData}
-              setIsTableLoading={setIsTableLoading}
-              // Ensure the component fills its container
-              style={{ width: "100%", height: "100%" }}
-            />
-          </Box>
-        )}
+          <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
+            Explore our interactive map of food resources in West Virginia. Click the info icon for details on map categories and features.
+          </Typography>
+        </Box>
+      
+        {/* Map Section with fixed dimensions that stay within container */}
+        <Box
+          sx={{
+            width: "100%",
+            flexGrow: 1,
+            position: "relative",
+            borderRadius: "8px",
+            overflow: "hidden",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          }}
+        >
+          <FoodRetailer />
+        </Box>
       </Box>
 
-      {/* Table displaying layer data */}
-      <Container maxWidth="xl" sx={{ mb: 4 }}>
-        <Typography variant="h4" component="h2" sx={{ mb: 2 }}>
-          Food Resources Data
-        </Typography>
-        
-        <TableContainer component={Paper} sx={{ maxHeight: 440 }}>
-          {isTableLoading ? (
-            <Box display="flex" justifyContent="center" alignItems="center" p={3}>
-              <CircularProgress />
-            </Box>
-          ) : layerData.length === 0 ? (
-            <Box p={3}>
-              <Typography variant="body1">No data available. Please interact with the map to load resources.</Typography>
-            </Box>
-          ) : (
-            <>
-              <Table stickyHeader aria-label="food resources table">
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Address</TableCell>
-                    <TableCell>Category</TableCell>
-                    <TableCell>Hours</TableCell>
-                    <TableCell>Contact</TableCell>
-                    <TableCell>Services</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {layerData
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row, index) => (
-                      <TableRow key={index} hover>
-                        <TableCell>{row.name || 'N/A'}</TableCell>
-                        <TableCell>{row.address || 'N/A'}</TableCell>
-                        <TableCell>{row.category || 'N/A'}</TableCell>
-                        <TableCell>{row.hours || 'N/A'}</TableCell>
-                        <TableCell>{row.phone || 'N/A'}</TableCell>
-                        <TableCell>{row.services || 'N/A'}</TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 50]}
-                component="div"
-                count={layerData.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-              />
-            </>
-          )}
-        </TableContainer>
-      </Container>
-
-      {/* Information Modal */}
+      {/* Info Modal */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby="info-modal-title"
-        aria-describedby="info-modal-description"
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
       >
-        <Paper 
-          sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: isMobile ? '90%' : 500,
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            p: 4,
-            borderRadius: 2,
-          }}
-        >
-          <Typography id="info-modal-title" variant="h6" component="h2" gutterBottom>
+        <Paper sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: isMobile ? '90%' : 500,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+          borderRadius: 2
+        }}>
+          <Typography id="modal-modal-title" variant="h5" component="h2" sx={{ color: "#99031e", mb: 2, fontWeight: 600 }}>
             About Food Resources
           </Typography>
-          <Divider sx={{ mb: 2 }} />
-          <Typography id="info-modal-description" sx={{ mb: 2 }}>
-            This tool helps you locate food assistance programs in your area. The map displays various types of food resources including:
+          <Typography id="modal-modal-description" sx={{ mb: 2 }}>
+            This interactive map helps you locate various food resources throughout West Virginia. Use the category filters to find specific types of food assistance:
           </Typography>
           
+          <Box sx={{ pl: 2, mb: 3 }}>
+            <Typography sx={{ mb: 1 }}><strong>🛒 Grocery Stores:</strong> Traditional food retailers carrying a wide range of food items.</Typography>
+            <Typography sx={{ mb: 1 }}><strong>🍅 Farmers Markets:</strong> Local markets offering fresh, seasonal produce directly from farmers.</Typography>
+            <Typography sx={{ mb: 1 }}><strong>🏬 Food Pantries:</strong> Organizations providing free groceries to those in need.</Typography>
+            <Typography sx={{ mb: 1 }}><strong>🍽️ Community Meals:</strong> Locations serving prepared meals, often at no cost.</Typography>
+            <Typography sx={{ mb: 1 }}><strong>💳 SNAP/WIC Locations:</strong> Places that accept SNAP benefits (food stamps) and WIC vouchers.</Typography>
+          </Box>
+          
+          <Typography>
+            Click on any map marker to view detailed information including hours of operation, contact information, and available services. You can also search for locations by address or zip code.
+          </Typography>
         </Paper>
       </Modal>
-
-      {/* Footer */}
-      <Footer />
     </Box>
   );
 };

@@ -75,15 +75,10 @@ const WhatWeDo = () => {
   return (
     <Box sx={{ py: 6, px: 4, backgroundColor: "#f5f5f5" }}>
       <Typography
-        variant="h3"
+        variant="h4"
         align="center"
         gutterBottom
-        sx={{
-          fontWeight: "bold",
-          color: "#333",
-          mb: 4,
-          textShadow: "1px 1px 2px rgba(0, 0, 0, 0.2)",
-        }}
+        sx={{ fontWeight: "bold", mb: 2, color: "#333" }}
       >
         WV FOODLINK is dedicated to improving access to affordable, nutritious, sustainable, and culturally appropriate food in West Virginia and beyond.
       </Typography>

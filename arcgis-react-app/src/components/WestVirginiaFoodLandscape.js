@@ -20,26 +20,10 @@ const categories = [
 const WestVirginiaFoodLandscape = () => {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
-        <Typography
-          variant="h2"
-          component="h1"
-          gutterBottom
-          sx={{
-            fontWeight: 'bold',
-            letterSpacing: '1px',
-            marginBottom: '10px',
-          }}
-        >
+        <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, color: "#333" }}>
           Discover West Virginia's Food Landscape
         </Typography>
-        <Typography
-          variant="h5"
-          component="h2"
-          sx={{
-            fontStyle: 'italic',
-            marginBottom: '30px',
-          }}
-        >
+        <Typography variant="body1" sx={{ maxWidth: "700px", mx: "auto", mb: 4, color: "#555" }}>
           Navigate through key themes shaping food access, nutrition, and sustainability.
         </Typography>
         <div
