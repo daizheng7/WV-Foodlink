@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Divider, useMediaQuery, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Divider, useMediaQuery, useTheme, Container } from "@mui/material";
 import MapTabs from "../components/MapTab";
 import WhatWeDo from "../components/WhatWeDo";
 import IssuesSection from "../components/IssuesSection";
@@ -8,139 +8,201 @@ import InteractiveWheel from "../components/InteractiveWheel";
 import NourishingNetworks from "../components/NourishingNetworks";
 import Partners from "../components/Partners";
 import Footer from "../components/Footer";
+import FoodRetailer from "../components/FoodRetailer";
 
 const HomePage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const [scrollbarWidth, setScrollbarWidth] = useState(0);
+
+  // Calculate scrollbar width on component mount to fix layout issues
+  useEffect(() => {
+    const scrollDiv = document.createElement("div");
+    scrollDiv.style.width = "100px";
+    scrollDiv.style.height = "100px";
+    scrollDiv.style.overflow = "scroll";
+    scrollDiv.style.position = "absolute";
+    scrollDiv.style.top = "-9999px";
+    document.body.appendChild(scrollDiv);
+    
+    const scrollbarWidth = scrollDiv.offsetWidth - scrollDiv.clientWidth;
+    setScrollbarWidth(scrollbarWidth);
+    
+    document.body.removeChild(scrollDiv);
+  }, []);
+
+  // Function to determine responsive spacing
+  const getResponsiveSpacing = (mobileSm, tabletMd, desktopLg) => {
+    if (isMobile) return mobileSm;
+    if (isTablet) return tabletMd;
+    return desktopLg;
+  };
 
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh", // Ensure the entire viewport height is used
-        width: "100vw", // Ensure full viewport width
-        overflowX: "hidden", // Prevent horizontal overflow
-        backgroundColor: "#f9f9f9", // Neutral background color for the page
+        minHeight: "100vh",
+        width: "100%",
+        maxWidth: "100vw",
+        overflowX: "hidden",
+        backgroundColor: "#f9f9f9",
       }}
     >
-      {/* Hero Section with MapTabs */}
+      {/* Hero Section with FoodRetailer */}
       <Box
         sx={{
-          width: "calc(100vw - <scrollbar width>)", // Full viewport width
-          height: "calc(100vh - <scrollbar width>)",
-          position: "relative", // For overlaying elements
-          overflow: "hidden", // Prevent overflow
-        }}
-      >
-        {/* MapTabs Component */}
-        <MapTabs />
-      </Box>
-
-      {/* About Us Section */}
-      <Box
-        sx={{
-          padding: isMobile ? 2 : 4, // Adjust padding for mobile
-          backgroundColor: "#ffffff",
-          borderRadius: "8px",
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
-          mx: isMobile ? 1 : 4, // Add horizontal margin for better spacing
-        }}
-      >
-        <WhatWeDo />
-      </Box>
-
-      {/* Divider with Text */}
-      <Divider sx={{ my: isMobile ? 2 : 4 }} />
-
-      {/* Issues Section */}
-      <Box
-        sx={{
-          padding: isMobile ? 2 : 4, // Adjust padding for mobile
-          backgroundColor: "#f3f3f3",
-          borderRadius: "8px",
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
-          mx: isMobile ? 1 : 4, // Add horizontal margin for better spacing
-        }}
-      >
-        <IssuesSection />
-      </Box>
-
-      {/* Gradient Divider */}
-      <Box
-        sx={{
-          width: "100%",
-          height: "6px",
-          background: "linear-gradient(to right, #ffffff, #e0e0e0, #ffffff)",
-          my: isMobile ? 2 : 3, // Adjust margin for mobile
-        }}
-      ></Box>
-
-      {/* Food Landscape Section */}
-      <Box
-        sx={{
-          padding: isMobile ? 2 : 4, // Adjust padding for mobile
-          backgroundColor: "#ffffff",
-          borderRadius: "8px",
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
-          mx: isMobile ? 1 : 4, // Add horizontal margin for better spacing
-        }}
-      >
-        <WestVirginiaFoodLandscape />
-      </Box>
-
-      {/* Divider with Waves */}
-      <Box
-        sx={{
+          width: `calc(100vw - ${scrollbarWidth}px)`,
+          height: isMobile ? "70vh" : `calc(100vh - ${scrollbarWidth}px)`,
           position: "relative",
-          width: "100%",
           overflow: "hidden",
-          lineHeight: 0,
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
         }}
       >
-        <svg
-          viewBox="0 0 1440 320"
-          xmlns="http://www.w3.org/2000/svg"
-          style={{ display: "block", width: "100%", height: "80px" }}
+        {/* FoodRetailer Component */}
+        <FoodRetailer />
+      </Box>
+
+      {/* Container for consistent margins and responsive behavior */}
+      <Container 
+        maxWidth={false} 
+        disableGutters={true}
+        sx={{ 
+          px: getResponsiveSpacing(1, 2, 4),
+          width: `calc(100vw - ${scrollbarWidth}px)`,
+        }}
+      >
+        {/* About Us Section */}
+        <Box
+          sx={{
+            padding: getResponsiveSpacing(3, 4, 5),
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            mt: getResponsiveSpacing(3, 4, 5),
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          }}
         >
-          <path
-            fill="#f9f9f9"
-            d="M0,160L60,154.7C120,149,240,139,360,149.3C480,160,600,192,720,208C840,224,960,224,1080,224C1200,224,1320,224,1380,218.7L1440,213V320H1380C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320H0Z"
-          ></path>
-        </svg>
-      </Box>
+          <WhatWeDo />
+        </Box>
 
-      {/* Interactive Wheel Section */}
+        {/* Divider with Text */}
+        <Divider sx={{ 
+          my: getResponsiveSpacing(3, 4, 5),
+          "&::before, &::after": {
+            borderColor: "rgba(0, 0, 0, 0.1)",
+          }
+        }} />
+
+        {/* Issues Section */}
+        <Box
+          sx={{
+            padding: getResponsiveSpacing(3, 4, 5),
+            backgroundColor: "#f3f3f3",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          }}
+        >
+          <IssuesSection />
+        </Box>
+
+        {/* Gradient Divider */}
+        <Box
+          sx={{
+            width: "100%",
+            height: "6px",
+            background: "linear-gradient(to right, #ffffff, #e0e0e0, #ffffff)",
+            my: getResponsiveSpacing(3, 4, 5),
+          }}
+        />
+
+        {/* Food Landscape Section */}
+        <Box
+          sx={{
+            padding: getResponsiveSpacing(3, 4, 5),
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            transition: "transform 0.3s ease-in-out",
+            "&:hover": {
+              transform: "translateY(-5px)",
+            },
+          }}
+        >
+          <WestVirginiaFoodLandscape />
+        </Box>
+
+        {/* Wave Divider - Responsive size */}
+        <Box
+          sx={{
+            position: "relative",
+            width: "100%",
+            overflow: "hidden",
+            lineHeight: 0,
+            mt: getResponsiveSpacing(3, 4, 5),
+          }}
+        >
+          <svg
+            viewBox="0 0 1440 320"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ 
+              display: "block", 
+              width: "100%", 
+              height: isMobile ? "40px" : isTablet ? "60px" : "80px" 
+            }}
+          >
+            <path
+              fill="#f9f9f9"
+              d="M0,160L60,154.7C120,149,240,139,360,149.3C480,160,600,192,720,208C840,224,960,224,1080,224C1200,224,1320,224,1380,218.7L1440,213V320H1380C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320H0Z"
+            />
+          </svg>
+        </Box>
+
+        {/* Interactive Wheel Section */}
+        <Box
+          sx={{
+            padding: getResponsiveSpacing(3, 4, 5),
+            backgroundColor: "#ffffff",
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            transition: "transform 0.3s ease-in-out",
+            "&:hover": {
+              transform: "translateY(-5px)",
+            },
+          }}
+        >
+          <InteractiveWheel />
+        </Box>
+
+        {/* Nourishing Networks Section */}
+        <Box
+          sx={{
+            padding: getResponsiveSpacing(3, 4, 5),
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+            mt: getResponsiveSpacing(3, 4, 5),
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          }}
+        >
+          <NourishingNetworks />
+        </Box>
+      </Container>
+
+      {/* Partners Section - Full width */}
       <Box
         sx={{
-          padding: isMobile ? 2 : 4, // Adjust padding for mobile
-          backgroundColor: "#ffffff",
-          borderRadius: "8px",
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
-          mx: isMobile ? 1 : 4, // Add horizontal margin for better spacing
+          mt: getResponsiveSpacing(3, 4, 5),
+          py: getResponsiveSpacing(3, 4, 5),
+          backgroundColor: "#f3f3f3",
+          width: `calc(100vw - ${scrollbarWidth}px)`,
         }}
       >
-        <InteractiveWheel />
+        <Container maxWidth={false} disableGutters={true} sx={{ px: getResponsiveSpacing(1, 2, 4) }}>
+          <Partners />
+        </Container>
       </Box>
 
-      {/* Nourishing Networks Section */}
-      <Box
-        sx={{
-          padding: isMobile ? 2 : 4, // Adjust padding for mobile
-          backgroundColor: "#f9f9f9",
-          borderRadius: "8px",
-          mt: isMobile ? 2 : 4, // Adjust margin for mobile
-          mx: isMobile ? 1 : 4, // Add horizontal margin for better spacing
-        }}
-      >
-        <NourishingNetworks />
-      </Box>
-
-      {/* Partners Section */}
-      <Partners />
-
-      {/* Footer Section */}
+      {/* Footer Section - Full width */}
       <Footer />
     </Box>
   );
