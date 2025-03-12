@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Tabs, Tab, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Box, Tabs, Tab, Tooltip, useMediaQuery, useTheme, Paper, Typography } from "@mui/material";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import StorefrontIcon from "@mui/icons-material/Storefront";
 import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
@@ -20,6 +20,35 @@ const MapTabs = () => {
     setSelectedTab(newValue);
   };
 
+  // Tab options with descriptions
+  const tabOptions = [
+    { 
+      label: "Food Retailer", 
+      icon: <StorefrontIcon />, 
+      description: "Find grocery stores, supermarkets, and food vendors"
+    },
+    { 
+      label: "Food Access", 
+      icon: <DoorSlidingIcon />, 
+      description: "View food access points and services in your area"
+    },
+    { 
+      label: "County Summary", 
+      icon: <HomeRepairServiceIcon />, 
+      description: "View county-level food resource information"
+    },
+    { 
+      label: "Charities", 
+      icon: <RestaurantIcon />, 
+      description: "Locate food banks and donation centers"
+    },
+    { 
+      label: "Assistance", 
+      icon: <LocalHospitalIcon />, 
+      description: "Find food assistance and support programs"
+    },
+  ];
+
   const renderTabContent = () => {
     switch (selectedTab) {
       case 0:
@@ -37,6 +66,33 @@ const MapTabs = () => {
     }
   };
 
+  // Small info panel to show current tab description
+  const renderTabInfo = () => {
+    const currentTab = tabOptions[selectedTab];
+    if (!currentTab) return null;
+    
+    return (
+      <Paper
+        elevation={3}
+        sx={{
+          position: "absolute",
+          top: 16,
+          left: 16,
+          zIndex: 5,
+          bgcolor: "rgba(0, 0, 0, 0.7)",
+          color: "white",
+          px: 2,
+          py: 1,
+          borderRadius: 2,
+          maxWidth: 250,
+          display: isMobile ? "none" : "block" // Only show on desktop
+        }}
+      >
+        <Typography variant="body2">{currentTab.description}</Typography>
+      </Paper>
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -51,12 +107,13 @@ const MapTabs = () => {
       <Box
         sx={{
           flex: 1,
-          width: "calc(100vw - <scrollbar width>)", // Full viewport width
-          height: "calc(100vh - <scrollbar width>)",
+          width: "100%",
+          height: "calc(100vh - 80px)",
           position: "relative",
         }}
       >
         {renderTabContent()}
+        {renderTabInfo()}
       </Box>
 
       {/* Tabs Footer */}
@@ -81,28 +138,28 @@ const MapTabs = () => {
           indicatorColor="secondary"
           textColor="inherit"
           sx={{
-            minHeight: isMobile ? 48 : 64,
+            minHeight: isMobile ? 56 : 70,
           }}
         >
-          {[
-            { label: "Food Retailer", icon: <StorefrontIcon /> },
-            // { label: "Assistance", icon: <LocalHospitalIcon /> },
-            // { label: "County Summary", icon: <HomeRepairServiceIcon /> },
-            // { label: "Charities", icon: <RestaurantIcon /> },
-            { label: "Food Access", icon: <DoorSlidingIcon /> },
-          ].map((tab, index) => (
-            <Tooltip key={tab.label} title={tab.label}>
+          {tabOptions.map((tab, index) => (
+            <Tooltip 
+              key={tab.label} 
+              title={tab.description}
+              placement="top"
+              arrow
+            >
               <Tab
                 icon={React.cloneElement(tab.icon, {
                   sx: {
-                    fontSize: isMobile ? 20 : 32, // Slightly smaller icons
-                    color: "white",
+                    fontSize: isMobile ? 28 : 36, // Larger icons
+                    mb: 0.5,
+                    color: selectedTab === index ? "#FFD700" : "white",
                   },
                 })}
                 label={isMobile ? "" : tab.label}
                 sx={{
                   fontSize: isMobile ? 10 : 14,
-                  minHeight: isMobile ? 48 : 64,
+                  minHeight: isMobile ? 56 : 70,
                   padding: isMobile ? 0.5 : 1,
                   transition: "color 0.3s",
                   "&:hover": {
