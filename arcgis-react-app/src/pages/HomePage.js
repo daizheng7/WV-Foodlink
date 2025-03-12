@@ -201,9 +201,6 @@ const HomePage = () => {
           <Partners />
         </Container>
       </Box>
-
-      {/* Footer Section - Full width */}
-      <Footer />
     </Box>
   );
 };

@@ -8,6 +8,7 @@ import About from "./pages/About";
 import County from "./pages/County";
 import CharitiesPage from "./pages/Charities";
 import FoodPage from "./pages/Food";
+import Footer from "./components/Footer";
 const App = () => {
   return (
     <Router>
@@ -26,6 +27,7 @@ const App = () => {
           <Route path="/food" element={<FoodPage />} />
         </Routes>
       </Box>
+      <Footer />
     </Router>
   );
 };
