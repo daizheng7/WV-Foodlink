@@ -9,6 +9,7 @@ import NourishingNetworks from "../components/NourishingNetworks";
 import Partners from "../components/Partners";
 import Footer from "../components/Footer";
 import FoodRetailer from "../components/FoodRetailer";
+import CountyReport from "../components/CountySummary";
 
 const HomePage = () => {
   const theme = useTheme();
@@ -156,6 +157,12 @@ const HomePage = () => {
               d="M0,160L60,154.7C120,149,240,139,360,149.3C480,160,600,192,720,208C840,224,960,224,1080,224C1200,224,1320,224,1380,218.7L1440,213V320H1380C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320H0Z"
             />
           </svg>
+        </Box>
+ {/* Food Landscape Section */}
+ <Box
+          
+        >
+          <CountyReport />
         </Box>
 
         {/* Interactive Wheel Section */}
