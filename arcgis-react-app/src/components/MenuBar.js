@@ -12,7 +12,9 @@ import {
   ListItemIcon,
   ListItemText,
   Menu,
-  MenuItem
+  MenuItem,
+  Collapse,
+  Divider
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -24,6 +26,7 @@ import {
   Book,
   LocationCity,
   ExpandMore,
+  ExpandLess,
   ZoomIn
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -32,12 +35,15 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const MenuBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState(null); // For dropdown menu
+  const [anchorEl, setAnchorEl] = useState(null); // For desktop dropdown menu
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false); // For mobile submenu
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const toggleDrawer = (open) => () => {
     setDrawerOpen(open);
+    // Close any open dropdowns when closing drawer
+    if (!open) setMobileDropdownOpen(false);
   };
 
   const handleMenuOpen = (event) => {
@@ -48,11 +54,15 @@ const MenuBar = () => {
     setAnchorEl(null);
   };
 
+  const toggleMobileDropdown = () => {
+    setMobileDropdownOpen(!mobileDropdownOpen);
+  };
+
   const menuItems = [
     { label: "Home", path: "/", icon: <Home /> },
     {
       label: "Find",
-      icon: <ZoomIn />, // 🔍 Zoom icon for "Find"
+      icon: <ZoomIn />,
       dropdown: [
         { label: "Food", path: "/food" },
         { label: "Assistance", path: "/assistance" },
@@ -67,59 +77,89 @@ const MenuBar = () => {
     { label: "County", path: "/county", icon: <LocationCity /> }
   ];
 
+  // Make this component more accessible by exposing labels in a screen reader friendly way
+  const handleMenuItemKeyDown = (event, callback) => {
+    if (event.key === "Enter" || event.key === " ") {
+      callback();
+    }
+  };
+
   return (
-    <AppBar position="fixed" sx={{ bgcolor: "#8b0000", padding: 1 }}>
-      <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
+    <AppBar position="fixed" sx={{ bgcolor: "#8b0000" }}>
+      <Toolbar sx={{ justifyContent: "space-between", alignItems: "center", py: { xs: 1, sm: 1.5 } }}>
         {/* Foodlink Logo */}
-        <Box>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
             src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
             alt="Foodlink Logo"
-            style={{ height: 40 }}
+            style={{ height: isMobile ? 32 : 40 }}
           />
         </Box>
 
         {isMobile ? (
           <>
             {/* Mobile Menu Button */}
-            <IconButton edge="end" color="inherit" onClick={toggleDrawer(true)}>
-              <MenuIcon />
+            <IconButton 
+              edge="end" 
+              color="inherit" 
+              onClick={toggleDrawer(true)}
+              aria-label="Open navigation menu"
+              sx={{ padding: 1 }}
+            >
+              <MenuIcon fontSize="large" />
             </IconButton>
 
-            {/* Mobile Drawer */}
+            {/* Mobile Drawer - Full Height */}
             <Drawer
               anchor="right"
               open={drawerOpen}
               onClose={toggleDrawer(false)}
-              sx={{ "& .MuiDrawer-paper": { width: 250 } }} // Adjusted drawer width
+              sx={{ 
+                "& .MuiDrawer-paper": { 
+                  width: "80%", 
+                  maxWidth: 300,
+                  height: "100%"
+                } 
+              }}
             >
-              <List>
+              <Box sx={{ p: 2, bgcolor: "#8b0000", color: "white" }}>
+                <img
+                  src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
+                  alt="Foodlink Logo"
+                  style={{ height: 40 }}
+                />
+              </Box>
+              <Divider />
+              <List sx={{ pt: 0 }}>
                 {menuItems.map((item, index) =>
                   item.dropdown ? (
                     <React.Fragment key={index}>
-                      <ListItemButton onClick={handleMenuOpen}>
+                      <ListItemButton 
+                        onClick={toggleMobileDropdown}
+                        aria-expanded={mobileDropdownOpen}
+                        aria-label={`${item.label} menu`}
+                        onKeyDown={(e) => handleMenuItemKeyDown(e, toggleMobileDropdown)}
+                      >
                         <ListItemIcon>{item.icon}</ListItemIcon>
                         <ListItemText primary={item.label} />
-                        <ExpandMore />
+                        {mobileDropdownOpen ? <ExpandLess /> : <ExpandMore />}
                       </ListItemButton>
-                      <Menu
-                        anchorEl={anchorEl}
-                        open={Boolean(anchorEl)}
-                        onClose={handleMenuClose}
-                        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                        transformOrigin={{ vertical: "top", horizontal: "right" }}
-                      >
-                        {item.dropdown.map((subItem, subIndex) => (
-                          <MenuItem
-                            key={subIndex}
-                            component="a"
-                            href={subItem.path}
-                            target={subItem.path.startsWith("http") ? "_blank" : "_self"}
-                          >
-                            {subItem.label}
-                          </MenuItem>
-                        ))}
-                      </Menu>
+                      <Collapse in={mobileDropdownOpen} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                          {item.dropdown.map((subItem, subIndex) => (
+                            <ListItemButton
+                              key={subIndex}
+                              component="a"
+                              href={subItem.path}
+                              target={subItem.path.startsWith("http") ? "_blank" : "_self"}
+                              sx={{ pl: 4 }}
+                              onClick={toggleDrawer(false)}
+                            >
+                              <ListItemText primary={subItem.label} />
+                            </ListItemButton>
+                          ))}
+                        </List>
+                      </Collapse>
                     </React.Fragment>
                   ) : (
                     <ListItemButton
@@ -127,8 +167,8 @@ const MenuBar = () => {
                       href={item.path}
                       key={index}
                       onClick={toggleDrawer(false)}
-                      sx={{ display: "flex", alignItems: "center", gap: 1, padding: "12px 16px" }}
                       target={item.path.startsWith("http") ? "_blank" : "_self"}
+                      sx={{ py: 1.5 }}
                     >
                       <ListItemIcon>{item.icon}</ListItemIcon>
                       <ListItemText primary={item.label} />
@@ -140,15 +180,17 @@ const MenuBar = () => {
           </>
         ) : (
           // Desktop Menu
-          <Box sx={{ display: "flex", gap: 2 }}>
+          <Box sx={{ display: "flex", gap: 1 }}>
             {menuItems.map((item, index) =>
               item.dropdown ? (
                 <React.Fragment key={index}>
                   <Button
                     color="inherit"
-                    startIcon={item.icon} // Zoom icon next to "Find"
+                    startIcon={item.icon}
                     endIcon={<ExpandMore />}
                     onClick={handleMenuOpen}
+                    aria-haspopup="true"
+                    aria-expanded={Boolean(anchorEl)}
                     sx={{ textTransform: "none", fontSize: "16px" }}
                   >
                     {item.label}
@@ -157,6 +199,9 @@ const MenuBar = () => {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
+                    MenuListProps={{
+                      'aria-labelledby': 'dropdown-button',
+                    }}
                     anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                     transformOrigin={{ vertical: "top", horizontal: "left" }}
                   >
@@ -166,6 +211,7 @@ const MenuBar = () => {
                         component="a"
                         href={subItem.path}
                         target={subItem.path.startsWith("http") ? "_blank" : "_self"}
+                        onClick={handleMenuClose}
                       >
                         {subItem.label}
                       </MenuItem>
@@ -179,8 +225,12 @@ const MenuBar = () => {
                   href={item.path}
                   color="inherit"
                   startIcon={item.icon}
-                  sx={{ textTransform: "none", fontSize: "16px" }}
                   target={item.path.startsWith("http") ? "_blank" : "_self"}
+                  sx={{ 
+                    textTransform: "none", 
+                    fontSize: "16px",
+                    whiteSpace: "nowrap"
+                  }}
                 >
                   {item.label}
                 </Button>
