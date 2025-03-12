@@ -23,10 +23,11 @@ import {
   DialogActions,
 } from "@mui/material";
 import MyLocationIcon from "@mui/icons-material/MyLocation";
-import EmojiFoodBeverageIcon from "@mui/icons-material/EmojiFoodBeverage";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import StorefrontIcon from "@mui/icons-material/Storefront";
+import HomeRepairServiceIcon from "@mui/icons-material/HomeRepairService";
+import ElderlyIcon from "@mui/icons-material/Elderly";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
-import BackpackIcon from "@mui/icons-material/Backpack";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import DirectionsIcon from "@mui/icons-material/Directions";
 import NearMeIcon from "@mui/icons-material/NearMe";
@@ -35,13 +36,11 @@ import CloseIcon from "@mui/icons-material/Close";
 // Dynamically load ArcGIS modules
 const loadArcGISModules = () => {
   return new Promise((resolve, reject) => {
-    // Load ArcGIS CSS
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://js.arcgis.com/4.26/esri/themes/light/main.css';
     document.head.appendChild(link);
 
-    // Load ArcGIS JS API
     const script = document.createElement('script');
     script.src = 'https://js.arcgis.com/4.26/';
     script.onload = () => {
@@ -87,46 +86,52 @@ const loadArcGISModules = () => {
   });
 };
 
-// Map of layer IDs to category names
+// Layer portal item IDs and categories
 const LAYER_ID_TO_CATEGORY = {
-  "CharitableFoodPrograms": "Charitable Food Programs",
-  "CongregateMealProgram": "Congregate Meal Program",
-  "BackpackProgram": "Backpack Program",
-  "FoodPantry": "Food Pantry"
+  "DHHROffices": "DHHR Offices",
+  "WICOffices": "WIC Offices",
+  "FamilyResourceNetwork": "Family Resource Network",
+  "FamilySupportCenters": "Family Support Centers",
+  "SeniorServices": "Senior Services"
 };
 
-// Layer portal item IDs
 const LAYER_PORTAL_ITEMS = {
-  "CharitableFoodPrograms": "d16bf58fe37747849a8536c7870c8d80",
-  "CongregateMealProgram": "82a68c3787dc4efaacdf98e00328ebed",
-  "BackpackProgram": "bf72aea00c1445cca1356cdcee16aa8a",
-  "FoodPantry": "b93e8c7152204bfeac14dc9964bb37df"
+  "DHHROffices": "6cabc6993a8f44f9aadd1d884cf9cf84",
+  "WICOffices": "37ec841dae7e46278d111f26a98b83cb",
+  "FamilyResourceNetwork": "fe5b84fd9977470ea0a56be091175356",
+  "FamilySupportCenters": "37fdc5c991f2443e9e30afc80745d00e",
+  "SeniorServices": "548531449ba2479aba6da213908e965f"
 };
 
 const categoryStyles = {
-  "Charitable Food Programs": {
-    color: "#4285F4",
-    icon: <EmojiFoodBeverageIcon />,
-    description: "Programs providing food assistance to those in need",
+  "DHHR Offices": {
+    color: "#007bff",
+    icon: <LocalHospitalIcon />,
+    description: "Department of Health and Human Resources service locations"
   },
-  "Congregate Meal Program": {
-    color: "#0F9D58",
+  "WIC Offices": {
+    color: "#28a745",
+    icon: <StorefrontIcon />,
+    description: "Women, Infants, and Children (WIC) program offices"
+  },
+  "Family Resource Network": {
+    color: "#ffc107",
+    icon: <HomeRepairServiceIcon />,
+    description: "Community support and resource centers"
+  },
+  "Family Support Centers": {
+    color: "#ff5722",
     icon: <RestaurantIcon />,
-    description: "Community meal services for groups of people",
+    description: "Centers providing family support services"
   },
-  "Backpack Program": {
-    color: "#F4B400",
-    icon: <BackpackIcon />,
-    description: "Programs sending food home with children for weekends/holidays",
-  },
-  "Food Pantry": {
-    color: "#DB4437",
-    icon: <LocalDiningIcon />,
-    description: "Locations distributing groceries to individuals and families",
-  },
+  "Senior Services": {
+    color: "#795548",
+    icon: <ElderlyIcon />,
+    description: "Services and support for senior citizens"
+  }
 };
 
-const Charities = () => {
+const AssistanceMap = () => {
   const mapDiv = useRef(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -138,7 +143,7 @@ const Charities = () => {
   const [nearbyResults, setNearbyResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
-  const [selectedCharity, setSelectedCharity] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [featureLayers, setFeatureLayers] = useState({});
@@ -153,7 +158,7 @@ const Charities = () => {
         const modules = await loadArcGISModules();
         if (isMounted) {
           setArcgis(modules);
-          
+       
         }
       } catch (error) {
         console.error("Error loading ArcGIS modules:", error);
@@ -276,8 +281,7 @@ const Charities = () => {
       });
       mapView.ui.add(locateWidget, "top-left");
       
-      // Add search widget
-     
+      
       
       // Add basemap toggle widget
       const basemapToggle = new arcgis.BasemapToggle({
@@ -286,6 +290,8 @@ const Charities = () => {
       });
       mapView.ui.add(basemapToggle, "bottom-left");
       
+    
+  
       
       
       
@@ -299,7 +305,7 @@ const Charities = () => {
             longitude
           });
           
-          findNearbyCharities({
+          findNearbyLocations({
             longitude,
             latitude
           });
@@ -317,7 +323,7 @@ const Charities = () => {
         } else if (event.action.id === "info") {
           const attributes = mapView.popup.selectedFeature?.attributes;
           if (attributes) {
-            setSelectedCharity({
+            setSelectedLocation({
               name: attributes.SiteName || "Unknown",
               address: attributes.Address1 || "No address available",
               hours: attributes.Hours_of_Operation || "Not specified",
@@ -363,7 +369,7 @@ const Charities = () => {
       // Make popup explicitly dockable
       mapView.popup.dockOptions.buttonEnabled = true;
       mapView.popup.dockEnabled = true;
-
+      
     });
     
     setView(mapView);
@@ -437,8 +443,8 @@ const Charities = () => {
         // Add user location marker
         addUserLocationGraphic(longitude, latitude);
         
-        // Find nearby charities
-        findNearbyCharities({
+        // Find nearby locations
+        findNearbyLocations({
           longitude,
           latitude
         });
@@ -507,56 +513,107 @@ const Charities = () => {
   
   // Generate circle coordinates for buffer
   const generateCircle = (lon, lat, radiusInKm, pointCount = 64) => {
-    const earthRadius = 6378.137; // Earth's radius in km
+    const earthRadius = 6371; // Earth's radius in kilometers
     const points = [];
+    
+    // Convert center coordinates to radians
+    const centerLatRad = lat * Math.PI / 180;
+    const centerLonRad = lon * Math.PI / 180;
+    
+    // Convert radius to angular distance
+    const angularDistance = radiusInKm / earthRadius;
     
     for (let i = 0; i < pointCount; i++) {
       const angle = (i * 360) / pointCount;
-      const dx = radiusInKm / (earthRadius * Math.cos(Math.PI * lat / 180)) * Math.cos(angle * Math.PI / 180);
-      const dy = radiusInKm / earthRadius * Math.sin(angle * Math.PI / 180);
-      points.push([lon + dx * 180 / Math.PI, lat + dy * 180 / Math.PI]);
+      const bearingRad = angle * Math.PI / 180;
+      
+      // Calculate destination point using Haversine formula
+      const destLatRad = Math.asin(
+        Math.sin(centerLatRad) * Math.cos(angularDistance) + 
+        Math.cos(centerLatRad) * Math.sin(angularDistance) * Math.cos(bearingRad)
+      );
+      
+      const destLonRad = centerLonRad + Math.atan2(
+        Math.sin(bearingRad) * Math.sin(angularDistance) * Math.cos(centerLatRad),
+        Math.cos(angularDistance) - Math.sin(centerLatRad) * Math.sin(destLatRad)
+      );
+      
+      // Convert back to degrees
+      const destLat = destLatRad * 180 / Math.PI;
+      const destLon = destLonRad * 180 / Math.PI;
+      
+      points.push([destLon, destLat]);
     }
     
-    // Close the ring
+    // Close the polygon
     points.push(points[0]);
     
     return points;
   };
   
-  // Find nearby charities
-  const findNearbyCharities = async (location) => {
+  const findNearbyLocations = async (location) => {
     if (!arcgis || !view || !location || Object.keys(featureLayers).length === 0) return;
     
     setLoading(true);
     
     try {
+      // Create a polygon geometry for the search area
+      const bufferGeometry = {
+        type: "polygon",
+        rings: generateCircle(location.longitude, location.latitude, 10000000) // 10,000 km radius
+      };
+  
       const results = await Promise.all(
         Object.entries(featureLayers).map(async ([id, layer]) => {
-          const query = layer.createQuery();
-          query.geometry = {
-            type: "point",
-            longitude: location.longitude,
-            latitude: location.latitude,
-          };
-          query.distance = 10000; // 10 kilometers
-          query.units = "meters";
-          query.spatialRelationship = "intersects";
-          query.outFields = ["*"];
-          query.orderByFields = ["DISTANCE"];
-          query.num = 50; // Limit results
-          
-          const result = await layer.queryFeatures(query);
-          return result.features.map(feature => ({
-            id: feature.getObjectId(),
-            name: feature.attributes.SiteName || "Unnamed Location",
-            address: feature.attributes.Address1 || "No address available",
-            phone: feature.attributes.Phone_Number || "Not available",
-            hours: feature.attributes.Hours_of_Operation || "Not specified",
-            distance: feature.attributes.DISTANCE ? 
-              (feature.attributes.DISTANCE / 1609.34).toFixed(1) : "Unknown", // Convert meters to miles
-            category: id,
-            feature: feature
-          }));
+          try {
+            const query = layer.createQuery();
+            
+            // Use spatial intersection with the large buffer
+            query.geometry = bufferGeometry;
+            query.spatialRelationship = "intersects";
+            query.outFields = ["*"];
+            query.num = 250; // Increased result limit
+            
+            console.log(`Querying layer: ${id}`, {
+              layerId: LAYER_PORTAL_ITEMS[id],
+              bufferGeometry: bufferGeometry
+            });
+  
+            const result = await layer.queryFeatures(query);
+            
+            console.log(`Raw results for ${id}:`, {
+              featureCount: result.features.length,
+              features: result.features.map(f => ({
+                name: f.attributes.SiteName,
+                address: f.attributes.Address1
+              }))
+            });
+  
+            return result.features.map(feature => {
+              // Calculate distance manually
+              const featureGeometry = feature.geometry;
+              const distance = calculateDistance(
+                location.latitude, 
+                location.longitude, 
+                featureGeometry.latitude, 
+                featureGeometry.longitude
+              );
+  
+              return {
+                id: feature.getObjectId(),
+                name: feature.attributes.SiteName || "Unnamed Location",
+                address: feature.attributes.Address1 || "No address available",
+                phone: feature.attributes.Phone_Number || "Not available",
+                hours: feature.attributes.Hours_of_Operation || "Not specified",
+                distance: distance.toFixed(1),
+                category: LAYER_ID_TO_CATEGORY[id],
+                feature: feature
+              };
+            });
+          } catch (layerError) {
+            console.error(`Error querying layer ${id}:`, layerError);
+            return [];
+          }
         })
       );
       
@@ -564,16 +621,29 @@ const Charities = () => {
       setNearbyResults(flatResults);
       
       if (flatResults.length > 0) {
-        showNotification(`Found ${flatResults.length} food resources within 10km of your location.`, "success");
+        showNotification(`Found ${flatResults.length} assistance resources within 10,000 km of your location.`, "success");
       } else {
-        showNotification("No food resources found nearby. Try expanding your search.", "info");
+        showNotification("No assistance resources found. Possible reasons:\n- Layer might be empty\n- Location might be outside covered area", "info");
       }
     } catch (error) {
-      console.error("Error finding nearby charities:", error);
-      showNotification("Error searching for nearby food resources.", "error");
+      console.error("Unexpected error finding nearby locations:", error);
+      showNotification("Unexpected error searching for assistance resources.", "error");
     } finally {
       setLoading(false);
     }
+  };
+  
+  // Haversine formula for distance calculation
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
   };
   
   // Show notification
@@ -582,8 +652,8 @@ const Charities = () => {
     setTimeout(() => setNotification(null), 5000);
   };
   
-  // Zoom to a specific charity on the map
-  const zoomToCharity = (result) => {
+  // Zoom to a specific location on the map
+  const zoomToLocation = (result) => {
     if (!view) return;
     
     view.goTo({
@@ -748,7 +818,7 @@ const Charities = () => {
           }}
         >
           <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-            Food Resources
+            Assistance Resources
           </Typography>
           
           {/* Filters Section */}
@@ -798,75 +868,69 @@ const Charities = () => {
             
             {nearbyResults.length === 0 && userLocation && (
               <Alert severity="info" sx={{ mb: 2 }}>
-                No food resources found within 10km. Try adjusting your filters or location.
+                No assistance resources found within 10km. Try adjusting your filters or location.
               </Alert>
             )}
             
             {!userLocation && (
               <Alert severity="info" sx={{ mb: 2 }}>
-                Click "Find Near Me" to locate food resources in your area.
+                Click "Find Near Me" to locate assistance resources in your area.
               </Alert>
             )}
             
             <List>
               {nearbyResults
-                .filter(result => {
-                  const category = LAYER_ID_TO_CATEGORY[result.category];
-                  return activeCategories.includes(category);
-                })
+                .filter(result => activeCategories.includes(result.category))
                 .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-                .map((result, index) => {
-                  const category = LAYER_ID_TO_CATEGORY[result.category];
-                  return (
-                    <ListItem 
-                      key={`${result.id}-${index}`}
-                      button
-                      onClick={() => zoomToCharity(result)}
-                      sx={{ 
-                        mb: 1, 
-                        borderRadius: 1,
-                        border: "1px solid #eee",
-                        "&:hover": { backgroundColor: "#f5f5f5" }
-                      }}
-                    >
-                      <ListItemIcon>
-                        <Box
-                          sx={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: "50%",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            color: "white",
-                            backgroundColor: categoryStyles[category]?.color || "#999"
-                          }}
-                        >
-                          {categoryStyles[category]?.icon}
-                        </Box>
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={result.name}
-                        secondary={
-                          <>
-                            <Typography variant="body2" component="span" sx={{ display: "block" }}>
-                              {result.address}
-                            </Typography>
-                            <Typography variant="body2" component="span" sx={{ display: "block" }}>
-                              {result.hours}
-                            </Typography>
-                            <Chip 
-                              size="small" 
-                              label={`${result.distance} miles`} 
-                              icon={<NearMeIcon fontSize="small" />}
-                              sx={{ mt: 1, fontSize: "0.75rem" }}
-                            />
-                          </>
-                        }
-                      />
-                    </ListItem>
-                  );
-                })
+                .map((result, index) => (
+                  <ListItem 
+                    key={`${result.id}-${index}`}
+                    button
+                    onClick={() => zoomToLocation(result)}
+                    sx={{ 
+                      mb: 1, 
+                      borderRadius: 1,
+                      border: "1px solid #eee",
+                      "&:hover": { backgroundColor: "#f5f5f5" }
+                    }}
+                  >
+                    <ListItemIcon>
+                      <Box
+                        sx={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: "50%",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          color: "white",
+                          backgroundColor: categoryStyles[result.category]?.color || "#999"
+                        }}
+                      >
+                        {categoryStyles[result.category]?.icon}
+                      </Box>
+                    </ListItemIcon>
+                    <ListItemText 
+                      primary={result.name}
+                      secondary={
+                        <>
+                          <Typography variant="body2" component="span" sx={{ display: "block" }}>
+                            {result.address}
+                          </Typography>
+                          <Typography variant="body2" component="span" sx={{ display: "block" }}>
+                            {result.hours}
+                          </Typography>
+                          <Chip 
+                            size="small" 
+                            label={`${result.distance} miles`} 
+                            icon={<NearMeIcon fontSize="small" />}
+                            sx={{ mt: 1, fontSize: "0.75rem" }}
+                          />
+                        </>
+                      }
+                    />
+                  </ListItem>
+                ))
               }
             </List>
           </Box>
@@ -893,7 +957,7 @@ const Charities = () => {
         >
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
             <Typography variant="h6" component="h2">
-              Food Resources
+              Assistance Resources
             </Typography>
             
             <IconButton onClick={toggleMobileFilters}>
@@ -942,8 +1006,7 @@ const Charities = () => {
             <Typography variant="subtitle1" gutterBottom>
               {nearbyResults.length > 0 
                 ? `${nearbyResults.filter(result => {
-                    const category = LAYER_ID_TO_CATEGORY[result.category];
-                    return activeCategories.includes(category);
+                    return activeCategories.includes(result.category);
                   }).length} resources found`
                 : "No results"
               }
@@ -954,69 +1017,65 @@ const Charities = () => {
               <List sx={{ maxHeight: "calc(100vh - 300px)", overflowY: "auto" }}>
                 {nearbyResults
                   .filter(result => {
-                    const category = LAYER_ID_TO_CATEGORY[result.category];
-                    return activeCategories.includes(category);
+                    return activeCategories.includes(result.category);
                   })
                   .sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance))
-                  .map((result, index) => {
-                    const category = LAYER_ID_TO_CATEGORY[result.category];
-                    return (
-                      <ListItem 
-                        key={`${result.id}-${index}`}
-                        button
-                        onClick={() => {
-                          zoomToCharity(result);
-                          setMobileFiltersOpen(false);
-                        }}
-                        sx={{ 
-                          mb: 1, 
-                          borderRadius: 1,
-                          border: "1px solid #eee",
-                          "&:hover": { backgroundColor: "#f5f5f5" }
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Box
-                            sx={{
-                              width: 40,
-                              height: 40,
-                              borderRadius: "50%",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              color: "white",
-                              backgroundColor: categoryStyles[category]?.color || "#999"
-                            }}
-                          >
-                            {categoryStyles[category]?.icon}
-                          </Box>
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={result.name}
-                          secondary={
-                            <>
-                              <Typography variant="body2" component="span" sx={{ display: "block" }}>
-                                {result.address}
-                              </Typography>
-                              <Chip 
-                                size="small" 
-                                label={`${result.distance} miles`} 
-                                icon={<NearMeIcon fontSize="small" />}
-                                sx={{ mt: 1, fontSize: "0.75rem" }}
-                              />
-                            </>
-                          }
-                        />
-                      </ListItem>
-                    );
-                  })
+                  .map((result, index) => (
+                    <ListItem 
+                      key={`${result.id}-${index}`}
+                      button
+                      onClick={() => {
+                        zoomToLocation(result);
+                        setMobileFiltersOpen(false);
+                      }}
+                      sx={{ 
+                        mb: 1, 
+                        borderRadius: 1,
+                        border: "1px solid #eee",
+                        "&:hover": { backgroundColor: "#f5f5f5" }
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Box
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            borderRadius: "50%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            color: "white",
+                            backgroundColor: categoryStyles[result.category]?.color || "#999"
+                          }}
+                        >
+                          {categoryStyles[result.category]?.icon}
+                        </Box>
+                      </ListItemIcon>
+                      <ListItemText 
+                        primary={result.name}
+                        secondary={
+                          <>
+                            <Typography variant="body2" component="span" sx={{ display: "block" }}>
+                              {result.address}
+                            </Typography>
+                            <Chip 
+                              size="small" 
+                              label={`${result.distance} miles`} 
+                              icon={<NearMeIcon fontSize="small" />}
+                              sx={{ mt: 1, fontSize: "0.75rem" }}
+                            />
+                          </>
+                        }
+                      />
+                    </ListItem>
+                  ))
                 }
               </List>
             )}
             
             {!userLocation && (
               <Alert severity="info" sx={{ mt: 2 }}>
-                Click "Find Near Me" to locate food resources in your area.
+                Click "Find Near Me" to locate assistance resources in your area.
               </Alert>
             )}
           </Box>
@@ -1030,11 +1089,11 @@ const Charities = () => {
         maxWidth="sm"
         fullWidth
       >
-        {selectedCharity && (
+        {selectedLocation && (
           <>
             <DialogTitle>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <Typography variant="h6">{selectedCharity.name}</Typography>
+                <Typography variant="h6">{selectedLocation.name}</Typography>
                 <IconButton onClick={() => setDetailsDialogOpen(false)}>
                   <CloseIcon />
                 </IconButton>
@@ -1042,45 +1101,45 @@ const Charities = () => {
             </DialogTitle>
             <DialogContent dividers>
               <Chip 
-                icon={categoryStyles[LAYER_ID_TO_CATEGORY[selectedCharity.type]]?.icon}
-                label={LAYER_ID_TO_CATEGORY[selectedCharity.type]}
+                icon={categoryStyles[selectedLocation.type]?.icon}
+                label={selectedLocation.type}
                 sx={{ 
                   mb: 2, 
-                  backgroundColor: categoryStyles[LAYER_ID_TO_CATEGORY[selectedCharity.type]]?.color,
+                  backgroundColor: categoryStyles[selectedLocation.type]?.color,
                   color: "#fff"
                 }}
               />
               
               <Typography variant="body1" gutterBottom>
-                <strong>Address:</strong> {selectedCharity.address}
+                <strong>Address:</strong> {selectedLocation.address}
               </Typography>
               
               <Typography variant="body1" gutterBottom>
-                <strong>Hours:</strong> {selectedCharity.hours}
+                <strong>Hours:</strong> {selectedLocation.hours}
               </Typography>
               
               <Typography variant="body1" gutterBottom>
-                <strong>Phone:</strong> {selectedCharity.phone}
+                <strong>Phone:</strong> {selectedLocation.phone}
               </Typography>
               
-              {selectedCharity.website && (
+              {selectedLocation.website && (
                 <Typography variant="body1" gutterBottom>
                   <strong>Website:</strong>{" "}
-                  <a href={selectedCharity.website} target="_blank" rel="noopener noreferrer">
-                    {selectedCharity.website}
+                  <a href={selectedLocation.website} target="_blank" rel="noopener noreferrer">
+                    {selectedLocation.website}
                   </a>
                 </Typography>
               )}
               
               <Typography variant="body1" gutterBottom>
-                <strong>Services:</strong> {selectedCharity.services}
+                <strong>Services:</strong> {selectedLocation.services}
               </Typography>
             </DialogContent>
             <DialogActions>
               <Button
                 variant="contained"
                 startIcon={<DirectionsIcon />}
-                onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(selectedCharity.address)}`, "_blank")}
+                onClick={() => window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(selectedLocation.address)}`, "_blank")}
                 sx={{ backgroundColor: "#0F9D58", "&:hover": { backgroundColor: "#0B8043" } }}
               >
                 Get Directions
@@ -1100,4 +1159,4 @@ const Charities = () => {
   );
 };
 
-export default Charities;
+export default AssistanceMap;

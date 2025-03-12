@@ -54,8 +54,8 @@ const MenuBar = () => {
       label: "Find",
       icon: <ZoomIn />, // 🔍 Zoom icon for "Find"
       dropdown: [
-        { label: "Food", path: "https://foodlink-map.vercel.app/" },
-        { label: "Assistance", path: "/food" },
+        { label: "Food", path: "/food" },
+        { label: "Assistance", path: "/assistance" },
         { label: "Charities", path: "/charities" },
         { label: "Senior Services", path: "/senior-services" }
       ]

@@ -9,7 +9,7 @@ import {
   Grid,
   Paper,
   Avatar,
-  Divider,
+  Divider,TableContainer,
   Table,
   TableBody,
   TableCell,
@@ -28,6 +28,8 @@ import WorkIcon from "@mui/icons-material/Work";
 import BackpackIcon from "@mui/icons-material/Backpack";
 import FoodBankIcon from "@mui/icons-material/FoodBank";
 import { ResponsiveBar } from "@nivo/bar";
+
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 const layersConfig = [
   {
@@ -325,99 +327,177 @@ const CountyReport = () => {
           
           
 
-          <Box sx={{ marginBottom: 1 }}>
-            <Typography variant="h5" gutterBottom>
-              Summary
-            </Typography>
-            {renderLayerSummary()}
-          </Box>
+          {/* Import required components and utilities */}
+{/* Add these to your imports:
+import { 
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
+  Paper, Typography, Box, Grid, Avatar, alpha
+} from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'; // Use this instead of NoDataIcon
+*/}
 
-          <Grid container spacing={2}>
-            {Object.entries(layerData).map(([title, features]) => (
-              <Grid item xs={12} key={title}>
-                <Paper
-                  sx={{
-                    padding: 2,
-                    borderRadius: 2,
-                    boxShadow: 3,
-                    marginBottom: 2,
-                  }}
-                  elevation={2}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: 2,
-                    }}
-                  >
-                    <Avatar
-                      sx={{ marginRight: 2, backgroundColor: "primary.main" }}
+<Box sx={{ marginBottom: 3 }}>
+  <Typography variant="h4" gutterBottom fontWeight="500" color="primary.dark">
+    Summary
+  </Typography>
+  <Paper 
+    elevation={1} 
+    sx={{ 
+      padding: 3, 
+      borderRadius: 3, 
+      background: 'linear-gradient(to right, rgba(255,255,255,0.95), rgba(245,247,250,0.95))',
+      marginBottom: 4
+    }}
+  >
+    {renderLayerSummary()}
+  </Paper>
+</Box>
+
+<Grid container spacing={3}>
+  {Object.entries(layerData).map(([title, features]) => (
+    <Grid item xs={12} key={title}>
+      <Paper
+        sx={{
+          padding: 3,
+          borderRadius: 3,
+          boxShadow: '0 6px 20px rgba(0, 0, 0, 0.05)',
+          marginBottom: 3,
+          transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: '0 10px 25px rgba(0, 0, 0, 0.08)',
+          },
+          overflow: 'hidden'
+        }}
+        elevation={0}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: 2.5,
+            borderBottom: '1px solid',
+            borderColor: 'divider',
+            paddingBottom: 2
+          }}
+        >
+          <Avatar
+            sx={{ 
+              marginRight: 2, 
+              backgroundColor: 'primary.main',
+              width: 48,
+              height: 48,
+              boxShadow: '0 3px 10px rgba(0, 0, 0, 0.1)'
+            }}
+          >
+            {layersConfig.find((layer) => layer.title === title)?.icon}
+          </Avatar>
+          <Typography
+            variant="h5"
+            sx={{ 
+              fontWeight: 600, 
+              flexGrow: 1,
+              color: 'text.primary'
+            }}
+          >
+            {title}
+          </Typography>
+        </Box>
+        
+        {features && features.length > 0 ? (
+          <>
+            <TableContainer sx={{ maxHeight: 400, overflowY: 'auto', marginBottom: 2 }}>
+              <Table size="small" sx={{ wordBreak: "break-word" }}>
+                <TableHead>
+                  <TableRow sx={{ backgroundColor: 'background.paper' }}>
+                    {Object.keys(features[0]).map((key) => (
+                      <TableCell
+                        key={key}
+                        sx={{ 
+                          fontWeight: 600,
+                          color: 'primary.dark',
+                          backgroundColor: 'background.paper',
+                          position: 'sticky',
+                          top: 0,
+                          zIndex: 1,
+                          padding: '12px'
+                        }}
+                      >
+                        {key}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {features.map((feature, index) => (
+                    <TableRow 
+                      key={index}
+                      sx={{
+                        '&:nth-of-type(odd)': {
+                          backgroundColor: 'rgba(245, 245, 245, 0.2)',
+                        },
+                        '&:hover': {
+                          backgroundColor: 'rgba(227, 242, 253, 0.3)',
+                        },
+                        transition: 'background-color 0.2s'
+                      }}
                     >
-                      {
-                        layersConfig.find(
-                          (layer) => layer.title === title
-                        )?.icon
-                      }
-                    </Avatar>
-                    <Typography
-                      variant="h6"
-                      sx={{ fontWeight: "bold", flexGrow: 1 }}
-                    >
-                      {title}
-                    </Typography>
-                  </Box>
-                  {features && features.length > 0 ? (
-                    <>
-                      <Table size="small" sx={{ wordBreak: "break-word" }}>
-                        <TableHead>
-                          <TableRow>
-                            {Object.keys(features[0]).map((key) => (
-                              <TableCell
-                                key={key}
-                                sx={{ fontWeight: "bold" }}
-                              >
-                                {key}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {features.map((feature, index) => (
-                            <TableRow key={index}>
-                              {Object.entries(feature).map(
-                                ([key, value]) => (
-                                  <TableCell
-                                    key={key}
-                                    sx={{
-                                      padding: "4px 8px",
-                                      fontSize: "0.875rem",
-                                    }}
-                                  >
-                                    {value}
-                                  </TableCell>
-                                )
-                              )}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                      {title === "Food Resources" &&
-                        renderFoodResourcesChart(features)}
-                    </>
-                  ) : (
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      align="center"
-                    >
-                      No data available.
-                    </Typography>
-                  )}
-                </Paper>
-              </Grid>
-            ))}
-          </Grid>
+                      {Object.entries(feature).map(
+                        ([key, value]) => (
+                          <TableCell
+                            key={key}
+                            sx={{
+                              padding: '10px 12px',
+                              fontSize: '0.9rem',
+                              borderBottom: '1px solid',
+                              borderColor: 'divider'
+                            }}
+                          >
+                            {value}
+                          </TableCell>
+                        )
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            
+            {title === "Food Resources" && (
+              <Box sx={{ mt: 3, mb: 1 }}>
+                <Typography variant="subtitle1" fontWeight={500} color="text.secondary" gutterBottom>
+                  Food Resources Distribution
+                </Typography>
+                <Box sx={{ height: 300, p: 1 }}>
+                  {renderFoodResourcesChart(features)}
+                </Box>
+              </Box>
+            )}
+          </>
+        ) : (
+          <Box 
+            sx={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              flexDirection: 'column',
+              padding: 4
+            }}
+          >
+            <InfoOutlinedIcon color="action" sx={{ fontSize: 60, opacity: 0.5, mb: 2 }} />
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              align="center"
+            >
+              No data available for this layer.
+            </Typography>
+          </Box>
+        )}
+      </Paper>
+    </Grid>
+  ))}
+</Grid>
         </Paper>
       )}
 

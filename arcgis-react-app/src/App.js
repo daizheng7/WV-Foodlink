@@ -3,9 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Box } from "@mui/material";
 import MenuBar from "./components/MenuBar"; // Ensure the path is correct
 import HomePage from "./pages/HomePage"; // Ensure the path is correct
-import Food from "./pages/Food"; // Ensure the path is correct
+import Assistance from "./pages/Assistance"; // Ensure the path is correct
 import About from "./pages/About";
 import County from "./pages/County";
+import CharitiesPage from "./pages/Charities";
+import FoodPage from "./pages/Food";
 const App = () => {
   return (
     <Router>
@@ -17,9 +19,11 @@ const App = () => {
         <Routes>
           {/* Define Routes */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/food" element={<Food />} />
+          <Route path="/assistance" element={<Assistance />} />
           <Route path = "/about" element = {<About />} />
           <Route path = "/county" element = {<County />} />
+          <Route path="/charities" element={<CharitiesPage />} />
+          <Route path="/food" element={<FoodPage />} />
         </Routes>
       </Box>
     </Router>
