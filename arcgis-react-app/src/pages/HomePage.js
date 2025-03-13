@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Divider, useMediaQuery, useTheme, Container } from "@mui/material";
-import MapTabs from "../components/MapTab";
+import { Box, Divider, useMediaQuery, useTheme, Container, Paper, Typography } from "@mui/material";
 import WhatWeDo from "../components/WhatWeDo";
 import IssuesSection from "../components/IssuesSection";
 import WestVirginiaFoodLandscape from "../components/WestVirginiaFoodLandscape";
 import InteractiveWheel from "../components/InteractiveWheel";
 import NourishingNetworks from "../components/NourishingNetworks";
 import Partners from "../components/Partners";
-import Footer from "../components/Footer";
 import FoodRetailer from "../components/FoodRetailer";
-import CountyReport from "../components/CountySummary";
+import CountyReport from "../components/CountyReport";
 
 const HomePage = () => {
   const theme = useTheme();
@@ -158,12 +156,29 @@ const HomePage = () => {
             />
           </svg>
         </Box>
- {/* Food Landscape Section */}
- <Box
-          
+{/* County Report Section */}
+      <Paper
+        sx={{
+          padding: getResponsiveSpacing(2, 2.5, 3),
+          marginBottom: getResponsiveSpacing(2, 3, 4),
+          borderRadius: "8px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+          backgroundColor: "#ffffff",
+        }}
+      >
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: "bold",
+            mb: 2,
+            color: "#000000",
+          }}
         >
-          <CountyReport />
-        </Box>
+          County Report
+        </Typography>
+        <Divider sx={{ mb: 2, borderColor: "#000000" }} />
+        <CountyReport />
+      </Paper>
 
         {/* Interactive Wheel Section */}
         <Box

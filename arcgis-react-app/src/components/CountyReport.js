@@ -117,8 +117,15 @@ const CountyReport = () => {
     const mapView = new MapView({
       container: mapDiv.current,
       map: map,
-      center: [-79, 39],
-      zoom: 6,
+      center: [-80.39, 39.109],
+      zoom: 7,
+      
+      constraints: {
+        snapToZoom: false,
+      },
+      ui: {
+        components: ["zoom", "compass", "attribution"]
+      }
     });
 
     const countyLayer = new FeatureLayer({
@@ -127,14 +134,38 @@ const CountyReport = () => {
         type: "simple",
         symbol: {
           type: "simple-fill",
-          color: [0, 0, 0, 0], // Transparent fill
+          color: [153, 3, 30, 0.2], // #99031e with 20% transparency
           outline: {
-            color: "black",
-            width: 1, // Thick black border
+            color: [100, 0, 20, 0.8], // Darker red outline #640014
+            width: 1.5, // Default width
           },
         },
       },
+      labelingInfo: [
+        {
+          symbol: {
+            type: "text",
+            color: "white", // White text for contrast
+            haloColor: "black", // Black outline around text
+            haloSize: 1,
+            font: {
+              size: 12,
+              weight: "bold",
+            },
+          },
+          labelExpressionInfo: {
+            expression: "$feature.NAME", // Assumes "NAME" is the field for county names
+          },
+          labelPlacement: "always-horizontal", // Keeps text readable
+        },
+      ],
+      outFields: ["*"], // Ensure all fields are available for hover effects
+      popupTemplate: {
+        title: "{NAME}", // Display county name
+      },
+      effect: "bloom(1.5, 0.5px, 0.2)", // Subtle glow effect for emphasis
     });
+    
 
     map.add(countyLayer);
 
@@ -153,7 +184,7 @@ const CountyReport = () => {
 
           mapView.goTo(
             { target: countyGeometry, zoom: 10 },
-            { duration: 2000, easing: "ease-in-out" }
+            { duration: 4000, easing: "ease-in-out" }
           );
 
           const counts = await Promise.all(
@@ -344,7 +375,6 @@ const CountyReport = () => {
           marginBottom: 4, 
           borderRadius: 3,
           boxShadow: '0 6px 20px rgba(0,0,0,0.07)',
-          background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.05)} 0%, ${alpha(theme.palette.background.default, 0.8)} 100%)`,
           border: '1px solid',
           borderColor: alpha(theme.palette.primary.main, 0.12),
         }}
@@ -361,10 +391,10 @@ const CountyReport = () => {
         >
           <Avatar 
             sx={{ 
-              backgroundColor: alpha(theme.palette.primary.main, 0.1), 
+              backgroundColor: alpha("#99031e", 0.1), // Dark red with 10% opacity
               width: 64,
               height: 64,
-              color: theme.palette.primary.main,
+              color: "#99031e", // Dark red text/icon color
             }}
           >
             <MapIcon sx={{ fontSize: 36 }} />
@@ -387,7 +417,7 @@ const CountyReport = () => {
           align="center" 
           gutterBottom
           sx={{ 
-            color: theme.palette.text.secondary,
+            color: theme.palette.text.primary,
             maxWidth: '700px',
             mx: 'auto',
             mb: 4,
@@ -399,7 +429,7 @@ const CountyReport = () => {
         {selectedCounty && (
           <Chip 
             label={`Viewing: ${selectedCounty.name} County`} 
-            color="primary" 
+            color="primary.dark" 
             variant="outlined"
             sx={{ 
               fontSize: '1rem', 
@@ -555,10 +585,28 @@ const CountyReport = () => {
                                 <TableRow>
                                   {Object.keys(features[0]).filter(key => 
                                     // Filter out some common internal fields that make tables messy
+                                    key.trim() !== "" &&
+                                    !key.startsWith(" ") &&
                                     !key.startsWith("OBJECTID") && 
                                     !key.includes("GlobalID") && 
                                     !key.includes("Shape") &&
                                     !key.includes("__") &&
+                                    !key.startsWith("SiteLat") && 
+                                    !key.startsWith("SiteLon") &&
+                                    !key.startsWith("FAX") &&
+                                    !key.startsWith("Hours") &&
+                                    !key.startsWith("Days") &&
+                                    !key.startsWith("Services") &&
+                                    !key.startsWith("x") &&
+                                    !key.startsWith("y") &&
+                                    !key.startsWith("Zip Code") &&
+                                    !key.startsWith("Latitu") &&
+                                    !key.startsWith("Long") &&
+                                    !key.startsWith("FHFB") &&
+                                    !key.startsWith("Volunteer") &&
+                                    !key.startsWith("MFB") &&
+                              
+                                    !key.startsWith("SERVICES") &&
                                     key !== "FID"
                                   ).map((key) => (
                                     <TableCell
