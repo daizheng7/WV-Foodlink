@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Typography, 
   Box, 
@@ -9,19 +9,23 @@ import {
   Button, 
   IconButton,
   Chip,
-  Tabs,
-  Tab,
   TextField,
   InputAdornment,
   Divider,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Paper,
+  Stack,
+  Pagination
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import LinkIcon from '@mui/icons-material/Link';
 import PersonIcon from '@mui/icons-material/Person';
 import BusinessIcon from '@mui/icons-material/Business';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import GroupsIcon from '@mui/icons-material/Groups';
+import CategoryIcon from '@mui/icons-material/Category';
+import WorkIcon from '@mui/icons-material/Work';
+import SchoolIcon from '@mui/icons-material/School';
 
 // SNAC Members data
 const snacMembers = [
@@ -360,52 +364,75 @@ const SNACMembers = () => {
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   
   const [searchTerm, setSearchTerm] = useState("");
-  const [tabValue, setTabValue] = useState(0);
   const [filteredMembers, setFilteredMembers] = useState(snacMembers);
+  const [page, setPage] = useState(1);
+  const [statistics, setStatistics] = useState({});
+  const rowsPerPage = 9;
   
-  // Handle tab change
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
-    filterMembers(newValue, searchTerm);
+  // Calculate statistics on component mount and when filtered members change
+  useEffect(() => {
+    calculateStatistics();
+  }, [filteredMembers]);
+  
+  // Calculate key statistics
+  const calculateStatistics = () => {
+    const categoryCount = {};
+    const organizationCount = {};
+    
+    // Count occurrences
+    snacMembers.forEach(member => {
+      categoryCount[member.category] = (categoryCount[member.category] || 0) + 1;
+      organizationCount[member.organization] = (organizationCount[member.organization] || 0) + 1;
+    });
+    
+    // Get unique counts
+    const uniqueCategories = Object.keys(categoryCount).length;
+    const uniqueOrganizations = Object.keys(organizationCount).length;
+    
+    setStatistics({
+      totalMembers: snacMembers.length,
+      uniqueCategories,
+      uniqueOrganizations,
+      categoryBreakdown: categoryCount,
+      filteredCount: filteredMembers.length
+    });
   };
   
   // Handle search change
   const handleSearchChange = (event) => {
     const term = event.target.value;
     setSearchTerm(term);
-    filterMembers(tabValue, term);
+    filterMembers(term);
+    setPage(1); // Reset to first page when search changes
   };
   
-  // Filter members based on tab and search term
-  const filterMembers = (tab, term) => {
-    let filtered = [...snacMembers];
-    
-    // First filter by tab
-    if (tab === 1) { // With links
-      filtered = filtered.filter(member => member.link !== null);
-    } else if (tab === 2) { // No links
-      filtered = filtered.filter(member => member.link === null);
+  // Filter members based on search term
+  const filterMembers = (term) => {
+    if (!term) {
+      setFilteredMembers(snacMembers);
+      return;
     }
     
-    // Then filter by search term
-    if (term) {
-      const lowerCaseTerm = term.toLowerCase();
-      filtered = filtered.filter(member => 
-        member.name.toLowerCase().includes(lowerCaseTerm) ||
-        member.title.toLowerCase().includes(lowerCaseTerm) ||
-        member.organization.toLowerCase().includes(lowerCaseTerm) ||
-        member.category.toLowerCase().includes(lowerCaseTerm)
-      );
-    }
+    const lowerCaseTerm = term.toLowerCase();
+    const filtered = snacMembers.filter(member => 
+      member.name.toLowerCase().includes(lowerCaseTerm) ||
+      member.title.toLowerCase().includes(lowerCaseTerm) ||
+      member.organization.toLowerCase().includes(lowerCaseTerm) ||
+      member.category.toLowerCase().includes(lowerCaseTerm)
+    );
     
     setFilteredMembers(filtered);
   };
   
-  // Dynamic grid sizing
-  const getGridSize = () => {
-    if (isMobile) return 12;
-    if (isTablet) return 6;
-    return 4;
+  // Handle page change
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
+  
+  // Get current page items
+  const getCurrentPageItems = () => {
+    const startIndex = (page - 1) * rowsPerPage;
+    return filteredMembers.slice(startIndex, startIndex + rowsPerPage);
   };
   
   return (
@@ -420,68 +447,114 @@ const SNACMembers = () => {
         marginBottom: 6
       }}
     >
+      {/* Header Section */}
+      <Box sx={{ mb: 5, textAlign: "center" }}>
         <Typography
-              variant="h4"
-              component="h2"
-              align="center"
-              sx={{
-                color: "#333",
-                fontWeight: "600",
-                mb: 1,
-                fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
-                position: "relative",
-                "&:after": {
-                  content: '""',
-                  position: "absolute",
-                  bottom: "-12px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: { xs: "60px", sm: "80px" },
-                  height: "3px",
-                  backgroundColor: "#99031e",
-                  borderRadius: "2px"
-                }
-              }}
-            >
-        The State Nutrition Action Council (SNAC)
-      </Typography>
-      
-        <Typography
-              variant="body1"
-              align="center"
-              sx={{
-                mt: 3,
-                mb: 4,
-                color: "#555",
-                maxWidth: "800px",
-                mx: "auto",
-                fontSize: { xs: "0.95rem", sm: "1rem" },
-                lineHeight: 1.6,
-                padding: { xs: "0 8px", sm: "0" }
-              }}
-            >
-The State Nutrition Action Council (SNAC) seeks to coordinate state level nutrition and obesity interventions by bringing together representatives from all state government agencies and nonprofit agencies that implement United States Department of Agriculture Nutrition Programs. Coordinated by the West Virginia University Extension Family Nutrition Program, SNAC meetings take place twice a year. There are currently 47 active members of this collaborative representing 26 different organizations. SNAC facilitates the implementation and monitoring of  short, medium and long-term planning processes to reach underserved communities with nutrition education and assistance programs, improve and create healthy food environments, encourage physical activity, prevent obesity and reduce food insecurity. 
-</Typography>
-      
-      {/* Search and Filter Controls */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", sm: "row" },
-          alignItems: { xs: "stretch", sm: "center" },
-          justifyContent: "space-between",
+          variant="h4"
+          component="h2"
+          align="center"
+          sx={{
+            color: "#333",
+            fontWeight: "600",
+            mb: 3,
+            fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
+            position: "relative",
+            "&:after": {
+              content: '""',
+              position: "absolute",
+              bottom: "-12px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: { xs: "60px", sm: "80px" },
+              height: "3px",
+              backgroundColor: "#99031e",
+              borderRadius: "2px"
+            }
+          }}
+        >
+          The State Nutrition Action Council (SNAC)
+        </Typography>
+        
+        <Box sx={{ 
+          maxWidth: "800px", 
+          mx: "auto",
+          mt: 5,
           mb: 3,
-          gap: 2
-        }}
-      >
+          px: { xs: 2, sm: 4 },
+          py: { xs: 2, sm: 3 },
+          backgroundColor: "#f9f9f9",
+          borderRadius: "8px",
+          border: "1px solid #eaeaea"
+        }}>
+          <Typography
+            variant="body1"
+            align="left"
+            sx={{
+              color: "#555",
+              fontSize: { xs: "0.95rem", sm: "1rem" },
+              lineHeight: 1.8,
+              textAlign: "justify"
+            }}
+          >
+            The State Nutrition Action Council (SNAC) seeks to coordinate state level nutrition and obesity interventions 
+            by bringing together representatives from all state government agencies and nonprofit agencies that implement 
+            United States Department of Agriculture Nutrition Programs. Coordinated by the West Virginia University Extension 
+            Family Nutrition Program, SNAC meetings take place twice a year.
+          </Typography>
+          
+          <Typography
+            variant="body1"
+            align="left"
+            sx={{
+              color: "#555",
+              fontSize: { xs: "0.95rem", sm: "1rem" },
+              lineHeight: 1.8,
+              mt: 2,
+              textAlign: "justify"
+            }}
+          >
+            SNAC facilitates the implementation and monitoring of short, medium and long-term planning processes to reach 
+            underserved communities with nutrition education and assistance programs, improve and create healthy food environments, 
+            encourage physical activity, prevent obesity and reduce food insecurity.
+          </Typography>
+        </Box>
+      </Box>
+      
+      {/* Statistics Cards */}
+      <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} md={4}>
+          <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
+            <GroupsIcon sx={{ fontSize: "2.5rem", color: "#003399", mb: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.totalMembers}</Typography>
+            <Typography variant="body2" color="text.secondary">Active Members</Typography>
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={4}>
+          <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
+            <WorkIcon sx={{ fontSize: "2.5rem", color: "#006633", mb: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueOrganizations}</Typography>
+            <Typography variant="body2" color="text.secondary">Organizations</Typography>
+          </Paper>
+        </Grid>
+        
+        <Grid item xs={12} sm={6} md={4}>
+          <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
+            <CategoryIcon sx={{ fontSize: "2.5rem", color: "#990000", mb: 1 }} />
+            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueCategories}</Typography>
+            <Typography variant="body2" color="text.secondary">Member Categories</Typography>
+          </Paper>
+        </Grid>
+      </Grid>
+      
+      {/* Search Control */}
+      <Box sx={{ mb: 4 }}>
         <TextField
-          placeholder="Search members..."
+          placeholder="Search members by name, title, organization, or category..."
           variant="outlined"
-          size="small"
           fullWidth
           value={searchTerm}
           onChange={handleSearchChange}
-          sx={{ maxWidth: { xs: "100%", sm: "300px" } }}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -490,36 +563,31 @@ The State Nutrition Action Council (SNAC) seeks to coordinate state level nutrit
             ),
           }}
         />
-        
-        <Box sx={{ display: "flex", alignItems: "center" }}>
-          <FilterListIcon sx={{ mr: 1, color: "#666" }} />
-          <Tabs
-            value={tabValue}
-            onChange={handleTabChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="member filter tabs"
-          >
-            <Tab label="All Members" />
-            <Tab label="With Links" />
-            <Tab label="Without Links" />
-          </Tabs>
-        </Box>
       </Box>
       
       <Divider sx={{ mb: 3 }} />
       
       {/* Results Count */}
-      <Typography 
-        variant="body2" 
-        sx={{ mb: 2, color: "#666", fontStyle: "italic" }}
-      >
-        Showing {filteredMembers.length} of {snacMembers.length} members
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
+        <Typography 
+          variant="body2" 
+          sx={{ color: "#666" }}
+        >
+          Showing {filteredMembers.length} of {snacMembers.length} members
+        </Typography>
+        
+        <Pagination 
+          count={Math.ceil(filteredMembers.length / rowsPerPage)} 
+          page={page} 
+          onChange={handlePageChange}
+          color="primary"
+          size={isMobile ? "small" : "medium"}
+        />
+      </Box>
       
-      {/* Members Grid */}
+      {/* Members Grid - Paginated */}
       <Grid container spacing={3}>
-        {filteredMembers.map((member, index) => (
+        {getCurrentPageItems().map((member, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
             <Card 
               elevation={2}
@@ -590,12 +658,23 @@ The State Nutrition Action Council (SNAC) seeks to coordinate state level nutrit
         </Box>
       )}
       
+      {/* Pagination Controls */}
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+        <Pagination 
+          count={Math.ceil(filteredMembers.length / rowsPerPage)} 
+          page={page} 
+          onChange={handlePageChange}
+          color="primary"
+          size={isMobile ? "small" : "medium"}
+        />
+      </Box>
+      
       {/* Legend */}
-      <Box sx={{ mt: 4, pt: 2, borderTop: "1px solid #eee" }}>
-        <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: "600" }}>
+      <Box sx={{ mt: 5, pt: 3, borderTop: "1px solid #eee" }}>
+        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: "600", mb: 2 }}>
           Member Categories
         </Typography>
-        <Grid container spacing={1} sx={{ mt: 1 }}>
+        <Grid container spacing={1}>
           {Object.entries(categories).map(([category, color], index) => (
             <Grid item key={index}>
               <Chip 
@@ -605,7 +684,8 @@ The State Nutrition Action Council (SNAC) seeks to coordinate state level nutrit
                   backgroundColor: `${color}22`,
                   color: color,
                   fontWeight: "500",
-                  fontSize: "0.75rem"
+                  fontSize: "0.75rem",
+                  mb: 1
                 }}
               />
             </Grid>
