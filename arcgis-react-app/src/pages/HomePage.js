@@ -15,6 +15,7 @@ const HomePage = () => {
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
 
+
   // Calculate scrollbar width on component mount to fix layout issues
   useEffect(() => {
     const scrollDiv = document.createElement("div");
@@ -43,7 +44,6 @@ const HomePage = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        minHeight: "100vh",
         width: "100%",
         maxWidth: "100vw",
         overflowX: "hidden",
@@ -156,29 +156,30 @@ const HomePage = () => {
             />
           </svg>
         </Box>
-{/* County Report Section */}
-      <Paper
-        sx={{
-          padding: getResponsiveSpacing(2, 2.5, 3),
-          marginBottom: getResponsiveSpacing(2, 3, 4),
-          borderRadius: "8px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          backgroundColor: "#ffffff",
-        }}
-      >
-        <Typography
-          variant="h5"
+
+        {/* County Report Section */}
+        <Paper
           sx={{
-            fontWeight: "bold",
-            mb: 2,
-            color: "#000000",
+            padding: getResponsiveSpacing(2, 2.5, 3),
+            marginBottom: getResponsiveSpacing(2, 3, 4),
+            borderRadius: "8px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+            backgroundColor: "#ffffff",
           }}
         >
-          County Report
-        </Typography>
-        <Divider sx={{ mb: 2, borderColor: "#000000" }} />
-        <CountyReport />
-      </Paper>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              mb: 2,
+              color: "#000000",
+            }}
+          >
+            County Report
+          </Typography>
+          <Divider sx={{ mb: 2, borderColor: "#000000" }} />
+          <CountyReport />
+        </Paper>
 
         {/* Interactive Wheel Section */}
         <Box
