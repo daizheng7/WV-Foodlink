@@ -4,10 +4,10 @@ import WhatWeDo from "../components/WhatWeDo";
 import IssuesSection from "../components/IssuesSection";
 import WestVirginiaFoodLandscape from "../components/WestVirginiaFoodLandscape";
 import InteractiveWheel from "../components/InteractiveWheel";
-import NourishingNetworks from "../components/NourishingNetworks";
-import Partners from "../components/Partners";
+import IntroModal from "../components/IntroModal";
 import FoodRetailer from "../components/FoodRetailer";
 import CountyReport from "../components/CountyReport";
+import PartnerHome from "../components/PartnerHome";
 
 const HomePage = () => {
   const theme = useTheme();
@@ -51,7 +51,7 @@ const HomePage = () => {
       }}
     >
       {/* Hero Section with FoodRetailer */}
-      <Box
+      <IntroModal /> <Box
         sx={{
           width: `calc(100vw - ${scrollbarWidth}px)`,
           height: isMobile ? "70vh" : `calc(100vh - ${scrollbarWidth}px)`,
@@ -196,23 +196,11 @@ const HomePage = () => {
             boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
           }}
         >
-          <NourishingNetworks />
+          <PartnerHome/>
         </Box>
       </Container>
 
-      {/* Partners Section - Full width */}
-      <Box
-        sx={{
-          mt: getResponsiveSpacing(3, 4, 5),
-          py: getResponsiveSpacing(3, 4, 5),
-          backgroundColor: "#f3f3f3",
-          width: `calc(100vw - ${scrollbarWidth}px)`,
-        }}
-      >
-        <Container maxWidth={false} disableGutters={true} sx={{ px: getResponsiveSpacing(1, 2, 4) }}>
-          <Partners />
-        </Container>
-      </Box>
+   
     </Box>
   );
 };
