@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Typography, Box, Grid, Button, Paper, useTheme } from "@mui/material";
 import WhatWeDo from "../components/WhatWeDo";
+import SNACMembers from "../components/SNACMembers";
+import DataPartners from "../components/DataPartners";
 
 const fundingPartners = [
   { name: "Eberly College Public Service Award", year: "2016" },
@@ -478,7 +480,10 @@ const About = () => {
         
         {/* What We Do Component */}
         <Box sx={{ width: "100%", mt: 6, px: { xs: 2, sm: 0 } }}>
-          <WhatWeDo />
+          <SNACMembers />
+        </Box>
+        <Box sx={{ width: "100%", mt: 6, px: { xs: 2, sm: 0 } }}>
+          <DataPartners />
         </Box>
       </Box>
     </Box>
