@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Box, Container, Typography, Grid, Button, useMediaQuery } from '@mui/material';
+import { Box, Container, Typography, Grid, Button, useMediaQuery, Link } from '@mui/material';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from 'framer-motion';
 import SearchIcon from '@mui/icons-material/Search';
 import LayersIcon from '@mui/icons-material/Layers';
@@ -315,21 +315,13 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               initial="hidden"
               animate="visible"
             >
-              {/* Title Section with split-text animation */}
+              {/* Logo Section */}
               <motion.div variants={itemVariants}>
-                <Typography 
-                  variant="h2" 
-                  component="h1" 
+                <Box 
                   sx={{ 
-                    fontWeight: 800,
-                    fontSize: { xs: '2.5rem', sm: '3rem', md: '3.75rem' },
-                    letterSpacing: '-0.02em',
-                    mb: 2,
                     textAlign: 'center',
-                    textShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                    mb: 3,
                     position: 'relative',
-                    display: 'inline-block',
-                    width: '100%',
                     '&::after': {
                       content: '""',
                       position: 'absolute',
@@ -343,37 +335,25 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     }
                   }}
                 >
-                  {!prefersReducedMotion ? (
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ 
-                        staggerChildren: 0.03,
-                        delayChildren: 0.2
-                      }}
-                      style={{ display: 'inline-block' }}
-                    >
-                      {"WV FOODLINK".split('').map((char, index) => (
-                        <motion.span
-                          key={index}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 80,
-                            damping: 10,
-                            delay: index * 0.03
-                          }}
-                          style={{ display: 'inline-block' }}
-                        >
-                          {char === ' ' ? '\u00A0' : char}
-                        </motion.span>
-                      ))}
-                    </motion.span>
-                  ) : (
-                    "WV FOODLINK"
-                  )}
-                </Typography>
+                  <motion.img
+                    src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
+                    alt="Foodlink Logo"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 80,
+                      damping: 10
+                    }}
+                    style={{
+                      maxWidth: '100%',
+                      height: 'auto',
+                      maxHeight: '110px',
+                      marginBottom: '8px',
+                      filter: 'drop-shadow(0px 2px 6px rgba(0,0,0,0.3))'
+                    }}
+                  />
+                </Box>
               </motion.div>
               
               <motion.div variants={itemVariants}>
@@ -391,7 +371,67 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     textAlign: 'center',
                   }}
                 >
-                  A joint project of the WVU Center for Resilient Communities and the WVU Extension Family Nutrition program.
+                  A joint project of the{' '}
+                  <Button
+                    component="a"
+                    href="https://resilientcommunities.wvu.edu/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      color: '#f8cb4c',
+                      textDecoration: 'none',
+                      fontWeight: 500,
+                      padding: '2px 4px',
+                      minWidth: 'auto',
+                      textTransform: 'none',
+                      fontSize: 'inherit',
+                      lineHeight: 'inherit',
+                      zIndex: 10001, // Higher z-index to ensure clickability
+                      '&:hover': {
+                        color: '#ffe180',
+                        textDecoration: 'underline',
+                        background: 'transparent',
+                      },
+                      '&:focus': {
+                        outline: '2px solid #ffe180',
+                        outlineOffset: '2px',
+                      }
+                    }}
+                  >
+                    WVU Center for Resilient Communities
+                  </Button>
+                  {' '}and the{' '}
+                  <Button
+                    component="a"
+                    href="https://extension.wvu.edu/food-health/nutrition/fnp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{
+                      color: '#f8cb4c',
+                      textDecoration: 'none',
+                      fontWeight: 500,
+                      padding: '2px 4px',
+                      minWidth: 'auto',
+                      textTransform: 'none',
+                      fontSize: 'inherit',
+                      lineHeight: 'inherit',
+                      zIndex: 10001, // Higher z-index to ensure clickability
+                      '&:hover': {
+                        color: '#ffe180',
+                        textDecoration: 'underline',
+                        background: 'transparent',
+                      },
+                      '&:focus': {
+                        outline: '2px solid #ffe180',
+                        outlineOffset: '2px',
+                      }
+                    }}
+                  >
+                    WVU Extension Family Nutrition Program
+                  </Button>
+                  .
                 </Typography>
               </motion.div>
               
@@ -415,10 +455,10 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               {/* Quick Access Cards with improved hover effects */}
               <Grid container spacing={isSmallScreen ? 2 : 3} justifyContent="center" sx={{ mb: 5 }}>
                 {[
-                  { icon: <SearchIcon sx={{ fontSize: 28 }} />, text: "Find Food Assistance", color: "#a71d1d" },
-                  { icon: <LayersIcon sx={{ fontSize: 28 }} />, text: "Explore Food Atlas", color: "#354F5B" },
-                  { icon: <GroupIcon sx={{ fontSize: 28 }} />, text: "Organize Communities", color: "#C84C23" },
-                  { icon: <AccessTimeFilledIcon sx={{ fontSize: 28 }} />, text: "Access Resources", color: "#39897E" }
+                  { icon: <SearchIcon sx={{ fontSize: 28 }} />, text: "Find Food Assistance", color: "#a71d1d", link: "#find-assistance" },
+                  { icon: <LayersIcon sx={{ fontSize: 28 }} />, text: "Explore Food Atlas", color: "#354F5B", link: "#food-atlas" },
+                  { icon: <GroupIcon sx={{ fontSize: 28 }} />, text: "Organize Communities", color: "#C84C23", link: "#organize" },
+                  { icon: <AccessTimeFilledIcon sx={{ fontSize: 28 }} />, text: "Access Resources", color: "#39897E", link: "#resources" }
                 ].map((item, index) => (
                   <Grid item xs={12} sm={6} md={3} key={index}>
                     <motion.div
@@ -434,30 +474,35 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       }}
                       whileTap={{ scale: 0.98 }}
                     >
-                      <Box 
+                      <Button
+                        component="a"
+                        href={item.link}
                         sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          width: '100%',
+                          height: '100%',
                           bgcolor: 'rgba(255,255,255,0.08)',
                           backdropFilter: 'blur(10px)',
                           border: '1px solid rgba(255,255,255,0.1)',
                           borderRadius: '16px',
                           p: 2,
-                          display: 'flex',
-                          alignItems: 'center',
                           gap: 2,
-                          height: '100%',
                           cursor: 'pointer',
                           transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                          textTransform: 'none',
+                          justifyContent: 'flex-start',
                           '&:hover': {
                             bgcolor: 'rgba(255,255,255,0.15)',
                             boxShadow: `0 8px 20px rgba(0,0,0,0.15), 0 0 0 2px ${item.color}`,
                           },
                           // Optimize for compositing
                           willChange: 'transform, box-shadow, background-color',
+                          zIndex: 10001,
                         }}
-                        role="button"
-                        tabIndex={0}
                         aria-label={item.text}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <Box sx={{ 
                           bgcolor: item.color, 
@@ -466,14 +511,15 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          boxShadow: '0 3px 6px rgba(0,0,0,0.2)'
+                          boxShadow: '0 3px 6px rgba(0,0,0,0.2)',
+                          flexShrink: 0
                         }}>
                           {item.icon}
                         </Box>
-                        <Typography sx={{ fontWeight: 500, color: '#fff' }}>
+                        <Typography sx={{ fontWeight: 500, color: '#fff', textAlign: 'left' }}>
                           {item.text}
                         </Typography>
-                      </Box>
+                      </Button>
                     </motion.div>
                   </Grid>
                 ))}
