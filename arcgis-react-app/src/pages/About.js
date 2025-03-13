@@ -1,26 +1,19 @@
 import React, { useState } from "react";
-import { Typography, Box, Grid, Button, Paper, useTheme, useMediaQuery } from "@mui/material";
+import { Typography, Box, Grid, Button, Paper, useTheme } from "@mui/material";
 import WhatWeDo from "../components/WhatWeDo";
 
-const timelineEvents = [
-  { year: "2013", description: "Seed Funding from WVU Public Service Award" },
-  { year: "2014", description: "Funding from Benedum Foundation" },
-  { year: "2020", description: "Updated Website Version Released" },
-  { year: "2023", description: "Current Version in Development" },
+const fundingPartners = [
+  { name: "Eberly College Public Service Award", year: "2016" },
+  { name: "Benedum Foundation", year: "2016+" },
+  { name: "Sisters Health Foundation", year: "2016+" },
+  { name: "Parkersburg Area Community Foundation", year: "2016+" },
+  { name: "Bernard McDonough Foundation", year: "2016+" },
+  { name: "Mazon", year: "2016+" },
 ];
 
 const About = () => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
-  const [selectedEvent, setSelectedEvent] = useState(timelineEvents[0]);
-
-  // Function to determine responsive spacing
-  const getResponsiveSpacing = (mobileSm, tabletMd, desktopLg) => {
-    if (isMobile) return mobileSm;
-    if (isTablet) return tabletMd;
-    return desktopLg;
-  };
+  const [selectedPartner, setSelectedPartner] = useState(fundingPartners[0]);
 
   return (
     <Box
@@ -28,7 +21,7 @@ const About = () => {
         display: "flex",
         flexDirection: "column",
         width: "100%",
-        padding: getResponsiveSpacing(2, 3, 4),
+        padding: { xs: 2, sm: 3, md: 4 },
         boxSizing: "border-box",
       }}
     >
@@ -41,9 +34,10 @@ const About = () => {
           backgroundColor: "#ffffff",
           borderRadius: "8px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          padding: getResponsiveSpacing(2, 3, 4),
+          padding: { xs: 2, sm: 3, md: 4 },
           width: "100%",
           boxSizing: "border-box",
+          overflow: "hidden",
         }}
       >
         {/* Page Title */}
@@ -53,215 +47,437 @@ const About = () => {
           align="center"
           sx={{
             color: "#99031e",
-            fontSize: isMobile ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
+            fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.5rem" },
             lineHeight: 1.2,
             fontWeight: 700,
-            mb: 3,
+            mb: 4,
+            position: "relative",
+            padding: { xs: "0 16px", sm: "0" },
+            "&:after": {
+              content: '""',
+              position: "absolute",
+              bottom: "-15px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: { xs: "60px", sm: "80px" },
+              height: "4px",
+              backgroundColor: "#99031e",
+              borderRadius: "2px"
+            }
           }}
         >
-          About WV FOODLINK
+          ABOUT
         </Typography>
 
+        {/* Main About Text - First Paragraph */}
         <Typography
           variant="body1"
           sx={{
-            textAlign: "center",
-            mb: 6,
+            textAlign: "left",
+            mb: 3,
             lineHeight: 1.8,
             maxWidth: "800px",
-            color: "#555",
+            color: "#333",
+            fontSize: { xs: "1rem", sm: "1.05rem" },
+            fontFamily: "'Source Sans Pro', sans-serif",
+            padding: { xs: "0 16px", sm: "0" },
           }}
         >
-          WV FOODLINK is a project of the Food Justice Lab housed in West Virginia
-          University Center for Resilient Communities. In collaboration with our
-          community partners, we have developed a resource hub and learning
-          commons to support a people-centered, resilient food network in West
-          Virginia.
+          The <Box component="span" sx={{ fontWeight: "bold", color: "#99031e" }}>WVU Center for Resilient Communities</Box> launched WV FOODLINK in 2015 following two years of action research with anti-hunger organizations across the state of West Virginia who expressed a desire for an online resource to make their work visible and a place to better understand the scope and reach of public nutrition assistance programs.
         </Typography>
 
-        {/* Timeline Navigation */}
-        <Box 
-          sx={{ 
-            display: "flex", 
-            justifyContent: "center", 
-            mb: 4,
-            flexWrap: isMobile ? "wrap" : "nowrap",
-            gap: 1
-          }}
-        >
-          {timelineEvents.map((event, index) => (
-            <Button
-              key={index}
-              variant={selectedEvent.year === event.year ? "contained" : "outlined"}
-              color="primary"
-              onClick={() => setSelectedEvent(event)}
-              sx={{
-                mx: isMobile ? 0.5 : 1,
-                mb: isMobile ? 1 : 0,
-                textTransform: "none",
-                fontWeight: "bold",
-                fontSize: isMobile ? "12px" : "14px",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                transition: "all 0.3s ease",
-                backgroundColor: selectedEvent.year === event.year ? "#99031e" : "transparent",
-                borderColor: "#99031e",
-                color: selectedEvent.year === event.year ? "#ffffff" : "#99031e",
-                '&:hover': {
-                  backgroundColor: selectedEvent.year === event.year ? "#7a0218" : "rgba(153, 3, 30, 0.1)",
-                  borderColor: "#99031e",
-                },
-              }}
-            >
-              {event.year}
-            </Button>
-          ))}
-        </Box>
-
-        {/* Selected Timeline Event Display */}
-        <Paper
-          elevation={3}
-          sx={{
-            p: getResponsiveSpacing(2, 3, 4),
-            textAlign: "center",
-            mb: 6,
-            maxWidth: "600px",
-            width: "100%",
-            backgroundColor: "#f9f9f9",
-            borderRadius: "8px",
-            boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{ fontWeight: "bold", color: "#99031e" }}
-          >
-            {selectedEvent.year}
-          </Typography>
-          <Typography variant="body1" sx={{ mt: 2, color: "#555" }}>
-            {selectedEvent.description}
-          </Typography>
-        </Paper>
-
-        {/* Partners Section */}
-        <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "#99031e", mt: 4 }}
-        >
-          Partners and Support
-        </Typography>
+        {/* Main About Text - Second Paragraph */}
         <Typography
           variant="body1"
-          sx={{ 
-            textAlign: "center", 
-            lineHeight: 1.8, 
-            color: "#555", 
+          sx={{
+            textAlign: "left",
+            mb: 3,
+            lineHeight: 1.8,
             maxWidth: "800px",
-            px: getResponsiveSpacing(1, 2, 3)
+            color: "#333",
+            fontSize: { xs: "1rem", sm: "1.05rem" },
+            fontFamily: "'Source Sans Pro', sans-serif",
+            padding: { xs: "0 16px", sm: "0" },
           }}
         >
-          WV FOODLINK is a product of partnerships with organizations such as
-          Facing Hunger Food Bank, Mountaineer Food Bank, WV Food and Farm
-          Coalition, WV Center for Budget and Policy, and many others.
+          This website is now maintained in partnership with the <Box component="span" sx={{ fontWeight: "bold", color: "#004990" }}>WVU Extension Family Nutrition Program (SNAP-Ed)</Box> and its development continues to be motivated by a vision that <Box component="span" sx={{ fontStyle: "italic" }}>all people must have access to safe, nutritious, and culturally appropriate food in sufficient quantity and quality to sustain a healthy life with human dignity</Box>.
         </Typography>
 
-        {/* Data Sharing Partners */}
+        {/* Main About Text - Third Paragraph */}
         <Typography
-          variant="h5"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: "bold", color: "#99031e", mt: 6 }}
+          variant="body1"
+          sx={{
+            textAlign: "left",
+            mb: 4,
+            lineHeight: 1.8,
+            maxWidth: "800px",
+            color: "#333",
+            fontSize: { xs: "1rem", sm: "1.05rem" },
+            fontFamily: "'Source Sans Pro', sans-serif",
+            padding: { xs: "0 16px", sm: "0" },
+          }}
         >
-          Data-Sharing Partners
+          Too many West Virginians continue to face <Box component="span" sx={{ fontWeight: "bold" }}>critical challenges in meeting their basic nutritional needs</Box> and information about our food system is splintered across a number of public and private agencies. By providing a central data repository about the state's food environments and nutrition programs, WV FOODLINK aims to foster <Box component="span" sx={{ fontWeight: "600" }}>knowledge exchange, informed policy decisions, support the development of community food security plans</Box> and monitor the equitable distribution of resources.
         </Typography>
+
+        {/* Main Logo Partners - Enhanced Design */}
+        <Typography
+          variant="h4"
+          align="center"
+          sx={{
+            color: "#333",
+            fontWeight: "600",
+            mt: 5,
+            mb: 3,
+            fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
+            position: "relative",
+            "&:after": {
+              content: '""',
+              position: "absolute",
+              bottom: "-10px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "60px",
+              height: "3px",
+              backgroundColor: "#99031e",
+              borderRadius: "2px"
+            }
+          }}
+        >
+          Our Key Partners
+        </Typography>
+          
         <Grid 
           container 
-          spacing={getResponsiveSpacing(2, 3, 4)} 
+          spacing={{ xs: 3, sm: 4, md: 6 }}
           justifyContent="center" 
-          sx={{ mt: 1, width: "100%" }}
+          sx={{ 
+            mt: 4, 
+            mb: 6, 
+            width: "100%", 
+            maxWidth: "1000px",
+            px: { xs: 2, sm: 3, md: 0 }
+          }}
         >
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              href="#"
-              variant="outlined"
-              fullWidth
+          <Grid item xs={12} md={6} sx={{ 
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <Paper
+              elevation={4}
               sx={{
-                textTransform: "none",
-                fontWeight: "bold",
-                color: "#99031e",
-                borderColor: "#99031e",
-                '&:hover': {
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
-                  borderColor: "#99031e",
-                },
+                p: 0,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "stretch",
+                borderRadius: "12px",
+                overflow: "hidden",
+                transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+                "&:hover": {
+                  transform: { xs: "none", sm: "translateY(-5px)" },
+                  boxShadow: "0 15px 30px rgba(0,0,0,0.15)",
+                }
               }}
             >
-              Partner 1 Placeholder
-            </Button>
+              {/* Header Banner */}
+              <Box 
+                sx={{
+                  bgcolor: "#99031e",
+                  p: { xs: 1.5, sm: 2 },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component="a"
+                  href="https://resilientcommunities.wvu.edu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ 
+                    fontWeight: "bold", 
+                    color: "white", 
+                    textDecoration: "none",
+                    textAlign: "center",
+                    fontSize: { xs: "1.2rem", sm: "1.3rem", md: "1.5rem" },
+                    "&:hover": {
+                      textDecoration: "underline",
+                    }
+                  }}
+                >
+                  WVU Center for Resilient Communities
+                </Typography>
+              </Box>
+              
+              {/* Content Area */}
+              <Box 
+                sx={{
+                  p: { xs: 2, sm: 3 },
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: "#f8f8f8",
+                  flexGrow: 1
+                }}
+              >
+                {/* Placeholder for logo - uncomment when you have the actual logo */}
+                {/* <Box 
+                  component="img"
+                  sx={{
+                    height: 80,
+                    width: "auto",
+                    mb: 2
+                  }}
+                  alt="WVU Center Logo"
+                  src="/path-to-logo.png"
+                /> */}
+                
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: "#333",
+                    textAlign: "center",
+                    fontWeight: "500",
+                    fontSize: { xs: "1rem", sm: "1.1rem" },
+                    lineHeight: 1.6,
+                    mb: 2
+                  }}
+                >
+                  Advancing community resilience and sustainable development in West Virginia
+                </Typography>
+                
+                <Button
+                  variant="outlined"
+                  href="https://resilientcommunities.wvu.edu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    mt: 2,
+                    color: "#99031e",
+                    borderColor: "#99031e",
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    "&:hover": {
+                      backgroundColor: "rgba(153, 3, 30, 0.1)",
+                      borderColor: "#99031e",
+                    }
+                  }}
+                >
+                  Visit Website
+                </Button>
+              </Box>
+            </Paper>
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              href="#"
-              variant="outlined"
-              fullWidth
+          
+          <Grid item xs={12} md={6} sx={{ 
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}>
+            <Paper
+              elevation={4}
               sx={{
-                textTransform: "none",
-                fontWeight: "bold",
-                color: "#99031e",
-                borderColor: "#99031e",
-                '&:hover': {
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
-                  borderColor: "#99031e",
-                },
+                p: 0,
+                width: "100%",
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "stretch",
+                borderRadius: "12px",
+                overflow: "hidden",
+                transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
+                "&:hover": {
+                  transform: { xs: "none", sm: "translateY(-5px)" },
+                  boxShadow: "0 15px 30px rgba(0,0,0,0.15)",
+                }
               }}
             >
-              Partner 2 Placeholder
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              href="#"
-              variant="outlined"
-              fullWidth
-              sx={{
-                textTransform: "none",
-                fontWeight: "bold",
-                color: "#99031e",
-                borderColor: "#99031e",
-                '&:hover': {
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
-                  borderColor: "#99031e",
-                },
-              }}
-            >
-              Partner 3 Placeholder
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <Button
-              href="#"
-              variant="outlined"
-              fullWidth
-              sx={{
-                textTransform: "none",
-                fontWeight: "bold",
-                color: "#99031e",
-                borderColor: "#99031e",
-                '&:hover': {
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
-                  borderColor: "#99031e",
-                },
-              }}
-            >
-              Partner 4 Placeholder
-            </Button>
+              {/* Header Banner */}
+              <Box 
+                sx={{
+                  bgcolor: "#004990", // WVU blue color
+                  p: { xs: 1.5, sm: 2 },
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  component="a"
+                  href="https://extension.wvu.edu/food-health/nutrition/fnp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{ 
+                    fontWeight: "bold", 
+                    color: "white", 
+                    textDecoration: "none",
+                    textAlign: "center",
+                    fontSize: { xs: "1.2rem", sm: "1.3rem", md: "1.5rem" },
+                    "&:hover": {
+                      textDecoration: "underline",
+                    }
+                  }}
+                >
+                  WVU Extension Family Nutrition Program
+                </Typography>
+              </Box>
+              
+              {/* Content Area */}
+              <Box 
+                sx={{
+                  p: { xs: 2, sm: 3 },
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  bgcolor: "#f8f8f8",
+                  flexGrow: 1
+                }}
+              >
+                {/* Placeholder for logo - uncomment when you have the actual logo */}
+                {/* <Box 
+                  component="img"
+                  sx={{
+                    height: 80,
+                    width: "auto",
+                    mb: 2
+                  }}
+                  alt="WVU Extension Logo"
+                  src="/path-to-logo.png"
+                /> */}
+                
+                <Typography 
+                  variant="body1" 
+                  sx={{ 
+                    color: "#333",
+                    textAlign: "center",
+                    fontWeight: "500",
+                    fontSize: { xs: "1rem", sm: "1.1rem" },
+                    lineHeight: 1.6,
+                    mb: 2
+                  }}
+                >
+                  Promoting healthy eating and active lifestyles for limited-resource West Virginians
+                </Typography>
+                
+                <Button
+                  variant="outlined"
+                  href="https://extension.wvu.edu/food-health/nutrition/fnp"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    mt: 2,
+                    color: "#004990",
+                    borderColor: "#004990",
+                    fontWeight: "bold",
+                    fontSize: { xs: "0.8rem", sm: "0.875rem" },
+                    "&:hover": {
+                      backgroundColor: "rgba(0, 73, 144, 0.1)",
+                      borderColor: "#004990",
+                    }
+                  }}
+                >
+                  Visit Website
+                </Button>
+              </Box>
+            </Paper>
           </Grid>
         </Grid>
+
+        {/* Funding Partners */}
+        <Box sx={{ 
+          width: "100%", 
+          maxWidth: "800px", 
+          mt: 5, 
+          mb: 6, 
+          backgroundColor: "#f8f8f8",
+          borderRadius: "12px",
+          padding: { xs: 2, sm: 3, md: 5 },
+          boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
+          mx: { xs: 2, sm: 3, md: "auto" }
+        }}>
+          <Typography
+            variant="h5"
+            sx={{
+              textAlign: "center",
+              fontWeight: "600",
+              color: "#99031e",
+              mb: 3,
+              borderBottom: "2px solid #99031e",
+              paddingBottom: "10px",
+              display: "inline-block",
+              marginLeft: "auto",
+              marginRight: "auto",
+              width: "auto"
+            }}
+          >
+            Our Supporters
+          </Typography>
+          
+          <Typography
+            variant="body1"
+            sx={{
+              textAlign: "center",
+              mb: 4,
+              lineHeight: 1.6,
+              color: "#333",
+              fontSize: { xs: "0.95rem", sm: "1.05rem" },
+              fontWeight: "500",
+              fontFamily: "'Source Sans Pro', sans-serif",
+            }}
+          >
+            Seed funding came from an <Box component="span" sx={{ fontWeight: "bold" }}>Eberly College Public Service Award</Box>. Since 2016, other funders have included the Benedum Foundation, the Sisters Health Foundation, The Parkersburg Area Community Foundation, the Bernard McDonough Foundation and Mazon.
+          </Typography>
+
+          {/* Funding Partner Slider - Improved Layout */}
+          <Grid 
+            container 
+            spacing={2} 
+            justifyContent="center"
+            sx={{ mt: 2 }}
+          >
+            {fundingPartners.map((partner, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Button
+                  variant={selectedPartner.name === partner.name ? "contained" : "outlined"}
+                  color="primary"
+                  onClick={() => setSelectedPartner(partner)}
+                  sx={{
+                    width: "100%",
+                    textTransform: "none",
+                    fontWeight: "bold",
+                    fontSize: { xs: "11px", sm: "12px", md: "13px" },
+                    padding: { xs: "8px 4px", sm: "10px 8px" },
+                    borderRadius: "8px",
+                    transition: "all 0.3s ease",
+                    backgroundColor: selectedPartner.name === partner.name ? "#99031e" : "white",
+                    borderColor: "#99031e",
+                    color: selectedPartner.name === partner.name ? "#ffffff" : "#99031e",
+                    '&:hover': {
+                      backgroundColor: selectedPartner.name === partner.name ? "#7a0218" : "rgba(153, 3, 30, 0.1)",
+                      borderColor: "#99031e",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
+                    },
+                  }}
+                >
+                  {partner.name}
+                </Button>
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
         
         {/* What We Do Component */}
-        <Box sx={{ width: "100%", mt: 6 }}>
+        <Box sx={{ width: "100%", mt: 6, px: { xs: 2, sm: 0 } }}>
           <WhatWeDo />
         </Box>
       </Box>

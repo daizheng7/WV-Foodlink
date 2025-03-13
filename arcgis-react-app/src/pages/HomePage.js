@@ -72,18 +72,7 @@ const HomePage = () => {
           width: `calc(100vw - ${scrollbarWidth}px)`,
         }}
       >
-        {/* About Us Section */}
-        <Box
-          sx={{
-            padding: getResponsiveSpacing(3, 4, 5),
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            mt: getResponsiveSpacing(3, 4, 5),
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          }}
-        >
-          <WhatWeDo />
-        </Box>
+
 
         {/* Divider with Text */}
         <Divider sx={{ 
