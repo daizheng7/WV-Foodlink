@@ -8,7 +8,11 @@ import IntroModal from "../components/IntroModal";
 import FoodRetailer from "../components/FoodRetailer";
 import CountyReport from "../components/CountyReport";
 import PartnerHome from "../components/PartnerHome";
+import AppalachianFoodSystemsExplorer from "../components/AppalachianFoodSystemsExplorer";
 
+import FoodSecuritySummary from "../components/FoodSecuritySummary";
+import MUIBudgetSection from "../components/MUIBudgetSection";
+import WestVirginiaFoodSecurityTabs from "../components/WestVirginiaFoodSecurityTab";
 const HomePage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -197,6 +201,10 @@ const HomePage = () => {
           }}
         >
           <PartnerHome/>
+          <AppalachianFoodSystemsExplorer />
+          
+          <WestVirginiaFoodSecurityTabs />
+          
         </Box>
       </Container>
 

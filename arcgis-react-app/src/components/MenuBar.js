@@ -72,7 +72,7 @@ const MenuBar = () => {
     },
     { label: "Food Atlas", path: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3", icon: <Map /> }, 
     { label: "About Us", path: "/about", icon: <Info /> },
-    { label: "Organize", path: "https://foodlink.wvu.edu/pages/organize", icon: <Group /> },
+    { label: "Organize", path: "https://foodlink.wvu.edu/pages/organize-1", icon: <Group /> },
     { label: "Resources", path: "/resources", icon: <Book /> },
     { label: "County", path: "/county", icon: <LocationCity /> }
   ];
