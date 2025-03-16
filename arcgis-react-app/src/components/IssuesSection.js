@@ -139,12 +139,8 @@ const IssuesSection = () => {
   // Render either grid or carousel based on screen size
   return (
     <Box sx={{ py: 6, px: { xs: 2, sm: 3 }, background: "#f4f4f4", borderRadius: "12px", textAlign: "center" }}>
-      <Typography variant="h4" sx={{ fontWeight: "bold", mb: 2, color: "#333", fontSize: { xs: "1.5rem", md: "2rem" } }}>
-        Challenges in West Virginia
-      </Typography>
-      <Typography variant="body1" sx={{ maxWidth: "700px", mx: "auto", mb: 4, color: "#555" }}>
-        West Virginia faces significant challenges such as high poverty rates, food insecurity, and a declining population. Immediate action is needed to create a better future.
-      </Typography>
+      
+      
       
       {isMobile || isTablet ? (
         // Mobile and Tablet View: Manual Carousel with Navigation Buttons

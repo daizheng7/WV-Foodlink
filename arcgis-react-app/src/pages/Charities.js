@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import Charities from "../components/Charities";
-import Footer from "../components/Footer";
+import Footer from "../components/layout/Footer";
 import esriConfig from "@arcgis/core/config";
 import FoodResourcesPanel from "../components/FoodResourcePanel";
 

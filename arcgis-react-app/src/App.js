@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
-import MenuBar from "./components/MenuBar";
+import MenuBar from "./components/layout/MenuBar";
 import HomePage from "./pages/HomePage"; 
 import Assistance from "./pages/Assistance";
 import About from "./pages/About";
 import County from "./pages/County";
 import CharitiesPage from "./pages/Charities";
 import FoodPage from "./pages/Food";
-import Footer from "./components/Footer";
+import Footer from "./components/layout/Footer"
 import IntroOverlay from "./components/IntroOverlay"; // Import the IntroOverlay component
 
 // Wrapper component to check if we're on the homepage
