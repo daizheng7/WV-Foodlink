@@ -263,39 +263,7 @@ const AppalachianFoodSystemsExplorer = () => {
           transition: 'all 0.3s ease-in-out'
         }}
       >
-        <AppBar position="static" elevation={4} sx={{ bgcolor: 'primary.main' }}>
-          <Toolbar>
-            <Box sx={{ display: 'flex', alignItems: 'center', mr: 2, flexGrow: 1 }}>
-              <Typography variant="h6" component="div" sx={{ fontWeight: 700 }}>
-                Explore Stories of Food Resilience in Appalachia
-              </Typography>
-            </Box>
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<InfoIcon />}
-              onClick={() => setInfoDialogOpen(true)}
-              sx={{ 
-                mr: 2,
-                bgcolor: 'white',
-                color: 'primary.main',
-                '&:hover': {
-                  bgcolor: alpha('#ffffff', 0.9),
-                }
-              }}
-            >
-              Learn More
-            </Button>
-            <IconButton
-              color="inherit"
-              onClick={toggleFullScreen}
-              edge="end"
-              aria-label={isFullScreen ? "exit fullscreen" : "enter fullscreen"}
-            >
-              {isFullScreen ? <FullscreenExitIcon /> : <FullscreenIcon />}
-            </IconButton>
-          </Toolbar>
-        </AppBar>
+        
         
         {/* Explore Maps Section at the top */}
         {!isFullScreen && (

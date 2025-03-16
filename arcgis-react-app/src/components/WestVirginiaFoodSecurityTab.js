@@ -63,10 +63,8 @@ const WestVirginiaFoodSecurityTabs = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 1200, mx: 'auto' }}>
-      {/* Animated urgent title - same width as tab content */}
-      <AnimatedUrgentTitle />
-
+    <Box sx={{ width: '100%', maxWidth: 'xl', mx: 'auto' }}>
+     
 
 
       {/* Tabbed content */}

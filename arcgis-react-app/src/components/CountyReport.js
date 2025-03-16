@@ -379,52 +379,7 @@ const CountyReport = () => {
           borderColor: alpha(theme.palette.primary.main, 0.12),
         }}
       >
-        <Box 
-          sx={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            flexDirection: { xs: 'column', sm: 'row' },
-            gap: 2,
-            mb: 3,
-          }}
-        >
-          <Avatar 
-            sx={{ 
-              backgroundColor: alpha("#99031e", 0.1), // Dark red with 10% opacity
-              width: 64,
-              height: 64,
-              color: "#99031e", // Dark red text/icon color
-            }}
-          >
-            <MapIcon sx={{ fontSize: 36 }} />
-          </Avatar>
-          <Typography
-            variant="h4"
-            align="center"
-            sx={{
-              fontWeight: 600,
-              color: theme.palette.primary,
-              letterSpacing: '-0.5px',
-            }}
-          >
-            Interactive County Report
-          </Typography>
-        </Box>
         
-        <Typography 
-          variant="body1" 
-          align="center" 
-          gutterBottom
-          sx={{ 
-            color: theme.palette.text.primary,
-            maxWidth: '700px',
-            mx: 'auto',
-            mb: 4,
-          }}
-        >
-          Select a county on the map below to view detailed resource information and statistics.
-        </Typography>
         
         {selectedCounty && (
           <Chip 

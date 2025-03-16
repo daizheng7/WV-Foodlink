@@ -513,25 +513,25 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     icon: <SearchIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Find Food Assistance", 
                     color: "#a71d1d", 
-                    link: "#find-assistance" 
+                    link: "/food" 
                   },
                   { 
                     icon: <LayersIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Explore Food Atlas", 
                     color: "#354F5B", 
-                    link: "#food-atlas" 
+                    link: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3" 
                   },
                   { 
                     icon: <GroupIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Organize Communities", 
                     color: "#C84C23", 
-                    link: "#organize" 
+                    link: "https://foodlink.wvu.edu/pages/organize-1" 
                   },
                   { 
                     icon: <AccessTimeFilledIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Access Resources", 
                     color: "#39897E", 
-                    link: "#resources" 
+                    link: "/home" 
                   }
                 ].map((item, index) => (
                   <Grid 

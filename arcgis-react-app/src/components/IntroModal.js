@@ -86,7 +86,7 @@ const IntroModal = () => {
       textAlign: 'left'
     }}
   >
-    Welcome to Our Platform
+    Welcome to FoodLink
   </Typography>
 
   <Typography 
@@ -190,10 +190,10 @@ const IntroModal = () => {
           {/* Quick Access Grid */}
           <Grid container spacing={3} justifyContent="center">
             {[
-              { icon: <SearchIcon />, text: 'Find Food', color: '#a71d1d' },
-              { icon: <LayersIcon />, text: 'Explore Food Data', color: '#354F5B' },
-              { icon: <GroupIcon />, text: 'Organize', color: '#C84C23' },
-              { icon: <AccessTimeFilledIcon />, text: 'Access Resources', color: '#39897E' },
+              { icon: <SearchIcon />, text: 'Find Food', color: '#a71d1d' , path: "/food"},
+              { icon: <LayersIcon />, text: 'Explore Food Data', color: '#354F5B' , path: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3"},
+              { icon: <GroupIcon />, text: 'Organize', color: '#C84C23', path: "https://foodlink.wvu.edu/pages/organize-1"},
+              { icon: <AccessTimeFilledIcon />, text: 'Access Resources', color: '#39897E' , path: "/home"},
             ].map((item, index) => (
               <Grid item xs={6} sm={3} key={index}>
                 <Button
