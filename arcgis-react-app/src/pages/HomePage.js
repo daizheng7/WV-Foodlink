@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Divider, useMediaQuery, useTheme, Container, Paper, Typography } from "@mui/material";
+import { Box, Divider, useMediaQuery, useTheme, Container, Paper, alpha } from "@mui/material";
 import WhatWeDo from "../components/WhatWeDo";
 import IssuesSection from "../components/IssuesSection";
 import WestVirginiaFoodLandscape from "../components/WestVirginiaFoodLandscape";
@@ -9,16 +9,15 @@ import FoodRetailer from "../components/FoodRetailer";
 import CountyReport from "../components/CountyReport";
 import PartnerHome from "../components/PartnerHome";
 import AppalachianFoodSystemsExplorer from "../components/AppalachianFoodSystemsExplorer";
-
 import FoodSecuritySummary from "../components/FoodSecuritySummary";
 import MUIBudgetSection from "../components/MUIBudgetSection";
 import WestVirginiaFoodSecurityTabs from "../components/WestVirginiaFoodSecurityTab";
+
 const HomePage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
   const [scrollbarWidth, setScrollbarWidth] = useState(0);
-
 
   // Calculate scrollbar width on component mount to fix layout issues
   useEffect(() => {
@@ -43,6 +42,64 @@ const HomePage = () => {
     return desktopLg;
   };
 
+  // Define modern color palette
+  const colors = {
+    base: "#ffffff",
+    alternate: "#f7fafc", 
+    divider: alpha(theme.palette.primary.main || "#1976d2", 0.07)
+  };
+
+  // Section component with clean styling
+  const Section = ({ 
+    backgroundColor = colors.base, 
+    children, 
+    elevation = 0, 
+    marginTop = 0,
+    marginBottom = 0,
+    hasBorder = false,
+    sectionWidth = "lg"
+  }) => (
+    <Box
+      sx={{
+        position: "relative",
+        width: "100%",
+        backgroundColor: backgroundColor,
+        mt: marginTop,
+        mb: marginBottom,
+        py: getResponsiveSpacing(2, 3, 4),
+        zIndex: 1,
+      }}
+    >
+      <Container maxWidth={sectionWidth} disableGutters={false}>
+        <Box
+          sx={{
+            backgroundColor: "transparent",
+            p: getResponsiveSpacing(2, 3, 4),
+            borderRadius: "8px",
+            position: "relative",
+            overflow: "hidden",
+            boxShadow: elevation ? `0 ${elevation * 2}px ${elevation * 4}px rgba(0,0,0,0.05)` : "none",
+            border: hasBorder ? `1px solid ${alpha(theme.palette.divider, 0.08)}` : "none",
+          }}
+        >
+          {children}
+        </Box>
+      </Container>
+    </Box>
+  );
+
+  // Simple divider component
+  const SimpleDivider = () => (
+    <Box
+      sx={{
+        width: "100%",
+        height: "1px",
+        background: `linear-gradient(to right, transparent, ${colors.divider}, transparent)`,
+        my: getResponsiveSpacing(1, 1.5, 2),
+      }}
+    />
+  );
+
   return (
     <Box
       sx={{
@@ -51,164 +108,97 @@ const HomePage = () => {
         width: "100%",
         maxWidth: "100vw",
         overflowX: "hidden",
-        backgroundColor: "#f9f9f9",
+        backgroundColor: colors.base,
       }}
     >
-      {/* Hero Section with FoodRetailer */}
-      <IntroModal /> <Box
+      {/* Intro Modal */}
+      <IntroModal />
+
+      {/* Hero Section with FoodRetailer - Full Width */}
+      <Box
         sx={{
           width: `calc(100vw - ${scrollbarWidth}px)`,
           height: isMobile ? "70vh" : `calc(100vh - ${scrollbarWidth}px)`,
           position: "relative",
           overflow: "hidden",
+          backgroundColor: colors.base,
         }}
       >
-        {/* FoodRetailer Component */}
         <FoodRetailer />
       </Box>
 
-      {/* Container for consistent margins and responsive behavior */}
-      <Container 
-        maxWidth={false} 
-        disableGutters={true}
-        sx={{ 
-          px: getResponsiveSpacing(1, 2, 4),
-          width: `calc(100vw - ${scrollbarWidth}px)`,
-        }}
+      {/* Issues Section - White Background */}
+      <Section 
+        backgroundColor={colors.base} 
+        marginTop={getResponsiveSpacing(1, 1.5, 2)}
+        elevation={1}
+        hasBorder={true}
       >
+        <IssuesSection />
+      </Section>
 
+      <SimpleDivider />
 
-        {/* Divider with Text */}
-        <Divider sx={{ 
-          my: getResponsiveSpacing(3, 4, 5),
-          "&::before, &::after": {
-            borderColor: "rgba(0, 0, 0, 0.1)",
-          }
-        }} />
+      {/* Food Landscape Section - Alternate Background */}
+      <Section 
+        backgroundColor={colors.alternate}
+        elevation={1}
+      >
+        <WestVirginiaFoodLandscape />
+      </Section>
 
-        {/* Issues Section */}
-        <Box
-          sx={{
-            padding: getResponsiveSpacing(3, 4, 5),
-            backgroundColor: "#f3f3f3",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          }}
-        >
-          <IssuesSection />
-        </Box>
+      <SimpleDivider />
 
-        {/* Gradient Divider */}
-        <Box
-          sx={{
-            width: "100%",
-            height: "6px",
-            background: "linear-gradient(to right, #ffffff, #e0e0e0, #ffffff)",
-            my: getResponsiveSpacing(3, 4, 5),
-          }}
-        />
+      {/* County Report Section - Base Background */}
+      <Section 
+        backgroundColor={colors.base}
+        elevation={1}
+      >
+        <CountyReport />
+      </Section>
 
-        {/* Food Landscape Section */}
-        <Box
-          sx={{
-            padding: getResponsiveSpacing(3, 4, 5),
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-            transition: "transform 0.3s ease-in-out",
-            "&:hover": {
-              transform: "translateY(-5px)",
-            },
-          }}
-        >
-          <WestVirginiaFoodLandscape />
-        </Box>
+      <SimpleDivider />
 
-        {/* Wave Divider - Responsive size */}
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            overflow: "hidden",
-            lineHeight: 0,
-            mt: getResponsiveSpacing(3, 4, 5),
-          }}
-        >
-          <svg
-            viewBox="0 0 1440 320"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{ 
-              display: "block", 
-              width: "100%", 
-              height: isMobile ? "40px" : isTablet ? "60px" : "80px" 
-            }}
-          >
-            <path
-              fill="#f9f9f9"
-              d="M0,160L60,154.7C120,149,240,139,360,149.3C480,160,600,192,720,208C840,224,960,224,1080,224C1200,224,1320,224,1380,218.7L1440,213V320H1380C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320H0Z"
-            />
-          </svg>
-        </Box>
+      {/* Interactive Wheel Section - Alternate Background */}
+      <Section 
+        backgroundColor={colors.alternate}
+        elevation={1}
+      >
+        <InteractiveWheel />
+      </Section>
 
-        {/* County Report Section */}
-        <Paper
-          sx={{
-            padding: getResponsiveSpacing(2, 2.5, 3),
-            marginBottom: getResponsiveSpacing(2, 3, 4),
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-            backgroundColor: "#ffffff",
-          }}
-        >
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: "bold",
-              mb: 2,
-              color: "#000000",
-            }}
-          >
-            County Report
-          </Typography>
-          <Divider sx={{ mb: 2, borderColor: "#000000" }} />
-          <CountyReport />
-        </Paper>
+      <SimpleDivider />
 
-        {/* Interactive Wheel Section */}
-        <Box
-          sx={{
-            padding: getResponsiveSpacing(3, 4, 5),
-            backgroundColor: "#ffffff",
-            borderRadius: "8px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-            transition: "transform 0.3s ease-in-out",
-            "&:hover": {
-              transform: "translateY(-5px)",
-            },
-          }}
-        >
-          <InteractiveWheel />
-        </Box>
+      {/* Partners Section - Base Background */}
+      <Section 
+        backgroundColor={colors.base}
+        elevation={1}
+      >
+        <PartnerHome />
+      </Section>
 
-        {/* Nourishing Networks Section */}
-        <Box
-          sx={{
-            padding: getResponsiveSpacing(3, 4, 5),
-            backgroundColor: "#f9f9f9",
-            borderRadius: "8px",
-            mt: getResponsiveSpacing(3, 4, 5),
-            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          }}
-        >
-          <PartnerHome/>
-          <AppalachianFoodSystemsExplorer />
-          
-          <WestVirginiaFoodSecurityTabs />
-          
-        </Box>
-      </Container>
+      <SimpleDivider />
 
-   
+      {/* Appalachian Food Systems Explorer - Alternate Background */}
+      <Section 
+        backgroundColor={colors.alternate}
+        elevation={1}
+      >
+        <AppalachianFoodSystemsExplorer />
+      </Section>
+
+      <SimpleDivider />
+
+      {/* Food Security Tabs - White Background */}
+      <Section 
+        backgroundColor={colors.base}
+        elevation={1}
+      >
+        <WestVirginiaFoodSecurityTabs />
+      </Section>
+      
+      {/* Footer space */}
+      <Box sx={{ height: getResponsiveSpacing(3, 4, 5), backgroundColor: colors.base }} />
     </Box>
   );
 };
