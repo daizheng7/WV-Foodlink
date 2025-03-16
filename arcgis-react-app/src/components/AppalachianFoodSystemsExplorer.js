@@ -24,6 +24,9 @@ import {
   MobileStepper,
   Zoom,
   Fade,
+  Tooltip,
+  Popper,
+  Grow,
 } from '@mui/material';
 import { createTheme, ThemeProvider, alpha } from '@mui/material/styles';
 import { 
@@ -33,10 +36,11 @@ import {
   FullscreenExit as FullscreenExitIcon,
   Info as InfoIcon,
   KeyboardArrowLeft,
-  KeyboardArrowRight
+  KeyboardArrowRight,
+  OpenInNew as OpenInNewIcon,
+  ZoomIn as ZoomInIcon,
+  Close as CloseIcon
 } from '@mui/icons-material';
-
-// Custom animation properties using Material UI's built-in transition utilities
 
 // Custom theme with Appalachian color scheme
 const theme = createTheme({
@@ -115,7 +119,7 @@ const theme = createTheme({
   },
 });
 
-// Animation utilities without external dependencies
+  // Animation utilities without external dependencies
 const fadeInAnimation = {
   transition: 'opacity 0.5s ease, transform 0.5s ease',
   transform: 'translateY(0)',
@@ -126,8 +130,11 @@ const AppalachianFoodSystemsExplorer = () => {
   const [activeMap, setActiveMap] = useState(0);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+  const [enlargedImageOpen, setEnlargedImageOpen] = useState(false); // State for enlarged iframe dialog
+  const [previewAnchorEl, setPreviewAnchorEl] = useState(null);
+  const [previewIndex, setPreviewIndex] = useState(null);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-
+  
   // Add touch handling for mobile swipe
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
@@ -158,7 +165,6 @@ const AppalachianFoodSystemsExplorer = () => {
     }
   };
 
- 
   const maps = [
     {
       id: 0,
@@ -195,13 +201,49 @@ const AppalachianFoodSystemsExplorer = () => {
   };
 
   const handleNext = () => {
-    setActiveMap((prevActiveMap) => (prevActiveMap + 1) % maps.length);
+    const nextIndex = (activeMap + 1) % maps.length;
+    setActiveMap(nextIndex);
+    
+    // If the enlarged view is open, we need to refresh the iframe
+    if (enlargedImageOpen) {
+      // Close and reopen the dialog to force iframe refresh
+      setEnlargedImageOpen(false);
+      setTimeout(() => setEnlargedImageOpen(true), 100);
+    }
   };
 
   const handleBack = () => {
-    setActiveMap((prevActiveMap) => (prevActiveMap - 1 + maps.length) % maps.length);
+    const prevIndex = (activeMap - 1 + maps.length) % maps.length;
+    setActiveMap(prevIndex);
+    
+    // If the enlarged view is open, we need to refresh the iframe
+    if (enlargedImageOpen) {
+      // Close and reopen the dialog to force iframe refresh
+      setEnlargedImageOpen(false);
+      setTimeout(() => setEnlargedImageOpen(true), 100);
+    }
   };
 
+  const handlePreviewOpen = (event, index) => {
+    setPreviewAnchorEl(event.currentTarget);
+    setPreviewIndex(index);
+  };
+
+  const handlePreviewClose = () => {
+    setPreviewAnchorEl(null);
+    setPreviewIndex(null);
+  };
+
+  const handleCardClick = (index) => {
+    // Set the active map
+    setActiveMap(index);
+    // Open the enlarged image view instead of scrolling to iframe
+    setEnlargedImageOpen(true);
+  };
+
+  // Check if the preview is open
+  const isPreviewOpen = Boolean(previewAnchorEl) && previewIndex !== null;
+  
   return (
     <ThemeProvider theme={theme}>
       <Box 
@@ -225,7 +267,7 @@ const AppalachianFoodSystemsExplorer = () => {
           <Toolbar>
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 2, flexGrow: 1 }}>
               <Typography variant="h6" component="div" sx={{ fontWeight: 700 }}>
-                Stories of Food Resilience in Appalachia
+                Explore Stories of Food Resilience in Appalachia
               </Typography>
             </Box>
             <Button
@@ -263,20 +305,7 @@ const AppalachianFoodSystemsExplorer = () => {
             px: 3,
             borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`
           }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-              <Box
-                sx={{
-                  width: 4,
-                  height: 24,
-                  bgcolor: 'primary.main',
-                  borderRadius: 4,
-                  mr: 2
-                }}
-              />
-              <Typography variant="h5" component="h3" fontWeight="bold" color="primary">
-                Explore Maps
-              </Typography>
-            </Box>
+           
             
             {isMobile ? (
               // Mobile View with Custom Carousel - Larger thumbnails
@@ -306,12 +335,16 @@ const AppalachianFoodSystemsExplorer = () => {
                       }}
                     >
                       <Card 
-                        onClick={() => setActiveMap(index)}
+                        onClick={() => handleCardClick(index)}
+                        onMouseEnter={(e) => handlePreviewOpen(e, index)}
+                        onMouseLeave={handlePreviewClose}
                         sx={{ 
                           borderColor: activeMap === index ? 'primary.main' : 'transparent',
                           borderWidth: activeMap === index ? 2 : 0,
                           borderStyle: 'solid',
-                          height: '100%'
+                          height: '100%',
+                          cursor: 'pointer',
+                          position: 'relative'
                         }}
                       >
                         <CardMedia
@@ -332,6 +365,36 @@ const AppalachianFoodSystemsExplorer = () => {
                             } : {}
                           }}
                         />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0,
+                            transition: 'opacity 0.3s',
+                            '&:hover': {
+                              opacity: 1,
+                            }
+                          }}
+                        >
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<OpenInNewIcon />}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleCardClick(index);
+                            }}
+                          >
+                            View Map
+                          </Button>
+                        </Box>
                         <CardContent sx={{ p: 2 }}>
                           <Typography variant="subtitle1" component="div" fontWeight={500}>
                             {map.title}
@@ -350,42 +413,31 @@ const AppalachianFoodSystemsExplorer = () => {
                   ))}
                 </Box>
                 
-                {/* Navigation Controls for Mobile - Moved under thumbnails */}
-                <Paper
-                  elevation={2}
-                  sx={{
-                    mt: 2,
-                    mx: 'auto',
-                    borderRadius: 8,
-                    overflow: 'hidden',
-                    width: 'fit-content'
-                  }}
-                >
-                  <Box sx={{ display: 'flex', alignItems: 'center', px: 2, py: 1 }}>
-                    <IconButton size="small" onClick={handleBack} disabled={activeMap === 0}>
-                      <KeyboardArrowLeft />
-                    </IconButton>
-                    {maps.map((_, index) => (
-                      <Box
-                        key={index}
-                        onClick={() => setActiveMap(index)}
-                        sx={{
-                          width: 12,
-                          height: 12,
-                          mx: 0.5,
-                          borderRadius: '50%',
-                          bgcolor: activeMap === index ? 'primary.main' : 'grey.300',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s',
-                          transform: activeMap === index ? 'scale(1.2)' : 'scale(1)'
-                        }}
-                      />
-                    ))}
-                    <IconButton size="small" onClick={handleNext} disabled={activeMap === maps.length - 1}>
-                      <KeyboardArrowRight />
-                    </IconButton>
-                  </Box>
-                </Paper>
+                {/* Navigation Controls for Mobile */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                  {maps.map((_, index) => (
+                    <Box
+                      key={index}
+                      onClick={() => {
+                        setActiveMap(index);
+                        if (enlargedImageOpen) {
+                          setEnlargedImageOpen(false);
+                          setTimeout(() => setEnlargedImageOpen(true), 100);
+                        }
+                      }}
+                      sx={{
+                        width: 12,
+                        height: 12,
+                        mx: 0.5,
+                        borderRadius: '50%',
+                        bgcolor: activeMap === index ? 'primary.main' : 'grey.300',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s',
+                        transform: activeMap === index ? 'scale(1.2)' : 'scale(1)'
+                      }}
+                    />
+                  ))}
+                </Box>
               </Box>
             ) : (
               // Desktop Grid - Larger thumbnails in a better layout
@@ -394,7 +446,9 @@ const AppalachianFoodSystemsExplorer = () => {
                   {maps.map((map, index) => (
                     <Grid item xs={12} sm={6} md={3} key={map.id}>
                       <Card 
-                        onClick={() => setActiveMap(index)}
+                        onClick={() => handleCardClick(index)}
+                        onMouseEnter={(e) => handlePreviewOpen(e, index)}
+                        onMouseLeave={handlePreviewClose}
                         sx={{ 
                           cursor: 'pointer',
                           borderColor: activeMap === index ? 'primary.main' : 'transparent',
@@ -402,7 +456,8 @@ const AppalachianFoodSystemsExplorer = () => {
                           borderStyle: 'solid',
                           transform: activeMap === index ? 'scale(1.03)' : 'scale(1)',
                           transition: 'transform 0.2s ease-in-out',
-                          height: '100%'
+                          height: '100%',
+                          position: 'relative'
                         }}
                       >
                         <CardMedia
@@ -423,19 +478,34 @@ const AppalachianFoodSystemsExplorer = () => {
                             } : {}
                           }}
                         />
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: 2,
+                            opacity: 0,
+                            transition: 'opacity 0.3s',
+                            '&:hover': {
+                              opacity: 1,
+                            }
+                          }}
+                        >
+                          <Typography variant="body2" color="white" sx={{ mb: 2, textAlign: 'center' }}>
+                            {map.description.split('.')[0] + '.'}
+                          </Typography>
+                          
+                        </Box>
                         <CardContent sx={{ p: 2 }}>
                           <Typography variant="subtitle1" component="div" fontWeight={600} gutterBottom>
                             {map.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ 
-                            mb: 1,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis'
-                          }}>
-                            {map.description.split('.')[0] + '.'}
                           </Typography>
                           {activeMap === index && (
                             <Chip 
@@ -469,7 +539,14 @@ const AppalachianFoodSystemsExplorer = () => {
                     {maps.map((_, index) => (
                       <Box
                         key={index}
-                        onClick={() => setActiveMap(index)}
+                        onClick={() => {
+                          setActiveMap(index);
+                          // If the enlarged view is open, refresh iframe
+                          if (enlargedImageOpen) {
+                            setEnlargedImageOpen(false);
+                            setTimeout(() => setEnlargedImageOpen(true), 100);
+                          }
+                        }}
                         sx={{
                           width: 12,
                           height: 12,
@@ -492,70 +569,66 @@ const AppalachianFoodSystemsExplorer = () => {
           </Box>
         )}
 
-        <Box
-          sx={{
-            position: 'relative',
-            height: isFullScreen ? 'calc(100vh - 64px)' : isMobile ? '50vh' : '60vh',
-            bgcolor: 'background.paper',
-            overflow: 'hidden',
-            boxShadow: 'inset 0px 5px 10px rgba(0,0,0,0.05)'
-          }}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
+        {/* Quick info callout removed */}
+
+        {/* Enlarged Map Dialog with iframe */}
+        <Dialog
+          open={enlargedImageOpen}
+          onClose={() => setEnlargedImageOpen(false)}
+          maxWidth="xl"
+          fullWidth
+          fullScreen={isMobile}
+          TransitionComponent={Zoom}
         >
-          <Fade in={true} timeout={300}>
+          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" component="div" fontWeight="bold" color="primary">
+              {maps[activeMap].title}
+            </Typography>
+            <IconButton 
+              edge="end" 
+              color="inherit" 
+              onClick={() => setEnlargedImageOpen(false)} 
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent dividers sx={{ p: 0, height: '75vh' }}>
             <Box
               component="iframe"
               src={maps[activeMap].url}
               title={maps[activeMap].title}
               sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
                 width: '100%',
                 height: '100%',
                 border: 'none',
-                transition: 'opacity 0.3s ease-in-out'
               }}
               allowFullScreen
             />
-          </Fade>
-
-          {/* Removed the navigation controls from here since they're now under thumbnails */}
-        </Box>
-
-        {!isFullScreen && (
-          <Box
-            sx={{
-              opacity: 0,
-              transform: 'translateY(20px)',
-              ...fadeInAnimation,
-            }}
-          >
-            <Container maxWidth="xl" sx={{ py: 3 }}>
-              <Box sx={{ mb: 4 }}>
-                <Paper 
-                  elevation={0} 
-                  sx={{ 
-                    p: 3,
-                    mt: 0, 
-                    bgcolor: alpha(theme.palette.primary.main, 0.03),
-                    borderLeft: `4px solid ${theme.palette.primary.main}`,
-                    borderRadius: '4px',
-                  }}
-                >
-                  <Typography variant="body1" color="text.primary" sx={{ 
-                    lineHeight: 1.8,
-                    fontSize: '1.05rem'
-                  }}>
-                    {maps[activeMap].description}
-                  </Typography>
-                </Paper>
-              </Box>
-            </Container>
-          </Box>
-        )}
+          </DialogContent>
+          <DialogActions>
+            <Button 
+              onClick={handleBack} 
+              disabled={activeMap === 0} 
+              startIcon={<ChevronLeftIcon />}
+            >
+              Previous
+            </Button>
+            <Button 
+              onClick={() => setEnlargedImageOpen(false)} 
+              color="primary"
+            >
+              Close
+            </Button>
+            <Button 
+              onClick={handleNext} 
+              disabled={activeMap === maps.length - 1} 
+              endIcon={<ChevronRightIcon />}
+            >
+              Next
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {/* Info Dialog */}
         <Dialog
@@ -601,8 +674,9 @@ const AppalachianFoodSystemsExplorer = () => {
               variant="contained" 
               color="primary"
               onClick={() => {
-                setInfoDialogOpen(false);
+                setInfoDialogOpen(true);
                 setActiveMap(activeMap);
+                setEnlargedImageOpen(true); // Open the enlarged image instead
               }}
             >
               View Map
