@@ -182,6 +182,7 @@ const WestVirginiaFoodSecurityTabs = () => {
             transition: 'background-color 0.3s',
             width: { xs: '100%', sm: 'auto' },
             maxWidth: { xs: '100%', sm: '320px' },
+            
           }}
         >
           Read Our Full Proposal

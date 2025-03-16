@@ -273,17 +273,23 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
           top: 0,
           left: 0,
           right: 0,
+          width: '100%',
           height: '100vh',
           zIndex: 9999,
           pointerEvents: hasScrolled ? 'none' : 'auto',
           transformOrigin: '50% 40%',
-          willChange: 'transform, opacity', // Optimize GPU acceleration
+          willChange: 'transform, opacity',
+          margin: 0,
+          padding: 0,
+          boxSizing: 'border-box',
+          overflowX: 'hidden'
         }}
-        aria-hidden={hasScrolled} // Accessibility improvement
+        aria-hidden={hasScrolled}
       >
         <Box
           sx={{
             width: '100%',
+            maxWidth: '100vw',
             height: '100%',
             background: 'linear-gradient(145deg, #8b0000 0%, #6a0000 100%)',
             color: '#ffffff',
@@ -293,7 +299,8 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-            p: { xs: 2, sm: 3 }, // Add padding for small screens
+            boxSizing: 'border-box',
+            p: { xs: 0, sm: 3 }
           }}
         >
           {/* Background Pattern with parallax effect */}
@@ -305,7 +312,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               width: '100%',
               height: '120%',
               y: prefersReducedMotion ? 0 : patternYPos,
-              willChange: 'transform', // Optimize for layer composition
+              willChange: 'transform',
             }}
           >
             <Box 
@@ -323,24 +330,30 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
           
           <Container 
             maxWidth="lg"
+            disableGutters={isSmallScreen}
             sx={{
               overflowY: 'auto',
               maxHeight: '100vh',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              // Add padding for mobile to prevent content being cut off
               py: { xs: 4, sm: 2 },
-              // Ensure text doesn't touch edges on small screens
-              px: { xs: 2, sm: 3 },
-              // Accommodate iOS Safari's bottom bar
-              pb: { xs: 6, sm: 2 }
+              px: { xs: 0, sm: 3 },
+              pb: { xs: 6, sm: 2 },
+              boxSizing: 'border-box',
+              margin: '0 auto',
+              width: '100%'
             }}
           >
             <motion.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
+              style={{
+                width: '100%',
+                boxSizing: 'border-box',
+                padding: isSmallScreen ? '0 16px' : 0
+              }}
             >
               {/* Logo Section */}
               <motion.div variants={itemVariants}>
@@ -349,6 +362,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     textAlign: 'center',
                     mb: 3,
                     position: 'relative',
+                    width: '100%',
                     '&::after': {
                       content: '""',
                       position: 'absolute',
@@ -388,15 +402,17 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                   variant="h5" 
                   sx={{ 
                     fontWeight: 400,
-                    maxWidth: '900px',
+                    maxWidth: '100%',
                     mx: 'auto',
                     lineHeight: 1.6,
                     mt: { xs: 2, sm: 4 },
                     mb: { xs: 3, sm: 5 },
-                    px: { xs: 1, sm: 2, md: 3 },
+                    px: { xs: 0, sm: 2, md: 3 },
                     color: 'rgba(255,255,255,0.95)',
                     textAlign: 'center',
-                    fontSize: { xs: '1rem', sm: '1.25rem', md: 'h5.fontSize' }
+                    fontSize: { xs: '1rem', sm: '1.25rem', md: 'h5.fontSize' },
+                    boxSizing: 'border-box',
+                    width: '100%'
                   }}
                 >
                   A joint project of the{' '}
@@ -415,7 +431,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       textTransform: 'none',
                       fontSize: 'inherit',
                       lineHeight: 'inherit',
-                      zIndex: 10001, // Higher z-index to ensure clickability
+                      zIndex: 10001,
                       '&:hover': {
                         color: '#ffe180',
                         textDecoration: 'underline',
@@ -445,7 +461,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       textTransform: 'none',
                       fontSize: 'inherit',
                       lineHeight: 'inherit',
-                      zIndex: 10001, // Higher z-index to ensure clickability
+                      zIndex: 10001,
                       '&:hover': {
                         color: '#ffe180',
                         textDecoration: 'underline',
@@ -468,7 +484,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                   variant="h6"
                   align="center" 
                   sx={{ 
-                    maxWidth: '950px',
+                    maxWidth: '100%',
                     mx: 'auto',
                     mb: { xs: 4, sm: 6 },
                     fontWeight: 500,
@@ -483,19 +499,40 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               {/* Quick Access Cards with improved hover effects and mobile layout */}
               <Grid 
                 container 
-                spacing={isSmallScreen ? 2 : 3} 
+                spacing={isSmallScreen ? 1 : 3} 
                 justifyContent="center" 
                 sx={{ 
                   mb: { xs: 3, sm: 5 },
-                  width: '100%', 
-                  mx: 'auto' 
+                  width: '100%',
+                  margin: 0, // Remove default margin
+                  boxSizing: 'border-box'
                 }}
               >
                 {[
-                  { icon: <SearchIcon sx={{ fontSize: { xs: 24, md: 28 } }} />, text: "Find Food Assistance", color: "#a71d1d", link: "#find-assistance" },
-                  { icon: <LayersIcon sx={{ fontSize: { xs: 24, md: 28 } }} />, text: "Explore Food Atlas", color: "#354F5B", link: "#food-atlas" },
-                  { icon: <GroupIcon sx={{ fontSize: { xs: 24, md: 28 } }} />, text: "Organize Communities", color: "#C84C23", link: "#organize" },
-                  { icon: <AccessTimeFilledIcon sx={{ fontSize: { xs: 24, md: 28 } }} />, text: "Access Resources", color: "#39897E", link: "#resources" }
+                  { 
+                    icon: <SearchIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
+                    text: "Find Food Assistance", 
+                    color: "#a71d1d", 
+                    link: "#find-assistance" 
+                  },
+                  { 
+                    icon: <LayersIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
+                    text: "Explore Food Atlas", 
+                    color: "#354F5B", 
+                    link: "#food-atlas" 
+                  },
+                  { 
+                    icon: <GroupIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
+                    text: "Organize Communities", 
+                    color: "#C84C23", 
+                    link: "#organize" 
+                  },
+                  { 
+                    icon: <AccessTimeFilledIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
+                    text: "Access Resources", 
+                    color: "#39897E", 
+                    link: "#resources" 
+                  }
                 ].map((item, index) => (
                   <Grid 
                     item 
@@ -505,7 +542,8 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     key={index}
                     sx={{ 
                       display: 'flex',
-                      flexDirection: 'column'
+                      flexDirection: 'column',
+                      padding: isSmallScreen ? '4px 8px' : undefined // Explicit padding for mobile
                     }}
                   >
                     <motion.div
@@ -535,26 +573,27 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                           backdropFilter: 'blur(10px)',
                           border: '1px solid rgba(255,255,255,0.1)',
                           borderRadius: '16px',
-                          p: isSmallScreen ? 1.5 : 2,
+                          p: isSmallScreen ? 1 : 2, // Reduced padding for mobile
                           gap: isSmallScreen ? 1 : 2,
                           cursor: 'pointer',
                           transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                           boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                           textTransform: 'none',
-                          justifyContent: isSmallScreen ? 'center' : 'flex-start',
+                          justifyContent: 'center', // Always center content
                           '&:hover': {
                             bgcolor: 'rgba(255,255,255,0.15)',
                             boxShadow: `0 8px 20px rgba(0,0,0,0.15), 0 0 0 2px ${item.color}`,
                           },
                           willChange: 'transform, box-shadow, background-color',
                           zIndex: 10001,
+                          boxSizing: 'border-box'
                         }}
                         aria-label={item.text}
                         onClick={(e) => e.stopPropagation()}
                       >
                         <Box sx={{ 
                           bgcolor: item.color, 
-                          p: isSmallScreen ? 1 : 1.5, 
+                          p: isSmallScreen ? 0.75 : 1.5, // Reduced padding for mobile
                           borderRadius: '12px',
                           display: 'flex',
                           alignItems: 'center',
@@ -569,9 +608,10 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                           sx={{ 
                             fontWeight: 500, 
                             color: '#fff', 
-                            textAlign: isSmallScreen ? 'center' : 'left',
-                            fontSize: { xs: '0.85rem', sm: '0.9rem', md: '1rem' },
-                            lineHeight: 1.2
+                            textAlign: 'center', // Always center text
+                            fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' },
+                            lineHeight: 1.2,
+                            width: '100%' // Ensure full width
                           }}
                         >
                           {item.text}
@@ -586,7 +626,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               {!prefersReducedMotion && (
                 <motion.div 
                   variants={itemVariants}
-                  style={{ display: 'flex', justifyContent: 'center' }}
+                  style={{ display: 'flex', justifyContent: 'center', width: '100%' }}
                   animate={{ 
                     y: [0, 8, 0], 
                     transition: { 
@@ -626,7 +666,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               
               {/* Non-animated button for reduced motion preference */}
               {prefersReducedMotion && (
-                <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                   <Button
                     variant="outlined"
                     onClick={handleExploreClick}
