@@ -100,8 +100,8 @@ const FoodSecuritySummary = () => {
           <Grid item xs={12} md={6} sx={{ p: 3, borderRight: { md: '1px solid rgba(0,0,0,0.1)' } }}>
             <Fade in={animationReady} timeout={800} style={{ transitionDelay: '200ms' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <WarningIcon sx={{ color: '#CC0000', mr: 1 }} />
-                <Typography variant="h5" fontWeight="bold" color="#003366">
+                <WarningIcon sx={{ color: '#8b0000', mr: 1 }} />
+                <Typography variant="h5" fontWeight="bold" color="#000000">
                   The Crisis
                 </Typography>
               </Box>
@@ -116,7 +116,7 @@ const FoodSecuritySummary = () => {
                 background: 'rgba(255, 184, 28, 0.05)'
               }}>
                 <Typography variant="body1" fontWeight="medium">
-                  West Virginia faces one of the <strong style={{ color: '#CC0000' }}>highest food insecurity rates</strong> in the country despite over <strong style={{ color: '#003366' }}>$700 million</strong> in yearly federal assistance.
+                  West Virginia faces one of the <strong style={{ color: '#000000' }}>highest food insecurity rates</strong> in the country despite over <strong style={{ color: '#000000' }}>$700 million</strong> in yearly federal assistance.
                 </Typography>
               </Box>
             </Grow>
@@ -130,7 +130,7 @@ const FoodSecuritySummary = () => {
                   borderRadius: 4,
                   bgcolor: 'rgba(0, 0, 0, 0.05)',
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: '#CC0000'
+                    backgroundColor: '#8b0000'
                   },
                   mb: 1
                 }} 
@@ -155,7 +155,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <AssignmentIcon sx={{ color: hoveredItem === 'programs' ? '#003366' : '#666666' }} />
+                    <AssignmentIcon sx={{ color: hoveredItem === 'programs' ? '#8b0000' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -191,7 +191,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <AttachMoneyIcon sx={{ color: hoveredItem === 'funding' ? '#003366' : '#666666' }} />
+                    <AttachMoneyIcon sx={{ color: hoveredItem === 'funding' ? '#8b0000' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -226,7 +226,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <PeopleIcon sx={{ color: hoveredItem === 'initiatives' ? '#003366' : '#666666' }} />
+                    <PeopleIcon sx={{ color: hoveredItem === 'initiatives' ? '#8b0000' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -254,8 +254,8 @@ const FoodSecuritySummary = () => {
           <Grid item xs={12} md={6} sx={{ p: 3 }}>
             <Fade in={animationReady} timeout={800} style={{ transitionDelay: '200ms' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <TrendingUpIcon sx={{ color: '#008800', mr: 1 }} />
-                <Typography variant="h5" fontWeight="bold" color="#003366">
+                <TrendingUpIcon sx={{ color: '#344f5b', mr: 1 }} />
+                <Typography variant="h5" fontWeight="bold" color="#000000">
                   Our Action Plan
                 </Typography>
               </Box>
@@ -277,18 +277,18 @@ const FoodSecuritySummary = () => {
                     left: 0,
                     width: 5,
                     height: '100%',
-                    backgroundColor: '#008800'
+                    backgroundColor: '#344f5b'
                   }} 
                 />
                 
                 <Typography variant="body1" paragraph sx={{ fontWeight: 500, pl: 1 }}>
-                  Establish an <strong style={{ color: '#003366' }}>Office of Community Food Security (OCFS)</strong> to coordinate programs and leverage funding to build a stronger local food economy.
+                  Establish an <strong style={{ color: '#000000' }}>Office of Community Food Security (OCFS)</strong> to coordinate programs and leverage funding to build a stronger local food economy.
                 </Typography>
               </Box>
             </Grow>
             
             <Zoom in={animationReady} timeout={500} style={{ transitionDelay: '600ms' }}>
-              <Typography variant="subtitle2" color="#003366" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
+              <Typography variant="subtitle2" color="#000000" gutterBottom sx={{ fontWeight: 600, mb: 2 }}>
                 Take immediate action to:
               </Typography>
             </Zoom>
@@ -310,7 +310,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <PeopleIcon sx={{ color: '#003366' }} />
+                          <PeopleIcon sx={{ color: '#8b0000' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Engage low-income communities directly" 
@@ -341,7 +341,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <AttachMoneyIcon sx={{ color: '#003366' }} />
+                          <AttachMoneyIcon sx={{ color: '#8b0000' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Secure multi-year grant funding" 
@@ -372,7 +372,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <AssignmentIcon sx={{ color: '#003366' }} />
+                          <AssignmentIcon sx={{ color: '#8b0000' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Implement local food security plans" 
@@ -403,7 +403,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <StorefrontIcon sx={{ color: '#003366' }} />
+                          <StorefrontIcon sx={{ color: '#8b0000' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Grow WV's food and farm economy" 
@@ -419,41 +419,7 @@ const FoodSecuritySummary = () => {
               </Grid>
             </Grid>
             
-            <Zoom in={animationReady} timeout={500} style={{ transitionDelay: '1200ms' }}>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Chip 
-                  label="Urgent Need" 
-                  color="error" 
-                  size="small" 
-                  icon={<WarningIcon />} 
-                  sx={{ fontWeight: 500 }}
-                />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  endIcon={<LaunchIcon />}
-                  onClick={openFullReport}
-                  sx={{ 
-                    bgcolor: '#008800',
-                    '&:hover': {
-                      bgcolor: '#006600',
-                    },
-                    fontWeight: 'bold',
-                    borderRadius: 2,
-                    px: 3,
-                    py: 1,
-                    boxShadow: '0 4px 8px rgba(0, 102, 0, 0.2)',
-                    transition: 'all 0.3s',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 6px 12px rgba(0, 102, 0, 0.3)',
-                    }
-                  }}
-                >
-                  Take Action Now
-                </Button>
-              </Box>
-            </Zoom>
+            
           </Grid>
         </Grid>
         

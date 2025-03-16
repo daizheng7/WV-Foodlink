@@ -56,25 +56,7 @@ const MUIBudgetSection = () => {
         mb: 4
       }}
     >
-      {/* Header */}
-      <Box 
-        sx={{ 
-          bgcolor: '#003366', 
-          color: 'white',
-          p: 3,
-          borderBottom: '4px solid #FFB81C'
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-          <AccountBalanceIcon sx={{ mr: 2 }} />
-          <Typography variant="h5" component="h2" fontWeight="bold">
-            Strategic Budget for Food Security
-          </Typography>
-        </Box>
-        <Typography variant="subtitle1" sx={{ ml: 4, color: 'rgba(255,255,255,0.9)' }}>
-          Targeted investment for maximum impact on West Virginia's food system
-        </Typography>
-      </Box>
+      
 
       {/* Content */}
       <Box sx={{ p: 3 }}>
@@ -82,8 +64,8 @@ const MUIBudgetSection = () => {
           {/* Left Column - Budget Breakdown */}
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <AttachMoneyIcon sx={{ color: '#003366', mr: 1 }} />
-              <Typography variant="h6" fontWeight="bold" color="#003366">
+              <AttachMoneyIcon sx={{ color: '#8b0000', mr: 1 }} />
+              <Typography variant="h6" fontWeight="bold" color="#000000">
                 Proposed Budget
               </Typography>
             </Box>
@@ -136,7 +118,7 @@ const MUIBudgetSection = () => {
 
             {/* Budget Context */}
             <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#003366' }}>
+              <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#000000' }}>
                 Percentage of West Virginia's Budget
               </Typography>
               
@@ -153,7 +135,7 @@ const MUIBudgetSection = () => {
                       borderRadius: 4,
                       bgcolor: 'rgba(0,0,0,0.05)',
                       '& .MuiLinearProgress-bar': {
-                        backgroundColor: '#003366'
+                        backgroundColor: '#8b0000'
                       }
                     }} 
                   />
@@ -191,8 +173,8 @@ const MUIBudgetSection = () => {
           {/* Right Column - Impact */}
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <TrendingUpIcon sx={{ color: '#003366', mr: 1 }} />
-              <Typography variant="h6" fontWeight="bold" color="#003366">
+              <TrendingUpIcon sx={{ color: '#8b0000', mr: 1 }} />
+              <Typography variant="h6" fontWeight="bold" color="#000000">
                 Strategic Impact
               </Typography>
             </Box>
@@ -207,7 +189,7 @@ const MUIBudgetSection = () => {
               }}
             >
               <CardContent>
-                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#003366' }}>
+                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#000000' }}>
                   ARPA Funding Purpose
                 </Typography>
                 <Typography variant="body2" paragraph>
@@ -219,7 +201,7 @@ const MUIBudgetSection = () => {
               </CardContent>
             </Card>
 
-            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#003366' }}>
+            <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold', color: '#000000' }}>
               Grant Priorities
             </Typography>
             
@@ -230,7 +212,7 @@ const MUIBudgetSection = () => {
                   label={priority}
                   sx={{ 
                     bgcolor: 'rgba(0,51,102,0.08)',
-                    color: '#003366',
+                    color: '#000000',
                     fontWeight: 500,
                     '&:hover': {
                       bgcolor: 'rgba(0,51,102,0.12)',
@@ -242,59 +224,8 @@ const MUIBudgetSection = () => {
 
             <Divider sx={{ my: 2 }} />
 
-            <Box sx={{ mb: 2 }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <BarChartIcon sx={{ color: '#003366', mr: 1 }} />
-                <Typography variant="subtitle2" fontWeight="bold" color="#003366">
-                  Cost vs. Benefit Analysis
-                </Typography>
-              </Box>
+           
 
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ 
-                    p: 2, 
-                    border: '1px solid rgba(0,0,0,0.12)', 
-                    borderRadius: 1,
-                    height: '100%'
-                  }}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Current System
-                    </Typography>
-                    <Typography variant="body2" paragraph sx={{ fontSize: '0.875rem' }}>
-                      <strong>$700 million</strong> in federal assistance with significant leakage
-                    </Typography>
-                    <Typography variant="body2" color="error.main" sx={{ fontSize: '0.875rem' }}>
-                      High fragmentation, low coordination
-                    </Typography>
-                  </Box>
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <Box sx={{ 
-                    p: 2, 
-                    bgcolor: 'rgba(0,136,0,0.05)', 
-                    border: '1px solid rgba(0,136,0,0.2)', 
-                    borderRadius: 1,
-                    height: '100%'
-                  }}>
-                    <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 'bold' }}>
-                      Proposed OCFS
-                    </Typography>
-                    <Typography variant="body2" paragraph sx={{ fontSize: '0.875rem' }}>
-                      <strong>$24.5 million/year</strong> to better leverage existing $700M
-                    </Typography>
-                    <Typography variant="body2" color="success.main" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                      Coordinated with multiplier effects
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Box>
-
-            <Typography variant="body2" sx={{ fontStyle: 'italic', color: 'text.secondary', mt: 2 }}>
-              These grants would prioritize public-private partnerships that foster state-wide, regional and local CFS initiatives while keeping economic benefits within West Virginia.
-            </Typography>
           </Grid>
         </Grid>
       </Box>
