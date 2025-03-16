@@ -349,69 +349,145 @@ const AppalachianFoodSystemsExplorer = () => {
                     </Box>
                   ))}
                 </Box>
+                
+                {/* Navigation Controls for Mobile - Moved under thumbnails */}
+                <Paper
+                  elevation={2}
+                  sx={{
+                    mt: 2,
+                    mx: 'auto',
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    width: 'fit-content'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', px: 2, py: 1 }}>
+                    <IconButton size="small" onClick={handleBack} disabled={activeMap === 0}>
+                      <KeyboardArrowLeft />
+                    </IconButton>
+                    {maps.map((_, index) => (
+                      <Box
+                        key={index}
+                        onClick={() => setActiveMap(index)}
+                        sx={{
+                          width: 12,
+                          height: 12,
+                          mx: 0.5,
+                          borderRadius: '50%',
+                          bgcolor: activeMap === index ? 'primary.main' : 'grey.300',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          transform: activeMap === index ? 'scale(1.2)' : 'scale(1)'
+                        }}
+                      />
+                    ))}
+                    <IconButton size="small" onClick={handleNext} disabled={activeMap === maps.length - 1}>
+                      <KeyboardArrowRight />
+                    </IconButton>
+                  </Box>
+                </Paper>
               </Box>
             ) : (
               // Desktop Grid - Larger thumbnails in a better layout
-              <Grid container spacing={2}>
-                {maps.map((map, index) => (
-                  <Grid item xs={12} sm={6} md={3} key={map.id}>
-                    <Card 
-                      onClick={() => setActiveMap(index)}
-                      sx={{ 
-                        cursor: 'pointer',
-                        borderColor: activeMap === index ? 'primary.main' : 'transparent',
-                        borderWidth: activeMap === index ? 2 : 0,
-                        borderStyle: 'solid',
-                        transform: activeMap === index ? 'scale(1.03)' : 'scale(1)',
-                        transition: 'transform 0.2s ease-in-out',
-                        height: '100%'
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        height="200"
-                        image={map.thumbnail}
-                        alt={map.title}
+              <>
+                <Grid container spacing={2}>
+                  {maps.map((map, index) => (
+                    <Grid item xs={12} sm={6} md={3} key={map.id}>
+                      <Card 
+                        onClick={() => setActiveMap(index)}
+                        sx={{ 
+                          cursor: 'pointer',
+                          borderColor: activeMap === index ? 'primary.main' : 'transparent',
+                          borderWidth: activeMap === index ? 2 : 0,
+                          borderStyle: 'solid',
+                          transform: activeMap === index ? 'scale(1.03)' : 'scale(1)',
+                          transition: 'transform 0.2s ease-in-out',
+                          height: '100%'
+                        }}
+                      >
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={map.thumbnail}
+                          alt={map.title}
+                          sx={{
+                            position: 'relative',
+                            '&::after': activeMap === index ? {
+                              content: '""',
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              backgroundColor: alpha(theme.palette.primary.main, 0.2)
+                            } : {}
+                          }}
+                        />
+                        <CardContent sx={{ p: 2 }}>
+                          <Typography variant="subtitle1" component="div" fontWeight={600} gutterBottom>
+                            {map.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ 
+                            mb: 1,
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            {map.description.split('.')[0] + '.'}
+                          </Typography>
+                          {activeMap === index && (
+                            <Chip 
+                              label="Active" 
+                              size="small" 
+                              color="primary" 
+                              sx={{ mt: 0.5 }} 
+                            />
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+                
+                {/* Navigation Controls for Desktop - Moved under thumbnails */}
+                <Paper
+                  elevation={2}
+                  sx={{
+                    mt: 3,
+                    mx: 'auto',
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    width: 'fit-content'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', px: 2, py: 1 }}>
+                    <IconButton size="small" onClick={handleBack} disabled={activeMap === 0}>
+                      <KeyboardArrowLeft />
+                    </IconButton>
+                    {maps.map((_, index) => (
+                      <Box
+                        key={index}
+                        onClick={() => setActiveMap(index)}
                         sx={{
-                          position: 'relative',
-                          '&::after': activeMap === index ? {
-                            content: '""',
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: alpha(theme.palette.primary.main, 0.2)
-                          } : {}
+                          width: 12,
+                          height: 12,
+                          mx: 0.5,
+                          borderRadius: '50%',
+                          bgcolor: activeMap === index ? 'primary.main' : 'grey.300',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          transform: activeMap === index ? 'scale(1.2)' : 'scale(1)'
                         }}
                       />
-                      <CardContent sx={{ p: 2 }}>
-                        <Typography variant="subtitle1" component="div" fontWeight={600} gutterBottom>
-                          {map.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ 
-                          mb: 1,
-                          display: '-webkit-box',
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: 'vertical',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis'
-                        }}>
-                          {map.description.split('.')[0] + '.'}
-                        </Typography>
-                        {activeMap === index && (
-                          <Chip 
-                            label="Active" 
-                            size="small" 
-                            color="primary" 
-                            sx={{ mt: 0.5 }} 
-                          />
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+                    ))}
+                    <IconButton size="small" onClick={handleNext} disabled={activeMap === maps.length - 1}>
+                      <KeyboardArrowRight />
+                    </IconButton>
+                  </Box>
+                </Paper>
+              </>
             )}
           </Box>
         )}
@@ -446,46 +522,7 @@ const AppalachianFoodSystemsExplorer = () => {
             />
           </Fade>
 
-          {/* Map Navigation Controls (only visible when not in fullscreen) */}
-          {!isFullScreen && (
-            <Paper
-              elevation={4}
-              sx={{
-                position: 'absolute',
-                bottom: 16,
-                left: '50%',
-                transform: 'translateX(-50%)',
-                borderRadius: 8,
-                overflow: 'hidden',
-                zIndex: 10
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', px: 2, py: 1 }}>
-                <IconButton size="small" onClick={handleBack} disabled={activeMap === 0}>
-                  <KeyboardArrowLeft />
-                </IconButton>
-                {maps.map((_, index) => (
-                  <Box
-                    key={index}
-                    onClick={() => setActiveMap(index)}
-                    sx={{
-                      width: 12,
-                      height: 12,
-                      mx: 0.5,
-                      borderRadius: '50%',
-                      bgcolor: activeMap === index ? 'primary.main' : 'grey.300',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      transform: activeMap === index ? 'scale(1.2)' : 'scale(1)'
-                    }}
-                  />
-                ))}
-                <IconButton size="small" onClick={handleNext} disabled={activeMap === maps.length - 1}>
-                  <KeyboardArrowRight />
-                </IconButton>
-              </Box>
-            </Paper>
-          )}
+          {/* Removed the navigation controls from here since they're now under thumbnails */}
         </Box>
 
         {!isFullScreen && (
