@@ -569,7 +569,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                           alignItems: 'center',
                           width: '100%',
                           height: '100%',
-                          bgcolor: 'rgba(255,255,255,0.08)',
+                          bgcolor: item.color,
                           backdropFilter: 'blur(10px)',
                           border: '1px solid rgba(255,255,255,0.1)',
                           borderRadius: '16px',
@@ -581,7 +581,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                           textTransform: 'none',
                           justifyContent: 'center', // Always center content
                           '&:hover': {
-                            bgcolor: 'rgba(255,255,255,0.15)',
+                            bgcolor: item.color,
                             boxShadow: `0 8px 20px rgba(0,0,0,0.15), 0 0 0 2px ${item.color}`,
                           },
                           willChange: 'transform, box-shadow, background-color',
@@ -652,14 +652,14 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       '&:hover': {
                         borderColor: 'white',
-                        bgcolor: 'rgba(255,255,255,0.1)',
+                        bgcolor: '#e9a902',
                         transform: 'translateY(-2px)',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       },
                       willChange: 'transform, box-shadow'
                     }}
                   >
-                    Explore Food Map
+                    Explore FoodLink
                   </Button>
                 </motion.div>
               )}

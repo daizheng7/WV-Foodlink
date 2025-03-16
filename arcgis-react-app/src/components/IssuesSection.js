@@ -62,7 +62,7 @@ const stats = [
   },
   {
     title: "Population Decline",
-    value: "Net Loss: 34,000",
+    value: "-34,000",
     description: "From 2020-2023, births: 55,000, deaths: 89,000.",
     icon: <PeopleAltIcon sx={{ fontSize: 60, color: "#fff" }} />,
     bgColor: "#354F5B",
