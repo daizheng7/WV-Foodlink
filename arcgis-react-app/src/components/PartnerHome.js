@@ -191,7 +191,7 @@ const PartnerHome = () => {
                       label="Food System Transformation" 
                       size="small" 
                       color="primary" 
-                      sx={{ fontWeight: 500 }} 
+                      sx={{ fontWeight: 500 }}  
                     />
                   </Box>
                 </Box>
