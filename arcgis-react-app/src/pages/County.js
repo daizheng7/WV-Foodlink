@@ -1,10 +1,11 @@
 import React from "react";
-import { Box, Typography, Divider, Paper, useTheme, useMediaQuery } from "@mui/material";
+import { Box, Typography, Divider, Paper, useTheme, useMediaQuery, Button } from "@mui/material";
 import CountyReport from "../components/CountyReport";
 import WhatWeDo from "../components/WhatWeDo";
 import DataTable from "../components/DataTable";
 import SNAPwv from "../components/SNAPwv";
 import RankingCounties from "../components/RankingCounties";
+import HistoryIcon from '@mui/icons-material/History';
 
 const County = () => {
   const theme = useTheme();
@@ -141,30 +142,39 @@ const County = () => {
         <Divider sx={{ mb: 2, borderColor: "#000000" }} />
         <RankingCounties />
       </Paper>
+      <Box
+  sx={{
+    mt: 6,
+    mb: 4,
+    p: 3,
+    backgroundColor: 'background.paper',
+    borderRadius: 2,
+    boxShadow: 3,
+    textAlign: 'center',
+  }}
+>
+  <Typography variant="h4" component="h2" gutterBottom sx={{ fontWeight: 'bold' }}>
+    <HistoryIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
+    Discover Historical County Reports
+  </Typography>
 
-      {/* What We Do Section */}
-      <Paper
-        sx={{
-          padding: getResponsiveSpacing(2, 2.5, 3),
-          marginBottom: getResponsiveSpacing(2, 3, 4),
-          borderRadius: "8px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          backgroundColor: "#ffffff",
-        }}
-      >
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: "bold",
-            mb: 2,
-            color: "#000000",
-          }}
-        >
-          What We Do
-        </Typography>
-        <Divider sx={{ mb: 2, borderColor: "#000000" }} />
-        <WhatWeDo />
-      </Paper>
+  <Typography variant="body1" sx={{ mb: 3 }}>
+    Explore detailed profiles and data reports for counties across West Virginia.
+  </Typography>
+
+  <Button
+    variant="contained"
+    
+    size="large"
+    href="https://wvfoodlink-wvu.hub.arcgis.com/pages/County%20Profiles"
+    target="_blank"
+    rel="noopener"
+    sx={{ px: 4, py: 1.5, fontSize: '1.1rem' }}
+  >
+    View County Profiles
+  </Button>
+</Box>
+      
     </Box>
   );
 };
