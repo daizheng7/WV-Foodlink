@@ -45,7 +45,8 @@ import {
   LightbulbCircle,
   RestaurantMenu,
   HelpCenter,
-  FoodBank
+  FoodBank,
+  GavelOutlined
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
@@ -126,7 +127,8 @@ const MenuBar = () => {
     },
     { label: "Food Atlas", path: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3", icon: <Map /> }, 
     { label: "About Us", path: "/about", icon: <Info /> },
-    { label: "Organize", path: "https://foodlink.wvu.edu/pages/organize-1", icon: <Group /> },
+    { label: "Organize", path: "https://wvfoodlink-wvu.hub.arcgis.com/pages/organize-1", icon: <Group /> },
+    { label: "Policies & Plans", path: "https://wvfoodlink-wvu.hub.arcgis.com/pages/nourishing-networks-reports", icon: <GavelOutlined /> },
     {
       label: "Resources",
       icon: <Book />,
