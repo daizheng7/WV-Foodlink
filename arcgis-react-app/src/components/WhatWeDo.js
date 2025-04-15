@@ -10,7 +10,7 @@ const categories = [
   {
     title: "Find Food",
     description: "Explore food assistance.",
-    gradient: "linear-gradient(135deg, #8B0000, #8B0000)",
+    gradient: "linear-gradient(135deg, #002855, #002855)",
     icon: <SearchIcon />,
     url: "https://foodlink-map.vercel.app/",
   },

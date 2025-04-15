@@ -131,7 +131,7 @@ const CharitiesPage = () => {
               variant="h1" 
               component="h1" 
               sx={{ 
-                color: "#99031e",
+                color: "#002855",
                 fontSize: isMobile ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
                 lineHeight: 1.2,
                 fontWeight: 700,
@@ -157,7 +157,7 @@ const CharitiesPage = () => {
               >
                 <InfoIcon sx={{ 
                   fontSize: isMobile ? 28 : 36, 
-                  color: "#99031e" 
+                  color: "#002855" 
                 }} />
               </IconButton>
             </Tooltip>
@@ -240,7 +240,7 @@ const CharitiesPage = () => {
             borderRadius: 2,
           }}
         >
-          <Typography id="info-modal-title" variant="h5" component="h2" sx={{ color: "#99031e", mb: 2, fontWeight: 600 }}>
+          <Typography id="info-modal-title" variant="h5" component="h2" sx={{ color: "#002855", mb: 2, fontWeight: 600 }}>
             About Charity Resources
           </Typography>
           <Typography id="info-modal-description" sx={{ mb: 2 }}>

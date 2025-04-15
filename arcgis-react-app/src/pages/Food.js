@@ -81,7 +81,7 @@ const FoodPage = () => {
               variant="h1" 
               component="h1" 
               sx={{ 
-                color: "#99031e",
+                color: "#002855",
                 fontSize: isMobile ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
                 lineHeight: 1.2,
                 fontWeight: 700,
@@ -107,7 +107,7 @@ const FoodPage = () => {
               >
                 <InfoIcon sx={{ 
                   fontSize: isMobile ? 28 : 36, 
-                  color: "#99031e" 
+                  color: "#002855" 
                 }} />
               </IconButton>
             </Tooltip>
@@ -150,7 +150,7 @@ const FoodPage = () => {
           p: 4,
           borderRadius: 2
         }}>
-          <Typography id="modal-modal-title" variant="h5" component="h2" sx={{ color: "#99031e", mb: 2, fontWeight: 600 }}>
+          <Typography id="modal-modal-title" variant="h5" component="h2" sx={{ color: "#002855", mb: 2, fontWeight: 600 }}>
             About Food Resources
           </Typography>
           <Typography id="modal-modal-description" sx={{ mb: 2 }}>

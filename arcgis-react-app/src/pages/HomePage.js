@@ -11,7 +11,7 @@ import WestVirginiaFoodSecurityTabs from "../components/WestVirginiaFoodSecurity
 import AppalachianFoodSystemsExplorer from "../components/AppalachianFoodSystemsExplorer";
 
 // Main color theme
-const MAIN_COLOR = "#800404";
+const MAIN_COLOR = "#002855";
 const SECONDARY_COLOR = "#3C6E71";
 
 // Enhanced color palette with better contrast

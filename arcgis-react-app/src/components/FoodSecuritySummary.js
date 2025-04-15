@@ -100,7 +100,7 @@ const FoodSecuritySummary = () => {
           <Grid item xs={12} md={6} sx={{ p: 3, borderRight: { md: '1px solid rgba(0,0,0,0.1)' } }}>
             <Fade in={animationReady} timeout={800} style={{ transitionDelay: '200ms' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <WarningIcon sx={{ color: '#8b0000', mr: 1 }} />
+                <WarningIcon sx={{ color: '#002855', mr: 1 }} />
                 <Typography variant="h5" fontWeight="bold" color="#000000">
                   The Crisis
                 </Typography>
@@ -130,7 +130,7 @@ const FoodSecuritySummary = () => {
                   borderRadius: 4,
                   bgcolor: 'rgba(0, 0, 0, 0.05)',
                   '& .MuiLinearProgress-bar': {
-                    backgroundColor: '#8b0000'
+                    backgroundColor: '#002855'
                   },
                   mb: 1
                 }} 
@@ -155,7 +155,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <AssignmentIcon sx={{ color: hoveredItem === 'programs' ? '#8b0000' : '#666666' }} />
+                    <AssignmentIcon sx={{ color: hoveredItem === 'programs' ? '#002855' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -191,7 +191,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <AttachMoneyIcon sx={{ color: hoveredItem === 'funding' ? '#8b0000' : '#666666' }} />
+                    <AttachMoneyIcon sx={{ color: hoveredItem === 'funding' ? '#002855' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -226,7 +226,7 @@ const FoodSecuritySummary = () => {
                   }}
                 >
                   <ListItemIcon sx={{ minWidth: 36 }}>
-                    <PeopleIcon sx={{ color: hoveredItem === 'initiatives' ? '#8b0000' : '#666666' }} />
+                    <PeopleIcon sx={{ color: hoveredItem === 'initiatives' ? '#002855' : '#666666' }} />
                   </ListItemIcon>
                   <ListItemText 
                     primary={<>
@@ -310,7 +310,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <PeopleIcon sx={{ color: '#8b0000' }} />
+                          <PeopleIcon sx={{ color: '#002855' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Engage low-income communities directly" 
@@ -341,7 +341,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <AttachMoneyIcon sx={{ color: '#8b0000' }} />
+                          <AttachMoneyIcon sx={{ color: '#002855' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Secure multi-year grant funding" 
@@ -372,7 +372,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <AssignmentIcon sx={{ color: '#8b0000' }} />
+                          <AssignmentIcon sx={{ color: '#002855' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Implement local food security plans" 
@@ -403,7 +403,7 @@ const FoodSecuritySummary = () => {
                     <CardContent sx={{ p: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <ListItem disableGutters dense sx={{ px: 0 }}>
                         <ListItemIcon sx={{ minWidth: 36 }}>
-                          <StorefrontIcon sx={{ color: '#8b0000' }} />
+                          <StorefrontIcon sx={{ color: '#002855' }} />
                         </ListItemIcon>
                         <ListItemText 
                           primary="Grow WV's food and farm economy" 

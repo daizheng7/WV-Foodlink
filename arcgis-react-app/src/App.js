@@ -69,24 +69,27 @@ const AppContent = () => {
           zIndex: isHomePage && !showContent ? 1 : 10, // Ensure content is above intro when visible
         }}
       >
-        {/* Navigation Menu */}
+        <a href="#main-content" className="skip-link">
+  Skip to main content
+</a>{/* Navigation Menu */}
         <MenuBar />
 
         {/* Main Content Area */}
-        <Box sx={{ 
-          marginTop: "80px", 
-          padding: 2
-        }}>
-          <Routes>
-            {/* Define Routes */}
-            <Route path="/" element={<HomePage />} />
-            <Route path="/assistance" element={<Assistance />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/county" element={<County />} />
-            <Route path="/charities" element={<CharitiesPage />} />
-            <Route path="/food" element={<FoodPage />} />
-          </Routes>
-        </Box>
+        <main id="main-content" tabIndex={-1}>
+  <Box sx={{ 
+    marginTop: "80px", 
+    padding: 2
+  }}>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/assistance" element={<Assistance />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/county" element={<County />} />
+      <Route path="/charities" element={<CharitiesPage />} />
+      <Route path="/food" element={<FoodPage />} />
+    </Routes>
+  </Box>
+</main>
         
         {/* Footer */}
         <Footer />

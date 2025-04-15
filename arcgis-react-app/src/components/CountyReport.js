@@ -134,10 +134,10 @@ const CountyReport = () => {
         type: "simple",
         symbol: {
           type: "simple-fill",
-          color: [153, 3, 30, 0.2], // #99031e with 20% transparency
+          color: [0, 40, 85, 0.2], // 🔵 Deep blue with 20% transparency
           outline: {
-            color: [100, 0, 20, 0.8], // Darker red outline #640014
-            width: 1.5, // Default width
+            color: [0, 40, 85, 1], // Solid deep blue outline
+            width: 1.5,
           },
         },
       },
@@ -145,8 +145,8 @@ const CountyReport = () => {
         {
           symbol: {
             type: "text",
-            color: "white", // White text for contrast
-            haloColor: "black", // Black outline around text
+            color: "white", 
+            haloColor: "black", 
             haloSize: 1,
             font: {
               size: 12,
@@ -154,16 +154,16 @@ const CountyReport = () => {
             },
           },
           labelExpressionInfo: {
-            expression: "$feature.NAME", // Assumes "NAME" is the field for county names
+            expression: "$feature.NAME", 
           },
-          labelPlacement: "always-horizontal", // Keeps text readable
+          labelPlacement: "always-horizontal", 
         },
       ],
-      outFields: ["*"], // Ensure all fields are available for hover effects
+      outFields: ["*"],
       popupTemplate: {
-        title: "{NAME}", // Display county name
+        title: "{NAME}", 
       },
-      effect: "bloom(1.5, 0.5px, 0.2)", // Subtle glow effect for emphasis
+      effect: "bloom(1.5, 0.5px, 0.2)", 
     });
     
 

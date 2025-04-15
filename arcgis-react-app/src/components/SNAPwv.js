@@ -136,7 +136,7 @@ const SNAPwv = () => {
         align="center"
         sx={{
           mb: 2,
-          color: "#99031e",
+          color: "#002855",
           fontSize: isMobile ? "1.5rem" : "2rem",
           fontWeight: 600
         }}
@@ -176,7 +176,6 @@ const SNAPwv = () => {
                   <Paper
                     elevation={2}
                     sx={{
-                      bgcolor: "#fef2f2",
                       borderRadius: "8px",
                       p: getResponsiveSpacing(2, 2.5, 3),
                       height: "100%",
@@ -190,7 +189,7 @@ const SNAPwv = () => {
                     <PeopleIcon
                       sx={{
                         fontSize: isMobile ? "40px" : "50px",
-                        color: "#99031e",
+                        color: "#002855",
                         mb: 1,
                       }}
                     />
@@ -198,7 +197,7 @@ const SNAPwv = () => {
                       variant="h5"
                       component="h3"
                       sx={{
-                        color: "#99031e",
+                        color: "#002855",
                         fontSize: isMobile ? "1.3rem" : "1.5rem",
                         fontWeight: 600,
                       }}
@@ -236,7 +235,6 @@ const SNAPwv = () => {
                   <Paper
                     elevation={2}
                     sx={{
-                      bgcolor: "#fef2f2",
                       borderRadius: "8px",
                       p: getResponsiveSpacing(2, 2.5, 3),
                       height: "100%",
@@ -250,7 +248,7 @@ const SNAPwv = () => {
                     <AttachMoneyIcon
                       sx={{
                         fontSize: isMobile ? "40px" : "50px",
-                        color: "#99031e",
+                        color: "#002855",
                         mb: 1,
                       }}
                     />
@@ -258,7 +256,7 @@ const SNAPwv = () => {
                       variant="h5"
                       component="h3"
                       sx={{
-                        color: "#99031e",
+                        color: "#002855",
                         fontSize: isMobile ? "1.3rem" : "1.5rem",
                         fontWeight: 600,
                       }}

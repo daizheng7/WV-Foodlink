@@ -48,7 +48,7 @@ const About = () => {
           component="h1"
           align="center"
           sx={{
-            color: "#99031e",
+            color: "#002855",
             fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.5rem" },
             lineHeight: 1.2,
             fontWeight: 700,
@@ -63,7 +63,7 @@ const About = () => {
               transform: "translateX(-50%)",
               width: { xs: "60px", sm: "80px" },
               height: "4px",
-              backgroundColor: "#99031e",
+              backgroundColor: "#002855",
               borderRadius: "2px"
             }
           }}
@@ -85,7 +85,7 @@ const About = () => {
             padding: { xs: "0 16px", sm: "0" },
           }}
         >
-          The <Box component="span" sx={{ fontWeight: "bold", color: "#99031e" }}>WVU Center for Resilient Communities</Box> launched WV FOODLINK in 2015 following two years of action research with anti-hunger organizations across the state of West Virginia who expressed a desire for an online resource to make their work visible and a place to better understand the scope and reach of public nutrition assistance programs.
+          The <Box component="span" sx={{ fontWeight: "bold", color: "#002855" }}>WVU Center for Resilient Communities</Box> launched WV FOODLINK in 2015 following two years of action research with anti-hunger organizations across the state of West Virginia who expressed a desire for an online resource to make their work visible and a place to better understand the scope and reach of public nutrition assistance programs.
         </Typography>
 
         {/* Main About Text - Second Paragraph */}
@@ -141,7 +141,7 @@ const About = () => {
               transform: "translateX(-50%)",
               width: "60px",
               height: "3px",
-              backgroundColor: "#99031e",
+              backgroundColor: "#002855",
               borderRadius: "2px"
             }
           }}
@@ -188,7 +188,7 @@ const About = () => {
               {/* Header Banner */}
               <Box 
                 sx={{
-                  bgcolor: "#99031e",
+                  bgcolor: "#002855",
                   p: { xs: 1.5, sm: 2 },
                   display: "flex",
                   justifyContent: "center",
@@ -261,13 +261,13 @@ const About = () => {
                   rel="noopener noreferrer"
                   sx={{
                     mt: 2,
-                    color: "#99031e",
-                    borderColor: "#99031e",
+                    color: "#002855",
+                    borderColor: "#002855",
                     fontWeight: "bold",
                     fontSize: { xs: "0.8rem", sm: "0.875rem" },
                     "&:hover": {
                       backgroundColor: "rgba(153, 3, 30, 0.1)",
-                      borderColor: "#99031e",
+                      borderColor: "#002855",
                     }
                   }}
                 >
@@ -411,9 +411,9 @@ const About = () => {
             sx={{
               textAlign: "center",
               fontWeight: "600",
-              color: "#99031e",
+              color: "#002855",
               mb: 3,
-              borderBottom: "2px solid #99031e",
+              borderBottom: "2px solid #002855",
               paddingBottom: "10px",
               display: "inline-block",
               marginLeft: "auto",
@@ -460,12 +460,12 @@ const About = () => {
                     padding: { xs: "8px 4px", sm: "10px 8px" },
                     borderRadius: "8px",
                     transition: "all 0.3s ease",
-                    backgroundColor: selectedPartner.name === partner.name ? "#99031e" : "white",
-                    borderColor: "#99031e",
-                    color: selectedPartner.name === partner.name ? "#ffffff" : "#99031e",
+                    backgroundColor: selectedPartner.name === partner.name ? "#002855" : "white",
+                    borderColor: "#002855",
+                    color: selectedPartner.name === partner.name ? "#ffffff" : "#002855",
                     '&:hover': {
                       backgroundColor: selectedPartner.name === partner.name ? "#7a0218" : "rgba(153, 3, 30, 0.1)",
-                      borderColor: "#99031e",
+                      borderColor: "#002855",
                       transform: "translateY(-2px)",
                       boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
                     },

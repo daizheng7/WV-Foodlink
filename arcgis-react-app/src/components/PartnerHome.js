@@ -141,24 +141,18 @@ const PartnerHome = () => {
                 overflow: 'visible',
               }}
             >
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: -16,
-                  left: 24,
-                  width: 50,
-                  height: 50,
-                  bgcolor: 'primary.main',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 2,
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                  zIndex: 1,
-                }}
-              >
-                <SchoolIcon sx={{ fontSize: 28, color: 'white' }} />
-              </Box>
+               <Box
+  component="img"
+  src="/crc.png"
+  alt="WVU CRC Logo"
+  sx={{
+    width: '100%',
+    maxHeight: 120,
+    objectFit: 'contain',
+    mx: 'auto',
+    my: 2
+  }}
+/>
               
               <CardHeader
   title={
@@ -172,7 +166,7 @@ const PartnerHome = () => {
     fontSize: { xs: "1.25rem", md: "1.4rem" },
   }}
                 sx={{ 
-                  bgcolor: 'primary.main', 
+                  bgcolor: '#002855', 
                   color: 'white', 
                   pl: { xs: 10, md: 12 }
                 }}
@@ -180,20 +174,8 @@ const PartnerHome = () => {
               
               <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Avatar sx={{ width: 60, height: 60, bgcolor: red[50], color: 'primary.main', mr: 2 }}>
-                    <Typography variant="h6" fontWeight="bold">CRC</Typography>
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h6" component="h3" gutterBottom>
-                      Center for Resilient Communities
-                    </Typography>
-                    <Chip 
-                      label="Food System Transformation" 
-                      size="small" 
-                      color="primary" 
-                      sx={{ fontWeight: 500 }}  
-                    />
-                  </Box>
+                  
+                 
                 </Box>
                 
                 <Typography variant="body1" paragraph sx={{ mb: 3 }}>
@@ -205,40 +187,40 @@ const PartnerHome = () => {
                     label="Community Economies" 
                     size="small" 
                     variant="outlined" 
-                    color="primary" 
+                    color="#002855" 
                   />
                   <Chip 
                     label="Environmental Justice" 
                     size="small" 
                     variant="outlined" 
-                    color="primary" 
+                    color="#002855" 
                   />
                   <Chip 
                     label="Climate Action" 
                     size="small" 
                     variant="outlined" 
-                    color="primary" 
+                    color="#002855" 
                   />
                 </Box>
                 
                 <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 'auto' }}>
                   <List dense disablePadding>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="primary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Community-engaged research and education programs" 
                         primaryTypographyProps={{ variant: 'body2' }}
                       />
                     </ListItem>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="primary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Building just, equitable, and vibrant communities" 
                         primaryTypographyProps={{ variant: 'body2' }}
                       />
                     </ListItem>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="primary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Transformative change through partnership" 
                         primaryTypographyProps={{ variant: 'body2' }}
@@ -252,7 +234,7 @@ const PartnerHome = () => {
               <CardActions sx={{ p: 3, gap: 2, justifyContent: isMobile ? 'center' : 'flex-end' }}>
                 <Button 
                   variant="outlined" 
-                  color="primary" 
+                  color="#002855" 
                   onClick={() => handleOpenDialog('resilient')}
                   startIcon={<InfoIcon />}
                 >
@@ -260,7 +242,7 @@ const PartnerHome = () => {
                 </Button>
                 <Button 
                   variant="contained" 
-                  color="primary" 
+                  color="#002855" 
                   href="https://resilientcommunities.wvu.edu/"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -283,7 +265,7 @@ const PartnerHome = () => {
               <DialogTitle 
                 id="crc-dialog-title" 
                 sx={{ 
-                  bgcolor: 'primary.main', 
+                  bgcolor: "#002855", 
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
@@ -307,10 +289,8 @@ const PartnerHome = () => {
               <DialogContent dividers>
                 <DialogContentText component="div">
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    <Avatar sx={{ width: 60, height: 60, bgcolor: red[50], color: 'primary.main', mr: 2 }}>
-                      <Typography variant="h6" fontWeight="bold">CRC</Typography>
-                    </Avatar>
-                    <Typography variant="h5" gutterBottom color="primary.main" fontWeight="bold">
+                    
+                    <Typography variant="h5" gutterBottom color="#002855" fontWeight="bold">
                       Center for Resilient Communities
                     </Typography>
                   </Box>
@@ -324,7 +304,7 @@ const PartnerHome = () => {
                   </Typography>
                   
                   <Box sx={{ my: 4, p: 3, bgcolor: grey[50], borderRadius: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="h6" gutterBottom sx={{ color: "#002855", display: 'flex', alignItems: 'center' }}>
                       <InfoIcon sx={{ mr: 1 }} /> Mission & Vision
                     </Typography>
                     <Typography variant="body1" paragraph>
@@ -335,7 +315,7 @@ const PartnerHome = () => {
                     </Typography>
                   </Box>
                   
-                  <Typography variant="h6" gutterBottom sx={{ mt: 4, color: 'primary.main', fontWeight: 'bold' }}>
+                  <Typography variant="h6" gutterBottom sx={{ mt: 4, color: "#002855", fontWeight: 'bold' }}>
                     Areas of Inquiry
                   </Typography>
                   
@@ -345,7 +325,7 @@ const PartnerHome = () => {
                   
                   <Box sx={{ mt: 3, mb: 2 }}>
                     <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2, borderLeft: `4px solid ${theme.palette.primary.main}` }}>
-                      <Typography variant="subtitle1" fontWeight="bold" color="primary.main" gutterBottom>
+                      <Typography variant="subtitle1" fontWeight="bold" color="#002855" gutterBottom>
                         Community Economies and Sustainable Regional Development
                       </Typography>
                       <Typography variant="body2">
@@ -354,7 +334,7 @@ const PartnerHome = () => {
                     </Paper>
                     
                     <Paper elevation={2} sx={{ p: 3, mb: 3, borderRadius: 2, borderLeft: `4px solid ${theme.palette.primary.main}` }}>
-                      <Typography variant="subtitle1" fontWeight="bold" color="primary.main" gutterBottom>
+                      <Typography variant="subtitle1" fontWeight="bold" color="#002855" gutterBottom>
                         Environmental Justice, Climate Action and Community Well-being
                       </Typography>
                       <Typography variant="body2">
@@ -363,7 +343,7 @@ const PartnerHome = () => {
                     </Paper>
                     
                     <Paper elevation={2} sx={{ p: 3, borderRadius: 2, borderLeft: `4px solid ${theme.palette.primary.main}` }}>
-                      <Typography variant="subtitle1" fontWeight="bold" color="primary.main" gutterBottom>
+                      <Typography variant="subtitle1" fontWeight="bold" color="#002855" gutterBottom>
                         Food System Transformation
                       </Typography>
                       <Typography variant="body2">
@@ -374,14 +354,14 @@ const PartnerHome = () => {
                 </DialogContentText>
               </DialogContent>
               <DialogActions sx={{ p: 2 }}>
-                <Button onClick={() => handleCloseDialog('resilient')} color="primary">
+                <Button onClick={() => handleCloseDialog('resilient')} color="#002855">
                   Close
                 </Button>
                 <Button 
                   href="https://resilientcommunities.wvu.edu/" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  color="primary" 
+                  color="#002855" 
                   variant="contained"
                   endIcon={<OpenInNewIcon />}
                 >
@@ -404,23 +384,17 @@ const PartnerHome = () => {
               }}
             >
               <Box
-                sx={{
-                  position: 'absolute',
-                  top: -16,
-                  left: 24,
-                  width: 50,
-                  height: 50,
-                  bgcolor: 'secondary.main',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 2,
-                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)',
-                  zIndex: 1,
-                }}
-              >
-                <BusinessIcon sx={{ fontSize: 28, color: 'white' }} />
-              </Box>
+  component="img"
+  src="/wvuext_fnp_color.jpg"
+  alt="WVU Extension Family Nutrition Program Logo"
+  sx={{
+    width: '100%',
+    maxHeight: 120,
+    objectFit: 'contain',
+    mx: 'auto',
+    my: 2
+  }}
+/>
               
               <CardHeader
                 title="WVU Extension Family Nutrition Program"
@@ -430,7 +404,7 @@ const PartnerHome = () => {
                   fontSize: { xs: '1.25rem', md: '1.4rem' }
                 }}
                 sx={{ 
-                  bgcolor: 'secondary.main', 
+                  bgcolor: '#002855', 
                   color: 'white', 
                   pl: { xs: 10, md: 12 }
                 }}
@@ -438,20 +412,7 @@ const PartnerHome = () => {
               
               <CardContent sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', p: 3 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                  <Avatar sx={{ width: 60, height: 60, bgcolor: blue[50], color: 'secondary.main', mr: 2 }}>
-                    <Typography variant="h6" fontWeight="bold">FNP</Typography>
-                  </Avatar>
-                  <Box>
-                    <Typography variant="h6" component="h3" gutterBottom>
-                      Family Nutrition Program
-                    </Typography>
-                    <Chip 
-                      label="Nutrition Education" 
-                      size="small" 
-                      color="secondary" 
-                      sx={{ fontWeight: 500 }} 
-                    />
-                  </Box>
+                  
                 </Box>
                 
                 <Typography variant="body1" paragraph sx={{ mb: 3 }}>
@@ -463,40 +424,40 @@ const PartnerHome = () => {
                     label="Healthy Eating" 
                     size="small" 
                     variant="outlined" 
-                    color="secondary" 
+                    color="#002855" 
                   />
                   <Chip 
                     label="Food Resources" 
                     size="small" 
                     variant="outlined" 
-                    color="secondary" 
+                    color="#002855" 
                   />
                   <Chip 
                     label="Physical Activity" 
                     size="small" 
                     variant="outlined" 
-                    color="secondary" 
+                    color="#002855" 
                   />
                 </Box>
                 
                 <Box sx={{ display: 'flex', gap: 2, flexDirection: 'column', mt: 'auto' }}>
                   <List dense disablePadding>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="secondary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Nutrition education using USDA guidelines" 
                         primaryTypographyProps={{ variant: 'body2' }}
                       />
                     </ListItem>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="secondary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Food demonstrations and practical skills" 
                         primaryTypographyProps={{ variant: 'body2' }}
                       />
                     </ListItem>
                     <ListItem disableGutters sx={{ px: 0, py: 0.5 }}>
-                      <CheckCircleIcon color="secondary" fontSize="small" sx={{ mr: 1 }} />
+                      <CheckCircleIcon color="#002855" fontSize="small" sx={{ mr: 1 }} />
                       <ListItemText 
                         primary="Serving over 40 counties in West Virginia" 
                         primaryTypographyProps={{ variant: 'body2' }}
@@ -510,7 +471,7 @@ const PartnerHome = () => {
               <CardActions sx={{ p: 3, gap: 2, justifyContent: isMobile ? 'center' : 'flex-end' }}>
                 <Button 
                   variant="outlined" 
-                  color="secondary" 
+                  color="#002855" 
                   onClick={() => handleOpenDialog('nutrition')}
                   startIcon={<InfoIcon />}
                 >
@@ -518,7 +479,7 @@ const PartnerHome = () => {
                 </Button>
                 <Button 
                   variant="contained" 
-                  color="secondary" 
+                  color="#002855" 
                   href="https://extension.wvu.edu/food-health/nutrition/fnp"
                   target="_blank"
                   rel="noopener noreferrer"
@@ -541,7 +502,7 @@ const PartnerHome = () => {
               <DialogTitle 
                 id="fnp-dialog-title" 
                 sx={{ 
-                  bgcolor: 'secondary.main', 
+                  bgcolor: "#002855", 
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
@@ -565,15 +526,10 @@ const PartnerHome = () => {
               <DialogContent dividers>
                 <DialogContentText component="div">
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-                    <Avatar sx={{ width: 60, height: 60, bgcolor: blue[50], color: 'secondary.main', mr: 2 }}>
-                      <Typography variant="h6" fontWeight="bold">FNP</Typography>
-                    </Avatar>
-                    <Typography variant="h5" gutterBottom color="secondary.main" fontWeight="bold">
-                      Family Nutrition Program
-                    </Typography>
+                    
                   </Box>
                   
-                  <Typography variant="h6" gutterBottom sx={{ color: 'secondary.main' }}>
+                  <Typography variant="h6" gutterBottom sx={{ color: "#002855" }}>
                     What is the WVU Extension Family Nutrition Program (FNP)?
                   </Typography>
                   
@@ -582,7 +538,7 @@ const PartnerHome = () => {
                   </Typography>
                   
                   <Box sx={{ my: 4, p: 3, bgcolor: grey[50], borderRadius: 2 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'secondary.main', display: 'flex', alignItems: 'center' }}>
+                    <Typography variant="h6" gutterBottom sx={{ color: "#002855", display: 'flex', alignItems: 'center' }}>
                       <InfoIcon sx={{ mr: 1 }} /> Program Goals
                     </Typography>
                     <Typography variant="body1">
@@ -591,23 +547,23 @@ const PartnerHome = () => {
                     
                     <List>
                       <ListItem>
-                        <CheckCircleIcon color="secondary" sx={{ mr: 2 }} />
+                        <CheckCircleIcon color="#002855" sx={{ mr: 2 }} />
                         <ListItemText primary="Teaching nutrition education using the USDA's MyPlate and Dietary Guidelines" />
                       </ListItem>
                       <ListItem>
-                        <CheckCircleIcon color="secondary" sx={{ mr: 2 }} />
+                        <CheckCircleIcon color="#002855" sx={{ mr: 2 }} />
                         <ListItemText primary="Providing food demonstrations" />
                       </ListItem>
                       <ListItem>
-                        <CheckCircleIcon color="secondary" sx={{ mr: 2 }} />
+                        <CheckCircleIcon color="#002855" sx={{ mr: 2 }} />
                         <ListItemText primary="Improving access and availability to local community resources" />
                       </ListItem>
                       <ListItem>
-                        <CheckCircleIcon color="secondary" sx={{ mr: 2 }} />
+                        <CheckCircleIcon color="#002855" sx={{ mr: 2 }} />
                         <ListItemText primary="Helping participants to stretch their food dollars, plan menus and read food labels" />
                       </ListItem>
                       <ListItem>
-                        <CheckCircleIcon color="secondary" sx={{ mr: 2 }} />
+                        <CheckCircleIcon color="#002855" sx={{ mr: 2 }} />
                         <ListItemText primary="Encouraging participants to devote more time to being physically active" />
                       </ListItem>
                     </List>
@@ -618,7 +574,7 @@ const PartnerHome = () => {
                   <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
                       <Paper elevation={2} sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: `4px solid ${theme.palette.secondary.main}` }}>
-                        <Typography variant="h6" gutterBottom sx={{ color: 'secondary.main' }}>
+                        <Typography variant="h6" gutterBottom sx={{ color: "#002855" }}>
                           Target Audiences
                         </Typography>
                         
@@ -630,7 +586,7 @@ const PartnerHome = () => {
                     
                     <Grid item xs={12} md={6}>
                       <Paper elevation={2} sx={{ p: 3, height: '100%', borderRadius: 2, borderLeft: `4px solid ${theme.palette.secondary.main}` }}>
-                        <Typography variant="h6" gutterBottom sx={{ color: 'secondary.main' }}>
+                        <Typography variant="h6" gutterBottom sx={{ color: "#002855" }}>
                           Program Delivery
                         </Typography>
                         
@@ -641,33 +597,33 @@ const PartnerHome = () => {
                     </Grid>
                   </Grid>
                   
-                  <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" gutterBottom sx={{ color: 'secondary.main' }}>
+                  <Box sx={{ mt: 10 }}>
+                    <Typography variant="h6" gutterBottom sx={{ color: "#002855" }}>
                       Program Focus Areas
                     </Typography>
                     
                     <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 2 }}>
-                      <Chip label="Nutrition Education" color="secondary" />
-                      <Chip label="Food Demonstrations" color="secondary" />
-                      <Chip label="Health Resources" color="secondary" />
-                      <Chip label="Community Outreach" color="secondary" />
-                      <Chip label="Youth Programs" color="secondary" />
-                      <Chip label="Meal Planning" color="secondary" />
-                      <Chip label="Budget Management" color="secondary" />
-                      <Chip label="Food Safety" color="secondary" />
+                      <Chip label="Nutrition Education" color="#002855" />
+                      <Chip label="Food Demonstrations" color="#002855" />
+                      <Chip label="Health Resources" color="#002855" />
+                      <Chip label="Community Outreach" color="#002855" />
+                      <Chip label="Youth Programs" color="#002855" />
+                      <Chip label="Meal Planning" color="#002855" />
+                      <Chip label="Budget Management" color="#002855" />
+                      <Chip label="Food Safety" color="#002855" />
                     </Box>
                   </Box>
                 </DialogContentText>
               </DialogContent>
               <DialogActions sx={{ p: 2 }}>
-                <Button onClick={() => handleCloseDialog('nutrition')} color="secondary">
+                <Button onClick={() => handleCloseDialog('nutrition')} color="#002855">
                   Close
                 </Button>
                 <Button 
                   href="https://extension.wvu.edu/food-health/nutrition/fnp" 
                   target="_blank"
                   rel="noopener noreferrer"
-                  color="secondary" 
+                  color="#002855" 
                   variant="contained"
                   endIcon={<OpenInNewIcon />}
                 >

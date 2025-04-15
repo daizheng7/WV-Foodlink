@@ -77,7 +77,7 @@ const WestVirginiaFoodSecurityTabs = () => {
           overflow: 'hidden'
         }}
       >
-        <AppBar position="static" sx={{ bgcolor: '#8b0000' }}>
+        <AppBar position="static" sx={{ bgcolor: '#002855' }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs 
               value={tabValue} 
@@ -147,7 +147,7 @@ const WestVirginiaFoodSecurityTabs = () => {
           size="large"
           disableElevation
           sx={{
-            bgcolor: '#8b0000',
+            bgcolor: '#002855',
             color: 'white',
             fontWeight: 600,
             px: { xs: 4, sm: 5 },

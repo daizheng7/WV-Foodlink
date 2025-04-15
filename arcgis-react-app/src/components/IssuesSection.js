@@ -20,7 +20,7 @@ const stats = [
     value: "16.7%",
     description: "West Virginia's poverty rate compared to the national average of 11.1%.",
     icon: <TrendingUpIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#8B0000",
+    bgColor: "#002855",
     link: "https://www.wvpolicy.org/data/poverty-in-west-virginia/",
     org: "WV Center on Budget & Policy"
   },

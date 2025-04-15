@@ -103,14 +103,14 @@ const MenuBar = () => {
     { title: 'SNAP-ED', icon: <School sx={{ color: '#39897E' }} />, description: 'Food Policy, Systems and Environmental Change interventions for Healthy Food Access Programming.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
     { title: 'Congregate Meals', icon: <Restaurant sx={{ color: '#B1B5AB' }} />, description: 'Public Meal programs in Schools, Daycares and Senior Centers.', url: 'https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=b442bf3a130248938d3f4323840fe50e' },
     { title: 'Charitable Food', icon: <LocalMall sx={{ color: '#C84C23' }} />, description: 'Details food pantries, soup kitchens, and school backpack programs.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b' },
-    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#8B0000' }} />, description: 'Information on local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
+    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#002855' }} />, description: 'Information on local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
     { title: 'Agricultural Data', icon: <Agriculture sx={{ color: '#445525' }} />, description: 'Insights into farming practices, land use, and expenditures.', url: 'https://www.arcgis.com/apps/dashboards/2100f46c379b49ba8d5d4184c68d0ab0'},
     { title: 'Self-Provisioning', icon: <NaturePeople sx={{ color: '#D4D2C2' }} />, description: 'Gardening and hunting data related to food self-sufficiency.', url: 'https://www.arcgis.com/apps/dashboards/60c2dc75756c485f9d135d14826464f4' },
     { title: 'Political Participation', icon: <AccountBalance sx={{ color: '#39897E' }} />, description: 'Voter registration and engagement.', url: 'https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec' },
     { title: 'County Summary', icon: <Public sx={{ color: '#354F5B' }} />, description: 'Data related to county-level food landscape.', url: '/county' },
     { title: 'Find Food', icon: <ZoomIn sx={{ color: '#C84C23' }} />, description: 'App to help you find fresh food based on your location.', url: '/food' },
     { title: 'Organize', icon: <Diversity3 sx={{ color: '#B1B5AB' }} />, description: 'Discover how to organize for the right to food in your community.', url: 'https://foodlink.wvu.edu/pages/organize-1' },
-    { title: 'Learn', icon: <LightbulbCircle sx={{ color: '#8B0000' }} />, description: 'Learn how to create just and sustainable communities.', url: 'https://resilientcommunities.wvu.edu/' }
+    { title: 'Learn', icon: <LightbulbCircle sx={{ color: '#002855' }} />, description: 'Learn how to create just and sustainable communities.', url: 'https://resilientcommunities.wvu.edu/' }
   ];
 
   const menuItems = [
@@ -144,7 +144,7 @@ const MenuBar = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ bgcolor: "#8b0000" }}>
+    <AppBar position="fixed" sx={{ bgcolor: "#002855" }}>
       <Toolbar sx={{ justifyContent: "space-between", alignItems: "center", py: { xs: 1, sm: 1.5 } }}>
         {/* Foodlink Logo */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -181,7 +181,7 @@ const MenuBar = () => {
                 } 
               }}
             >
-              <Box sx={{ p: 2, bgcolor: "#8b0000", color: "white" }}>
+              <Box sx={{ p: 2, bgcolor: "#002855", color: "white" }}>
                 <img
                   src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
                   alt="Foodlink Logo"

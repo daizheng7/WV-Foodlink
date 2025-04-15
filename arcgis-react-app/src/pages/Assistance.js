@@ -142,7 +142,7 @@ const AssistancePage = () => {
               variant="h1" 
               component="h1" 
               sx={{ 
-                color: "#99031e",
+                color: "#002855",
                 fontSize: isMobileView ? "2.2rem" : isTablet ? "2.7rem" : "3.2rem",
                 lineHeight: 1.2,
                 fontWeight: 700,
@@ -168,7 +168,7 @@ const AssistancePage = () => {
               >
                 <InfoIcon sx={{ 
                   fontSize: isMobileView ? 28 : 36, 
-                  color: "#99031e" 
+                  color: "#002855" 
                 }} />
               </IconButton>
             </Tooltip>
@@ -233,7 +233,7 @@ const AssistancePage = () => {
               onClick={e => e.stopPropagation()}
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-[#99031e]">About Assistance Resources</h2>
+                <h2 className="text-xl font-semibold text-[#002855]">About Assistance Resources</h2>
                 <button
                   onClick={() => setOpenModal(false)}
                   className="text-gray-500 hover:text-gray-700"

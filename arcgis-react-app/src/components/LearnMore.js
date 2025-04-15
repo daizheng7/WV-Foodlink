@@ -10,7 +10,7 @@ const learnMoreCategories = [
     title: "Assistance",
     description:
       "Find programs and services that provide food assistance to individuals and families in need.",
-    icon: <LocalHospitalIcon sx={{ fontSize: 50, color: "#8B0000" }} />,
+    icon: <LocalHospitalIcon sx={{ fontSize: 50, color: "#002855" }} />,
     actionText: "Learn About Assistance",
   },
   {

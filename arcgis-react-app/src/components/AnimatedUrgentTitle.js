@@ -43,7 +43,7 @@ const AnimatedUrgentTitle = () => {
         borderRadius: 2,
         mb: 4,
         width: '100%',
-        background: 'linear-gradient(135deg, #8B0000 0%, #8B0000 70%, #A50000 100%)',
+        background: 'linear-gradient(135deg, #002855 0%, #002855 70%, #A50000 100%)',
         boxShadow: '0 8px 32px rgba(139, 0, 0, 0.2)',
         border: '1px solid rgba(139, 0, 0, 0.3)'
       }}

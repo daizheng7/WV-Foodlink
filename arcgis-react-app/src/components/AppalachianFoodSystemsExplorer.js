@@ -46,7 +46,7 @@ import {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#8B0000', // Dark red for Appalachian theme
+      main: '#002855', // Dark red for Appalachian theme
       light: '#B22222',
       dark: '#600000',
       contrastText: '#fff',
@@ -78,7 +78,7 @@ const theme = createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          backgroundImage: 'linear-gradient(to right, #8B0000, #B22222)',
+          backgroundImage: 'linear-gradient(to right, #002855, #B22222)',
         },
       },
     },

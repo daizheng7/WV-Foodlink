@@ -150,7 +150,7 @@ const NourishingNetworks = () => {
           {/* View More PDFs Button */}
           <Button
             variant="contained"
-            color="#8b0000"
+            color="#002855"
             href="https://foodlink.wvu.edu/documents/"
             target="_blank"
             rel="noopener noreferrer"

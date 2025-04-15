@@ -159,7 +159,7 @@ const DataPartners = () => {
             transform: "translateX(-50%)",
             width: { xs: "60px", sm: "80px" },
             height: "3px",
-            backgroundColor: "#99031e",
+            backgroundColor: "#002855",
             borderRadius: "2px"
           }
         }}

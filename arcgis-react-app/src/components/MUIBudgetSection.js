@@ -64,7 +64,7 @@ const MUIBudgetSection = () => {
           {/* Left Column - Budget Breakdown */}
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <AttachMoneyIcon sx={{ color: '#8b0000', mr: 1 }} />
+              <AttachMoneyIcon sx={{ color: '#002855', mr: 1 }} />
               <Typography variant="h6" fontWeight="bold" color="#000000">
                 Proposed Budget
               </Typography>
@@ -135,7 +135,7 @@ const MUIBudgetSection = () => {
                       borderRadius: 4,
                       bgcolor: 'rgba(0,0,0,0.05)',
                       '& .MuiLinearProgress-bar': {
-                        backgroundColor: '#8b0000'
+                        backgroundColor: '#002855'
                       }
                     }} 
                   />
@@ -173,7 +173,7 @@ const MUIBudgetSection = () => {
           {/* Right Column - Impact */}
           <Grid item xs={12} md={6}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <TrendingUpIcon sx={{ color: '#8b0000', mr: 1 }} />
+              <TrendingUpIcon sx={{ color: '#002855', mr: 1 }} />
               <Typography variant="h6" fontWeight="bold" color="#000000">
                 Strategic Impact
               </Typography>

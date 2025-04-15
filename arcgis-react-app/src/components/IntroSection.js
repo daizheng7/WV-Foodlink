@@ -200,7 +200,7 @@ const IntroSection = ({ onExploreClick, getResponsiveSpacing }) => {
             {/* Quick Access Cards */}
             <Grid container spacing={3} justifyContent="center" sx={{ mb: 5 }}>
               {[
-                { icon: <SearchIcon sx={{ fontSize: 28 }} />, text: "Find Food Assistance", color: "#8B0000" },
+                { icon: <SearchIcon sx={{ fontSize: 28 }} />, text: "Find Food Assistance", color: "#002855" },
                 { icon: <LayersIcon sx={{ fontSize: 28 }} />, text: "Explore Food Atlas", color: "#354F5B" },
                 { icon: <GroupIcon sx={{ fontSize: 28 }} />, text: "Organize Communities", color: "#C84C23" },
                 { icon: <AccessTimeFilledIcon sx={{ fontSize: 28 }} />, text: "Access Resources", color: "#39897E" }

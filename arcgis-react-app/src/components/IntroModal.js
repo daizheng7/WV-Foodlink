@@ -12,14 +12,14 @@ const IntroModal = () => {
 
   return (
     <>
-      {/* Floating Info Button - Bigger and #8b0000 */}
+      {/* Floating Info Button - Bigger and #002855 */}
       <IconButton
         onClick={() => setOpen(true)}
         sx={{
           position: 'fixed',
           bottom: 30,
           right: 30,
-          backgroundColor: '#8b0000',
+          backgroundColor: '#002855',
           color: 'white',
           width: 70,
           height: 70,
@@ -106,7 +106,7 @@ const IntroModal = () => {
     target="_blank"
     rel="noopener noreferrer"
     sx={{
-      color: '#8b0000',
+      color: '#002855',
       fontWeight: 600,
       textDecoration: 'none',
       position: 'relative',
@@ -117,7 +117,7 @@ const IntroModal = () => {
         height: '2px',
         bottom: -2,
         left: 0,
-        backgroundColor: '#8b0000',
+        backgroundColor: '#002855',
         transform: 'scaleX(0)',
         transformOrigin: 'bottom right',
         transition: 'transform 0.3s ease-out'
@@ -139,7 +139,7 @@ const IntroModal = () => {
     target="_blank"
     rel="noopener noreferrer"
     sx={{
-      color: '#8b0000',
+      color: '#002855',
       fontWeight: 600,
       textDecoration: 'none',
       position: 'relative',
@@ -150,7 +150,7 @@ const IntroModal = () => {
         height: '2px',
         bottom: -2,
         left: 0,
-        backgroundColor: '#8b0000',
+        backgroundColor: '#002855',
         transform: 'scaleX(0)',
         transformOrigin: 'bottom right',
         transition: 'transform 0.3s ease-out'
@@ -177,7 +177,7 @@ const IntroModal = () => {
     color: '#333',
     maxWidth: '700px',
     p: 3,
-    borderLeft: '4px solid #8b0000',
+    borderLeft: '4px solid #002855',
     backgroundColor: 'rgba(139, 0, 0, 0.05)',
     borderRadius: '0 4px 4px 0',
     textAlign: 'left'
@@ -224,8 +224,8 @@ const IntroModal = () => {
             variant="outlined"
             onClick={() => setOpen(false)}
             sx={{
-              color: '#8b0000',
-              borderColor: '#8b0000',
+              color: '#002855',
+              borderColor: '#002855',
               borderRadius: '24px',
               px: 3,
               py: 1.2,

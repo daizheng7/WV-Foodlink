@@ -291,7 +291,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
             width: '100%',
             maxWidth: '100vw',
             height: '100%',
-            background: 'linear-gradient(145deg, #8b0000 0%, #6a0000 100%)',
+            background: 'linear-gradient(145deg, #002855 0%, #002855 100%)',
             color: '#ffffff',
             boxShadow: '0 4px 30px rgba(0,0,0,0.25)',
             overflow: 'hidden',
@@ -370,7 +370,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       left: '35%',
                       width: '30%',
                       height: 4,
-                      background: '#f8cb4c',
+                      background: "#EAAA00",
                       borderRadius: 2,
                       boxShadow: '0 2px 8px rgba(248,203,76,0.4)',
                     }
@@ -423,7 +423,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     sx={{
-                      color: '#f8cb4c',
+                      color: "#EAAA00",
                       textDecoration: 'none',
                       fontWeight: 500,
                       padding: '2px 4px',
@@ -453,7 +453,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     rel="noopener noreferrer"
                     onClick={(e) => e.stopPropagation()}
                     sx={{
-                      color: '#f8cb4c',
+                      color: "#EAAA00",
                       textDecoration: 'none',
                       fontWeight: 500,
                       padding: '2px 4px',
@@ -652,7 +652,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                       '&:hover': {
                         borderColor: 'white',
-                        bgcolor: '#e9a902',
+                        bgcolor: '#EAAA00',
                         transform: 'translateY(-2px)',
                         boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                       },
