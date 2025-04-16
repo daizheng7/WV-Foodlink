@@ -485,6 +485,7 @@ const HomePage = () => {
           {section.component}
         </Section>
       ))}
+      
     </Box>
   );
 };

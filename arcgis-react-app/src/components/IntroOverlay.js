@@ -416,6 +416,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                   }}
                 >
                   A joint project of the{' '}
+                  
                   <Button
                     component="a"
                     href="https://resilientcommunities.wvu.edu/"
