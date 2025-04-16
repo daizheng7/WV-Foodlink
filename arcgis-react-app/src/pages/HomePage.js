@@ -37,7 +37,6 @@ const SectionTitle = ({ title, subtitle, align = "center", light = false, varian
       color: light ? "#fff" : "#222",
       mb: 1.5,
       letterSpacing: "-0.02em",
-      borderLeft: `4px solid ${MAIN_COLOR}`,
       pl: 2,
       ml: -2,
       transition: "all 0.3s ease",
@@ -70,10 +69,15 @@ const SectionTitle = ({ title, subtitle, align = "center", light = false, varian
       }}
     >
       <Typography
-        variant="h3"
-        component="h2"
-        sx={titleStyles[variant]}
-      >
+  variant="h1"
+  component="h2"
+  className="wvu-shout text-wvu-blue display-3 wvu-bar wvu-bar--bottom"
+  sx={{
+    ...titleStyles[variant],
+    fontFamily: 'inherit', 
+  }}
+>
+
         {title}
       </Typography>
       <Typography
@@ -486,6 +490,7 @@ const HomePage = () => {
         </Section>
       ))}
       
+
     </Box>
   );
 };
