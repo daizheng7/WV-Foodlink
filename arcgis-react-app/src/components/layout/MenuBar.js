@@ -149,7 +149,7 @@ const MenuBar = () => {
         {/* Foodlink Logo */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
-            src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
+            src="/foodlink_white.png"
             alt="Foodlink Logo"
             style={{ height: isMobile ? 32 : 40 }}
           />
@@ -183,7 +183,7 @@ const MenuBar = () => {
             >
               <Box sx={{ p: 2, bgcolor: "#002855", color: "white" }}>
                 <img
-                  src="https://www.arcgis.com/sharing/rest/content/items/0c60d0d0fe1a4746a40284e0fdda8e87/resources/Foodlink_use_mePNG-e1497287846786.png?v=1734104308181"
+                  src="/foodlink_white.png"
                   alt="Foodlink Logo"
                   style={{ height: 40 }}
                 />
