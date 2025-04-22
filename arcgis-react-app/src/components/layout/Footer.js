@@ -42,7 +42,7 @@ import {
   ZoomIn,
   Map
 } from "@mui/icons-material";
-
+import WVFooter from "./WVFooter";
 const Footer = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -406,30 +406,10 @@ const Footer = () => {
         </Grid>
 
         {/* Divider */}
-        <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", my: { xs: 3, md: 4 } }} />
+        
 
         {/* Copyright */}
-        <Box 
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: { xs: 1, sm: 2 }
-          }}
-        >
-          <Typography 
-            variant="body2" 
-            sx={{ 
-              color: "rgba(255, 255, 255, 0.8)",
-              fontSize: { xs: '0.75rem', sm: '0.875rem' }
-            }}
-          >
-            &copy; {new Date().getFullYear()} FoodLink. All rights reserved.
-          </Typography>
-          
-          
-        </Box>
+        <WVFooter />
       </Container>
     </Box>
   );
