@@ -300,6 +300,7 @@ const Footer = () => {
                       <Paper
                         component="a"
                         href={resource.url}
+                        aria-label={resource.title}
                         target={resource.url.startsWith("http") ? "_blank" : "_self"}
                         rel={resource.url.startsWith("http") ? "noopener" : ""}
                         elevation={0}

@@ -142,28 +142,17 @@ const DataPartners = () => {
       }}
     >
       <Typography
-        variant="h4"
-        component="h2"
-        align="center"
-        sx={{
-          color: "#333",
-          fontWeight: "600",
-          mb: 1,
-          fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
-          position: "relative",
-          "&:after": {
-            content: '""',
-            position: "absolute",
-            bottom: "-12px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: { xs: "60px", sm: "80px" },
-            height: "3px",
-            backgroundColor: "#002855",
-            borderRadius: "2px"
-          }
-        }}
-      >
+            variant="h1"
+            className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+            sx={{
+              
+             
+              mb: 3,
+          
+              width: "auto",
+             
+            }}
+          >
         Our Data Partners
       </Typography>
       

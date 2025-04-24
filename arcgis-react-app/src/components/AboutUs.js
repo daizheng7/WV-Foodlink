@@ -81,12 +81,12 @@ const AboutUs = () => {
               {
                 src: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Sustainable_Development_Goal_01NoPoverty.svg/299px-Sustainable_Development_Goal_01NoPoverty.svg.png",
                 title: "No Poverty",
-                description: "End poverty in all its forms everywhere.",
+                description: "No Poverty",
               },
               {
                 src: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Sustainable_Development_Goal_2.svg/299px-Sustainable_Development_Goal_2.svg.png",
                 title: "Zero Hunger",
-                description: "Achieve food security and improved nutrition.",
+                description: "Zero Hunger",
               },
               {
                 src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Sustainable_Development_Goal_3.svg/299px-Sustainable_Development_Goal_3.svg.png",
