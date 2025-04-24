@@ -51,10 +51,10 @@ const Footer = () => {
 
   // Resource items (matching the MenuBar)
   const resourcesItems = [
-    { title: 'SNAP + WIC', icon: <CreditCard sx={{ color: '#ffffff' }} />, description: 'Enrollment in Cash-Equivalent Public Nutrition Assistance Programs.', url: 'https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f' },
-    { title: 'SNAP-ED', icon: <School sx={{ color: '#ffffff' }} />, description: 'Food Policy, Systems and Environmental Change interventions.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
-    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#ffffff' }} />, description: 'Local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
-    { title: 'Find Food', icon: <ZoomIn sx={{ color: '#ffffff' }} />, description: 'App to help you find fresh food based on your location.', url: '/food' },
+    { title: 'SNAP + WIC', icon: <CreditCard sx={{ color: '#ffffff' }} />, description: 'SNAP + WIC', url: 'https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f' },
+    { title: 'SNAP-ED', icon: <School sx={{ color: '#ffffff' }} />, description: 'SNAP-ED', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
+    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#ffffff' }} />, description: 'Farmers Markets', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
+    { title: 'Find Food', icon: <ZoomIn sx={{ color: '#ffffff' }} />, description: 'Find Food', url: '/food' },
   ];
 
   // Main footer links
