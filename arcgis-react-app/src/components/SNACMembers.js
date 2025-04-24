@@ -348,14 +348,14 @@ const snacMembers = [
 
 // Categories with colors
 const categories = {
-  "WVU Extension": "#003399",
-  "WVU Academic": "#0033BB",
-  "State Government": "#990000",
-  "Federal Government": "#660000",
-  "Education": "#006633",
-  "Higher Education": "#009933",
-  "Non-Profit": "#663399",
-  "Industry": "#CC6600"
+  "WVU Extension": "#002855",
+  "WVU Academic": "#0062A3",
+  "State Government": "#002855",
+  "Federal Government": "#0062A3",
+  "Education": "#002855",
+  "Higher Education": "#0062A3",
+  "Non-Profit": "#002855",
+  "Industry": "#0062A3"
 };
 
 const SNACMembers = () => {
@@ -450,33 +450,22 @@ const SNACMembers = () => {
       {/* Header Section */}
       <Box sx={{ mb: 5, textAlign: "center" }}>
         <Typography
-          variant="h4"
-          component="h2"
-          align="center"
-          sx={{
-            color: "#333",
-            fontWeight: "600",
-            mb: 3,
-            fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
-            position: "relative",
-            "&:after": {
-              content: '""',
-              position: "absolute",
-              bottom: "-12px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: { xs: "60px", sm: "80px" },
-              height: "3px",
-              backgroundColor: "#002855",
-              borderRadius: "2px"
-            }
-          }}
-        >
+                    variant="h1"
+                    className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+                    sx={{
+                      
+                     
+                      mb: 3,
+                  
+                      width: "auto",
+                     
+                    }}
+                  >
           The State Nutrition Action Council (SNAC)
         </Typography>
         
         <Box sx={{ 
-          maxWidth: "800px", 
+           
           mx: "auto",
           mt: 5,
           mb: 3,
@@ -524,7 +513,7 @@ const SNACMembers = () => {
       <Grid container spacing={3} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
-            <GroupsIcon sx={{ fontSize: "2.5rem", color: "#003399", mb: 1 }} />
+            <GroupsIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.totalMembers}</Typography>
             <Typography variant="body2" color="text.secondary">Active Members</Typography>
           </Paper>
@@ -532,7 +521,7 @@ const SNACMembers = () => {
         
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
-            <WorkIcon sx={{ fontSize: "2.5rem", color: "#006633", mb: 1 }} />
+            <WorkIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueOrganizations}</Typography>
             <Typography variant="body2" color="text.secondary">Organizations</Typography>
           </Paper>
@@ -540,7 +529,7 @@ const SNACMembers = () => {
         
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
-            <CategoryIcon sx={{ fontSize: "2.5rem", color: "#990000", mb: 1 }} />
+            <CategoryIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
             <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueCategories}</Typography>
             <Typography variant="body2" color="text.secondary">Member Categories</Typography>
           </Paper>

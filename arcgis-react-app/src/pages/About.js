@@ -40,34 +40,22 @@ const About = () => {
           width: "100%",
           boxSizing: "border-box",
           overflow: "hidden",
+          textAlign: 'center',
         }}
       >
         {/* Page Title */}
         <Typography
-          variant="h1"
-          component="h1"
-          align="center"
-          sx={{
-            color: "#002855",
-            fontSize: { xs: "2.2rem", sm: "2.8rem", md: "3.5rem" },
-            lineHeight: 1.2,
-            fontWeight: 700,
-            mb: 4,
-            position: "relative",
-            padding: { xs: "0 16px", sm: "0" },
-            "&:after": {
-              content: '""',
-              position: "absolute",
-              bottom: "-15px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: { xs: "60px", sm: "80px" },
-              height: "4px",
-              backgroundColor: "#002855",
-              borderRadius: "2px"
-            }
-          }}
-        >
+            variant="h1"
+            className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+            sx={{
+              
+             
+              mb: 3,
+          
+              width: "auto",
+             
+            }}
+          >
           ABOUT
         </Typography>
 
@@ -123,29 +111,20 @@ const About = () => {
         </Typography>
 
         {/* Main Logo Partners - Enhanced Design */}
+        
+        {/* Page Title */}
         <Typography
-          variant="h4"
-          align="center"
-          sx={{
-            color: "#333",
-            fontWeight: "600",
-            mt: 5,
-            mb: 3,
-            fontSize: { xs: "1.8rem", sm: "2rem", md: "2.2rem" },
-            position: "relative",
-            "&:after": {
-              content: '""',
-              position: "absolute",
-              bottom: "-10px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              width: "60px",
-              height: "3px",
-              backgroundColor: "#002855",
-              borderRadius: "2px"
-            }
-          }}
-        >
+            variant="h1"
+            className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+            sx={{
+              
+             
+              mb: 3,
+          
+              width: "auto",
+             
+            }}
+          >
           Our Key Partners
         </Typography>
           
@@ -196,7 +175,7 @@ const About = () => {
                 }}
               >
                 <Typography
-                  variant="h5"
+                  variant="h1"
                   component="a"
                   href="https://resilientcommunities.wvu.edu/"
                   target="_blank"
@@ -312,7 +291,7 @@ const About = () => {
                 }}
               >
                 <Typography
-                  variant="h5"
+                  variant="h1"
                   component="a"
                   href="https://extension.wvu.edu/food-health/nutrition/fnp"
                   target="_blank"
@@ -404,21 +383,19 @@ const About = () => {
           borderRadius: "12px",
           padding: { xs: 2, sm: 3, md: 5 },
           boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-          mx: { xs: 2, sm: 3, md: "auto" }
+          mx: { xs: 2, sm: 3, md: "auto" },
+          textAlign: "center",
         }}>
           <Typography
-            variant="h5"
+            variant="h1"
+            className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
             sx={{
-              textAlign: "center",
-              fontWeight: "600",
-              color: "#002855",
+              
+             
               mb: 3,
-              borderBottom: "2px solid #002855",
-              paddingBottom: "10px",
-              display: "inline-block",
-              marginLeft: "auto",
-              marginRight: "auto",
-              width: "auto"
+          
+              width: "auto",
+             
             }}
           >
             Our Supporters

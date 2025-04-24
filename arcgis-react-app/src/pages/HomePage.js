@@ -71,7 +71,7 @@ const SectionTitle = ({ title, subtitle, align = "center", light = false, varian
       <Typography
   variant="h1"
   component="h2"
-  className="wvu-shout text-wvu-blue display-3 wvu-bar wvu-bar--bottom"
+  className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
   sx={{
     ...titleStyles[variant],
     fontFamily: 'inherit', 
