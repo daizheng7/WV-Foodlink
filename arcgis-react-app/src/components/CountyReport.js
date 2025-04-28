@@ -122,6 +122,7 @@ const CountyReport = () => {
       
       constraints: {
         snapToZoom: false,
+        mouseWheelZoomEnabled: false,
       },
       ui: {
         components: ["zoom", "compass", "attribution"]
@@ -171,7 +172,7 @@ const CountyReport = () => {
 
     mapView.when(() => {
       setView(mapView);
-
+      mapView.navigation.mouseWheelZoomEnabled = false;
       mapView.on("click", async (event) => {
         const response = await mapView.hitTest(event);
         const results = response.results.filter(

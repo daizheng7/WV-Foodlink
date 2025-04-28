@@ -167,6 +167,7 @@ const FoodRetailer = () => {
       },
       constraints: {
         snapToZoom: false,
+
       },
       ui: {
         components: ["zoom", "compass", "attribution"]
@@ -175,6 +176,7 @@ const FoodRetailer = () => {
 
     mapView.when(() => {
       setView(mapView);
+      mapView.navigation.mouseWheelZoomEnabled = false;
     });
 
     // Clean up function

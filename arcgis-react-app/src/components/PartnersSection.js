@@ -42,19 +42,19 @@ const PartnersSection = () => {
 
       {/* Footer Section */}
       <div className="footer-section">
-        <h5 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h5)", textAlign: "center" }}>
+        <h2 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h2)", textAlign: "center" }}>
           <strong style={{ color: "#002855" }}>WVU FOOD JUSTICE LAB</strong>
-        </h5>
-        <h5 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h5)", textAlign: "center" }}>
+        </h2>
+        <h2 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h2)", textAlign: "center" }}>
           <span style={{ color: "#002855", fontWeight: "600" }}>CENTER FOR RESILIENT COMMUNITIES</span>
-        </h5>
-        <h5 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h5)", textAlign: "center", color: "#3C3C3C" }}>
+        </h2>
+        <h2 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h2)", textAlign: "center", color: "#3C3C3C" }}>
           309 Brooks Hall | 98 Beechurst Ave.
-        </h5>
-        <h5 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h5)", textAlign: "center", color: "#3C3C3C" }}>
+        </h2>
+        <h2 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h2)", textAlign: "center", color: "#3C3C3C" }}>
           Morgantown, WV 26505
-        </h5>
-        <h5 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h5)", textAlign: "center" }}>
+        </h2>
+        <h2 style={{ fontFamily: "Open Sans, Avenir Next", fontSize: "var(--font-size-h2)", textAlign: "center" }}>
           <a
             href="https://us14.list-manage.com/contact-form?u=4effc41d710bda5f3c7b5e38c&form_id=2e3d7a447680f67c2519a939d828d730"
             target="_blank"
@@ -63,7 +63,7 @@ const PartnersSection = () => {
           >
             Contact Us
           </a>
-        </h5>
+        </h2>
       </div>
     </section>
   );

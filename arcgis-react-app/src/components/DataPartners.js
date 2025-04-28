@@ -99,19 +99,19 @@ const dataPartners = [
 // Category colors and icons
 const categoryConfig = {
   "Federal": {
-    color: "#0A3161", // Dark blue
+    color: "#002855", // Dark blue
     icon: <PublicIcon />
   },
   "State": {
-    color: "#1D65A6", // Medium blue
+    color: "#002855", // Medium blue
     icon: <StorageIcon />
   },
   "Non-Profit": {
-    color: "#72A2C0", // Light blue
+    color: "#002855", // Light blue
     icon: <AssessmentIcon />
   },
   "University": {
-    color: "#00447C", // WVU blue
+    color: "#002855", // WVU blue
     icon: <StorageIcon />
   }
 };
@@ -301,7 +301,7 @@ const DataPartners = () => {
       
       {/* Legend */}
       <Box sx={{ mt: 4, pt: 2, borderTop: "1px solid #eee" }}>
-        <Typography variant="body2" align="center" sx={{ color: "#666", fontStyle: "italic" }}>
+        <Typography variant="body2" align="center" sx={{ color: "#666"}}>
           These partners provide essential data that enables WV FOODLINK to offer comprehensive food system information.
         </Typography>
       </Box>

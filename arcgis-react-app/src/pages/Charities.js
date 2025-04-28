@@ -147,11 +147,11 @@ const CharitiesPage = () => {
                 aria-label="information about charity resources"
                 size="large"
                 sx={{ 
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
+                  backgroundColor: "rgba(0, 40, 85, 0.1)",
                   padding: isMobile ? 1 : 1.5,
                   flexShrink: 0,
                   '&:hover': {
-                    backgroundColor: "rgba(153, 3, 30, 0.2)"
+                    backgroundColor: "rgba(0, 40, 85, 0.2)"
                   }
                 }}
               >

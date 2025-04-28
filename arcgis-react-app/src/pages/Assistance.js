@@ -158,11 +158,11 @@ const AssistancePage = () => {
                 aria-label="information about assistance resources"
                 size={isMobileView ? "medium" : "large"}
                 sx={{ 
-                  backgroundColor: "rgba(153, 3, 30, 0.1)",
+                  backgroundColor: "rgba(0, 40, 85, 0.1)",
                   padding: isMobileView ? 1 : 1.5,
                   flexShrink: 0,
                   '&:hover': {
-                    backgroundColor: "rgba(153, 3, 30, 0.2)"
+                    backgroundColor: "rgba(0, 40, 85, 0.2)"
                   }
                 }}
               >

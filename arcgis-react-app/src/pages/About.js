@@ -245,7 +245,7 @@ const About = () => {
                     fontWeight: "bold",
                     fontSize: { xs: "0.8rem", sm: "0.875rem" },
                     "&:hover": {
-                      backgroundColor: "rgba(153, 3, 30, 0.1)",
+                      backgroundColor: "rgba(0, 40, 85, 0.1)",
                       borderColor: "#002855",
                     }
                   }}
@@ -441,7 +441,7 @@ const About = () => {
                     borderColor: "#002855",
                     color: selectedPartner.name === partner.name ? "#ffffff" : "#002855",
                     '&:hover': {
-                      backgroundColor: selectedPartner.name === partner.name ? "#7a0218" : "rgba(153, 3, 30, 0.1)",
+                      backgroundColor: selectedPartner.name === partner.name ? "#7a0218" : "rgba(0, 40, 85, 0.1)",
                       borderColor: "#002855",
                       transform: "translateY(-2px)",
                       boxShadow: "0 4px 8px rgba(0,0,0,0.1)"

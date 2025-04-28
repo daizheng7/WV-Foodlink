@@ -147,7 +147,7 @@ const Footer = () => {
             sm={6} 
             md={2}
           >
-            <Typography variant="h6" fontWeight="bold" gutterBottom sx={{ textAlign: { xs: "center", md: "left" } }}>
+            <Typography variant="h5" fontWeight="bold" gutterBottom sx={{ textAlign: { xs: "center", md: "left" } }}>
               Site Links
             </Typography>
             <List dense sx={{ p: 0 }}>

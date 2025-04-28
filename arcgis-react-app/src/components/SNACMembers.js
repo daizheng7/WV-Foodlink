@@ -514,24 +514,24 @@ const SNACMembers = () => {
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
             <GroupsIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.totalMembers}</Typography>
-            <Typography variant="body2" color="text.secondary">Active Members</Typography>
+            <Typography variant="h2" sx={{ fontWeight: "bold" }}>{statistics.totalMembers}</Typography>
+            <Typography variant="body2" color="text.primary">Active Members</Typography>
           </Paper>
         </Grid>
         
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
             <WorkIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueOrganizations}</Typography>
-            <Typography variant="body2" color="text.secondary">Organizations</Typography>
+            <Typography variant="h2" sx={{ fontWeight: "bold" }}>{statistics.uniqueOrganizations}</Typography>
+            <Typography variant="body2" color="text.primary">Organizations</Typography>
           </Paper>
         </Grid>
         
         <Grid item xs={12} sm={6} md={4}>
           <Paper elevation={2} sx={{ p: 2, textAlign: "center", height: "100%" }}>
             <CategoryIcon sx={{ fontSize: "2.5rem", color: "#002855", mb: 1 }} />
-            <Typography variant="h5" sx={{ fontWeight: "bold" }}>{statistics.uniqueCategories}</Typography>
-            <Typography variant="body2" color="text.secondary">Member Categories</Typography>
+            <Typography variant="h2" sx={{ fontWeight: "bold" }}>{statistics.uniqueCategories}</Typography>
+            <Typography variant="body2" color="text.primary">Member Categories</Typography>
           </Paper>
         </Grid>
       </Grid>
@@ -560,7 +560,7 @@ const SNACMembers = () => {
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
         <Typography 
           variant="body2" 
-          sx={{ color: "#666" }}
+          sx={{ color: "text.primary" }}
         >
           Showing {filteredMembers.length} of {snacMembers.length} members
         </Typography>
@@ -594,7 +594,7 @@ const SNACMembers = () => {
             >
               <CardContent sx={{ flexGrow: 1 }}>
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 1 }}>
-                  <Typography variant="h6" component="h3" gutterBottom sx={{ fontWeight: "600", fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" } }}>
+                  <Typography variant="h3" component="h3" gutterBottom sx={{ fontWeight: "600", fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" } }}>
                     {member.name}
                   </Typography>
                   
@@ -605,19 +605,19 @@ const SNACMembers = () => {
                       rel="noopener noreferrer"
                       size="small"
                       aria-label={`Link to ${member.name}'s profile`}
-                      sx={{ color: categories[member.category] || "#666" }}
+                      sx={{ color: categories[member.category] || "text.primary" }}
                     >
                       <LinkIcon />
                     </IconButton>
                   )}
                 </Box>
                 
-                <Typography variant="body2" color="text.secondary" gutterBottom>
+                <Typography variant="body2" color="text.primary" gutterBottom>
                   <PersonIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: "middle", fontSize: "1rem" }} />
                   {member.title}
                 </Typography>
                 
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.primary">
                   <BusinessIcon fontSize="small" sx={{ mr: 0.5, verticalAlign: "middle", fontSize: "1rem" }} />
                   {member.organization}
                 </Typography>
@@ -642,8 +642,8 @@ const SNACMembers = () => {
       
       {filteredMembers.length === 0 && (
         <Box sx={{ textAlign: "center", py: 4 }}>
-          <Typography variant="h6" color="text.secondary">No members found</Typography>
-          <Typography variant="body2" color="text.secondary">Try adjusting your search criteria</Typography>
+          <Typography variant="h3" color="text.primary">No members found</Typography>
+          <Typography variant="body2" color="text.primary">Try adjusting your search criteria</Typography>
         </Box>
       )}
       
@@ -670,8 +670,8 @@ const SNACMembers = () => {
                 label={category} 
                 size="small" 
                 sx={{ 
-                  backgroundColor: `${color}22`,
-                  color: color,
+                  backgroundColor: '#002855',
+                  color: 'white',
                   fontWeight: "500",
                   fontSize: "0.75rem",
                   mb: 1
