@@ -96,9 +96,9 @@ const WestVirginiaFoodLandscape = () => {
                   </div>
                 </Tooltip>
                 <Typography
-                  variant="h5"
+                  variant='h4'
                   component="div"
-                  className="iowan-old-style-black wvu-text-letter-spacing text-uppercase h6 mt-3 wvu-blue wvu-shout"
+                  className="iowan-old-style-black-italic mt-3"
                   sx={{ fontWeight: 'bold', textAlign: 'center', marginTop: '10px' }}
                 >
                   {category.title}

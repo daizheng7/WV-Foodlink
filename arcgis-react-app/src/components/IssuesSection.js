@@ -20,7 +20,7 @@ const stats = [
     value: "16.7%",
     description: "West Virginia's poverty rate compared to the national average of 11.1%.",
     icon: <TrendingUpIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#002855",
+    bgColor: "#0062A3",
     link: "https://www.wvpolicy.org/data/poverty-in-west-virginia/",
     org: "WV Center on Budget & Policy"
   },
@@ -29,7 +29,7 @@ const stats = [
     value: "1 in 5",
     description: "Children in poverty represent 20% of the state's population.",
     icon: <ChildFriendlyIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#C84C23",
+    bgColor: "#002855",
     link: "https://www.childrensdefense.org/state/west-virginia/",
     org: "Children's Defense Fund"
   },
@@ -38,7 +38,7 @@ const stats = [
     value: "16.3%",
     description: "Households affected by food insecurity from 2018 to 2022.",
     icon: <RestaurantIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#B1B5AB",
+    bgColor: "#1C2B39",
     link: "https://feedingamerica.org/hunger-in-america/west-virginia/",
     org: "Feeding America"
   },
@@ -47,7 +47,7 @@ const stats = [
     value: "12%",
     description: "Only 12% of food retailers in WV offer fresh produce.",
     icon: <ShoppingCartIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#445525",
+    bgColor: "#0062A3",
     link: "https://www.wvfarm2school.org/food-access",
     org: "WV Farm to School"
   },
@@ -56,7 +56,7 @@ const stats = [
     value: "20%",
     description: "Residents live over 50 miles from the nearest fresh produce retailer.",
     icon: <LocationOnIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#39897E",
+    bgColor: "#002855",
     link: "https://www.ruralhealthinfo.org/states/west-virginia",
     org: "Rural Health Info"
   },
@@ -65,7 +65,7 @@ const stats = [
     value: "-34,000",
     description: "From 2020-2023, births: 55,000, deaths: 89,000.",
     icon: <PeopleAltIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#354F5B",
+    bgColor: "#1C2B39",
     link: "https://www.wvpublic.org/section/population",
     org: "WV Public Broadcasting"
   },
@@ -74,7 +74,7 @@ const stats = [
     value: "42%",
     description: "Rural residents with limited access to public transportation.",
     icon: <DirectionsBusIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#5D4037",
+    bgColor: "#0062A3",
     link: "https://www.transportation.wv.gov/publictransit/",
     org: "WV Dept of Transportation"
   },
@@ -83,7 +83,7 @@ const stats = [
     value: "$13K",
     description: "Income gap between WV median income and national average.",
     icon: <LocalAtmIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#1565C0",
+    bgColor: "#002855",
     link: "https://www.wvpolicy.org/data/income-inequality/",
     org: "WV Center on Budget & Policy"
   },
@@ -92,7 +92,7 @@ const stats = [
     value: "+21%",
     description: "Increase in housing costs since 2020, outpacing wage growth.",
     icon: <HomeIcon sx={{ fontSize: 60, color: "#fff" }} />,
-    bgColor: "#6A1B9A",
+    bgColor: "#1C2B39",
     link: "https://www.wvhousing.org/data",
     org: "WV Housing Development Fund"
   },
@@ -180,13 +180,15 @@ const IssuesSection = () => {
                       borderRadius: "12px", 
                       boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                       textDecoration: "none",
-                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease",
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
                       "&:hover": {
                         transform: "translateY(-5px)",
-                        boxShadow: "0 8px 20px rgba(0,0,0,0.15)"
+                        boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                        color: "#f0f0f0",  /* <<< ADD THIS */
+                        textDecoration: "underline" /* <<< OPTIONAL: underline link when hover */
                       }
                     }}
                   >
@@ -298,17 +300,21 @@ const IssuesSection = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 sx={{ 
-                  width: "300px", 
-                  p: 3, 
+                  p: { xs: 2, sm: 3 }, 
                   backgroundColor: item.bgColor, 
                   color: "#fff", 
                   borderRadius: "12px", 
                   boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   textDecoration: "none",
-                  transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                  transition: "transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
                   "&:hover": {
                     transform: "translateY(-5px)",
-                    boxShadow: "0 8px 20px rgba(0,0,0,0.15)"
+                    boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
+                    color: "#f0f0f0",  
+                    textDecoration: "underline" 
                   }
                 }}
               >

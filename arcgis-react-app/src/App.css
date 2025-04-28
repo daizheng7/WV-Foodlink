@@ -16,3 +16,20 @@
     padding: 8px 12px;
     border: 2px solid black;
   }
+
+  .dark-background a {
+    color: white !important;
+  }
+  
+  .dark-background a:hover {
+    color: #f0f0f0 !important;
+  }
+  
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  

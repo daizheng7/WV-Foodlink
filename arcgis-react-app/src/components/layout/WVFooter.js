@@ -92,51 +92,66 @@ const WVFooter = () => {
   };
 
   return (
-    <Box component="footer" sx={{ bgcolor: "#002855", color: "#ffffff", py: { xs: 3, md: 5 }, mt: "auto", width: "100%", maxWidth: "100%" }}>
-      <Container maxWidth={false} sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-        {/* ...existing footer content... */}
+    <Box component="footer" sx={{ bgcolor: "#002855", color: "#ffffff", py: { xs: 3, md: 5 }, mt: "auto", width: "100%" }}>
+  <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+    
+    {/* Divider */}
+    <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", my: { xs: 3, md: 4 } }} />
 
-        {/* Divider */}
-        <Divider sx={{ bgcolor: "rgba(255, 255, 255, 0.2)", my: { xs: 3, md: 4 } }} />
+    {/* Bottom Section */}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: { xs: "column", sm: "row" },
+        justifyContent: "space-between",
+        alignItems: "center",
+        flexWrap: "wrap",
+        rowGap: 2,
+      }}
+    >
+      {/* Copyright */}
+      <Typography
+        variant="body2"
+        sx={{
+          color: "rgba(255, 255, 255, 0.8)",
+          fontSize: { xs: "0.75rem", sm: "0.875rem" },
+          textAlign: { xs: "center", sm: "left" },
+        }}
+      >
+        &copy; {new Date().getFullYear()} FoodLink. All rights reserved.
+      </Typography>
 
-        {/* Copyright */}
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "space-between",
-            alignItems: "center",
-
-            flexWrap: "wrap"
-          }}
-        >
-          <Typography
-            variant="body2"
+      {/* WVU Links */}
+      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: { xs: "center", sm: "flex-end" }, gap: 2 }}>
+        {wvuLinksFooter.map((link, index) => (
+          <Link
+            key={index}
+            href={link.url}
+            color="inherit"
+            underline="hover"
+            variant="caption"
             sx={{
+              fontSize: "0.75rem",
               color: "rgba(255, 255, 255, 0.8)",
-              fontSize: { xs: '0.75rem', sm: '0.875rem' }
+              "&:hover": {
+                color: "#ffffff",
+                textDecoration: "underline",
+              },
+              "&:focus": {
+                color: "#ffffff",
+                outline: "2px solid #EAAA00",
+                outlineOffset: "2px",
+              },
             }}
           >
-            &copy; {new Date().getFullYear()} FoodLink. All rights reserved.
-          </Typography>
-
-          <Box sx={{ display: "flex", flexWrap: "wrap", columnGap: 2, rowGap: 1 }}>
-            {wvuLinksFooter.map((link, index) => (
-              <Link
-                key={index}
-                href={link.url}
-                color="inherit"
-                underline="hover"
-                variant="caption"
-                sx={{ fontSize: '0.75rem' }}
-              >
-                {link.title}
-              </Link>
-            ))}
-          </Box>
-        </Box>
-      </Container>
+            {link.title}
+          </Link>
+        ))}
+      </Box>
     </Box>
+  </Container>
+</Box>
+
   );
 };
 

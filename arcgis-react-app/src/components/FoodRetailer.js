@@ -36,13 +36,14 @@ import NearMeIcon from "@mui/icons-material/NearMe";
 import FilterListIcon from "@mui/icons-material/FilterList";
 
 const categoryStyles = {
-  Grocery: { color: "#4285F4", icon: <LocalGroceryStoreIcon /> },
-  "Farmers Market": { color: "#0F9D58", icon: <ShoppingBasketIcon /> },
-  Convenience: { color: "#F4B400", icon: <LocalConvenienceStoreIcon /> },
-  "Small Box": { color: "#DB4437", icon: <StorefrontIcon /> },
-  Specialty: { color: "#9C27B0", icon: <BusinessIcon /> },
-  "Big Box": { color: "#757575", icon: <BusinessIcon /> },
+  Grocery: { color: "#002855", textColor: "#ffffff", icon: <LocalGroceryStoreIcon /> }, // wvu-blue
+  "Farmers Market": { color: "#9DDAE6", textColor: "#1C2B39", icon: <ShoppingBasketIcon /> }, // wvu-accent--blue-light
+  Convenience: { color: "#EAAA00", textColor: "#1C2B39", icon: <LocalConvenienceStoreIcon /> }, // wvu-accent--blue
+  "Small Box": { color: "#554741", textColor: "#ffffff", icon: <StorefrontIcon /> }, // warm-gray-dark
+  Specialty: { color: "#F58672", textColor: "#1C2B39", icon: <BusinessIcon /> }, // sunset
+  "Big Box": { color: "#7F6310", textColor: "#ffffff", icon: <BusinessIcon /> }, // old-gold
 };
+
 
 const FoodRetailer = () => {
   const mapDiv = useRef(null);
@@ -251,24 +252,36 @@ const FoodRetailer = () => {
   return (
     <Box sx={{ position: "relative", width: "100%", height: "85vh", overflow: "hidden" }}>
       {/* Map container */}
-      <div ref={mapDiv} style={{ width: "100%", height: "100%" }}></div>
-
+      <div
+  ref={mapDiv}
+  style={{ width: "100%", height: "100%" }}
+  tabIndex={0}
+  aria-label="Interactive map showing locations of food retailers. Use arrow keys to navigate."
+></div>
       {/* Store details popup */}
       {popupContent && (
-        <Fade in={Boolean(popupContent)}>
-          <Card
-            elevation={5}
-            sx={{
-              position: "absolute",
-              top: 20,
-              right: 20,
-              width: 320,
-              borderRadius: 2,
-              overflow: "visible",
-              zIndex: 1000,
-              backgroundColor: "rgba(255, 255, 255, 0.97)",
-            }}
-          >
+  <Fade in>
+    <Card
+      elevation={5}
+      tabIndex={0}
+      role="dialog"
+      aria-label={`Store details for ${popupContent.title}`}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          setPopupContent(null);
+        }
+      }}
+      sx={{
+        position: "absolute",
+        top: 20,
+        right: 20,
+        width: 320,
+        borderRadius: 2,
+        overflow: "visible",
+        zIndex: 1000,
+        backgroundColor: "rgba(255, 255, 255, 0.97)",
+      }}
+    >
             <CardHeader
               title={
                 <Typography variant="h6" noWrap title={popupContent.title}>
@@ -382,28 +395,28 @@ const FoodRetailer = () => {
             {Object.entries(categoryStyles).map(([category, style]) => (
               <Grid item xs={6} key={category}>
                 <Tooltip title={category} placement="top">
-                  <Button
-                    onClick={() => toggleCategory(category)}
-                    variant={activeCategories.includes(category) ? "contained" : "outlined"}
-                    startIcon={style.icon}
-                    size="small"
-                    fullWidth
-                    sx={{
-                      backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
-                      borderColor: style.color,
-                      color: activeCategories.includes(category) ? "white" : style.color,
-                      justifyContent: "flex-start",
-                      textTransform: "none",
-                      mb: 1,
-                      '&:hover': {
-                        backgroundColor: activeCategories.includes(category) 
-                          ? `${style.color}dd` 
-                          : `${style.color}22`
-                      }
-                    }}
-                  >
-                    {category.length > 10 ? `${category.substring(0, 9)}...` : category}
-                  </Button>
+                <Button
+  onClick={() => toggleCategory(category)}
+  variant={activeCategories.includes(category) ? "contained" : "outlined"}
+  startIcon={style.icon}
+  size="small"
+  fullWidth
+  sx={{
+    backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
+    borderColor: style.color,
+    color: activeCategories.includes(category) ? style.textColor : style.color,
+    justifyContent: "flex-start",
+    textTransform: "none",
+    mb: 1,
+    '&:hover': {
+      backgroundColor: activeCategories.includes(category) 
+        ? style.color 
+        : `${style.color}22`
+    }
+  }}
+>
+  {category.length > 10 ? `${category.substring(0, 9)}...` : category}
+</Button>
                 </Tooltip>
               </Grid>
             ))}
@@ -453,15 +466,7 @@ const FoodRetailer = () => {
             Find My Location
           </Button>
           
-          <Button
-            variant="outlined"
-            onClick={showNearby}
-            disabled={!userLocation}
-            fullWidth
-            sx={{ mb: 1 }}
-          >
-            Show Nearby Retailers
-          </Button>
+         
         </Box>
       </Paper>
 

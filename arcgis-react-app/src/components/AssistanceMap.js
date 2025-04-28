@@ -105,27 +105,28 @@ const LAYER_PORTAL_ITEMS = {
 
 const categoryStyles = {
   "DHHR Offices": {
-    color: "#007bff",
+    color: "#002855",
     icon: <LocalHospitalIcon />,
     description: "Department of Health and Human Resources service locations"
   },
   "WIC Offices": {
-    color: "#28a745",
+    color: "#7F6310",
+
     icon: <StorefrontIcon />,
     description: "Women, Infants, and Children (WIC) program offices"
   },
   "Family Resource Network": {
-    color: "#ffc107",
+    color: "#1C2B39",
     icon: <HomeRepairServiceIcon />,
     description: "Community support and resource centers"
   },
   "Family Support Centers": {
-    color: "#ff5722",
+    color: "#554741",
     icon: <RestaurantIcon />,
     description: "Centers providing family support services"
   },
   "Senior Services": {
-    color: "#795548",
+    color: "#0062A3",
     icon: <ElderlyIcon />,
     description: "Services and support for senior citizens"
   }
@@ -720,7 +721,7 @@ const AssistanceMap = () => {
             startIcon={<MyLocationIcon />}
             onClick={getUserLocation}
             sx={{
-              backgroundColor: "darkred",
+              backgroundColor: "#002855",
               color: "white",
               '&:hover': { backgroundColor: "#a00000" },
             }}

@@ -99,18 +99,18 @@ const MenuBar = () => {
   };
 
   const resourcesItems = [
-    { title: 'SNAP + WIC', icon: <CreditCard sx={{ color: '#354F5B' }} />, description: 'Enrollment in Cash-Equivalent Public Nutrition Assistance Programs.', url: 'https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f' },
-    { title: 'SNAP-ED', icon: <School sx={{ color: '#39897E' }} />, description: 'Food Policy, Systems and Environmental Change interventions for Healthy Food Access Programming.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
-    { title: 'Congregate Meals', icon: <Restaurant sx={{ color: '#B1B5AB' }} />, description: 'Public Meal programs in Schools, Daycares and Senior Centers.', url: 'https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=b442bf3a130248938d3f4323840fe50e' },
-    { title: 'Charitable Food', icon: <LocalMall sx={{ color: '#C84C23' }} />, description: 'Details food pantries, soup kitchens, and school backpack programs.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b' },
-    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#002855' }} />, description: 'Information on local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
-    { title: 'Agricultural Data', icon: <Agriculture sx={{ color: '#445525' }} />, description: 'Insights into farming practices, land use, and expenditures.', url: 'https://www.arcgis.com/apps/dashboards/2100f46c379b49ba8d5d4184c68d0ab0'},
-    { title: 'Self-Provisioning', icon: <NaturePeople sx={{ color: '#D4D2C2' }} />, description: 'Gardening and hunting data related to food self-sufficiency.', url: 'https://www.arcgis.com/apps/dashboards/60c2dc75756c485f9d135d14826464f4' },
-    { title: 'Political Participation', icon: <AccountBalance sx={{ color: '#39897E' }} />, description: 'Voter registration and engagement.', url: 'https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec' },
-    { title: 'County Summary', icon: <Public sx={{ color: '#354F5B' }} />, description: 'Data related to county-level food landscape.', url: '/county' },
-    { title: 'Find Food', icon: <ZoomIn sx={{ color: '#C84C23' }} />, description: 'App to help you find fresh food based on your location.', url: '/food' },
-    { title: 'Organize', icon: <Diversity3 sx={{ color: '#B1B5AB' }} />, description: 'Discover how to organize for the right to food in your community.', url: 'https://foodlink.wvu.edu/pages/organize-1' },
-    { title: 'Learn', icon: <LightbulbCircle sx={{ color: '#002855' }} />, description: 'Learn how to create just and sustainable communities.', url: 'https://resilientcommunities.wvu.edu/' }
+    { title: 'SNAP + WIC', icon: <CreditCard sx={{ color: '#1C2B39' }} />, description: 'Enrollment in Cash-Equivalent Public Nutrition Assistance Programs.', url: 'https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f' },
+    { title: 'SNAP-ED', icon: <School sx={{ color: '#002855' }} />, description: 'Food Policy, Systems and Environmental Change interventions for Healthy Food Access Programming.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
+    { title: 'Congregate Meals', icon: <Restaurant sx={{ color: '#0062A3' }} />, description: 'Public Meal programs in Schools, Daycares and Senior Centers.', url: 'https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=b442bf3a130248938d3f4323840fe50e' },
+    { title: 'Charitable Food', icon: <LocalMall sx={{ color: '#554741' }} />, description: 'Details food pantries, soup kitchens, and school backpack programs.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b' },
+    { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#7F6310' }} />, description: 'Information on local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
+    { title: 'Agricultural Data', icon: <Agriculture sx={{ color: '#B3A169' }} />, description: 'Insights into farming practices, land use, and expenditures.', url: 'https://www.arcgis.com/apps/dashboards/2100f46c379b49ba8d5d4184c68d0ab0'},
+    { title: 'Self-Provisioning', icon: <NaturePeople sx={{ color: '#554741' }} />, description: 'Gardening and hunting data related to food self-sufficiency.', url: 'https://www.arcgis.com/apps/dashboards/60c2dc75756c485f9d135d14826464f4' },
+    { title: 'Political Participation', icon: <AccountBalance sx={{ color: '#988E8B' }} />, description: 'Voter registration and engagement.', url: 'https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec' },
+    { title: 'County Summary', icon: <Public sx={{ color: '#BEB7B3' }} />, description: 'Data related to county-level food landscape.', url: '/county' },
+    { title: 'Find Food', icon: <ZoomIn sx={{ color: '#EAAA00' }} />, description: 'App to help you find fresh food based on your location.', url: '/food' },
+    { title: 'Organize', icon: <Diversity3 sx={{ color: '#B3A169' }} />, description: 'Discover how to organize for the right to food in your community.', url: 'https://foodlink.wvu.edu/pages/organize-1' },
+    { title: 'Learn', icon: <LightbulbCircle sx={{ color: '#FFE539' }} />, description: 'Learn how to create just and sustainable communities.', url: 'https://resilientcommunities.wvu.edu/' }
   ];
 
   const menuItems = [
@@ -119,7 +119,7 @@ const MenuBar = () => {
       label: "Find",
       icon: <ZoomIn />,
       dropdown: [
-        { label: "Food", icon: <RestaurantMenu />, path: "/food" },
+        { label: "Food", icon: <RestaurantMenu />,path: "/food" },
         { label: "Assistance", icon: <HelpCenter />,path: "/assistance" },
         { label: "Charities", icon: <FoodBank />,path: "/charities" },
         
@@ -145,7 +145,7 @@ const MenuBar = () => {
 
   return (
     <AppBar position="fixed" sx={{ bgcolor: "#002855" }}>
-      <Toolbar sx={{ justifyContent: "space-between", alignItems: "center", py: { xs: 1, sm: 1.5 } }}>
+      <Toolbar sx={{ justifyContent: "space-between", minHeight: { xs: 94, sm: 104 }, alignItems: "center", py: { xs: 1, sm: 1.5 } }}>
         {/* Foodlink Logo */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
@@ -274,7 +274,7 @@ const MenuBar = () => {
                     {item.label}
                   </Button>
                   {item.label === "Find" ? (
-                    <Menu
+                      <Menu
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl)}
                       onClose={handleMenuClose('find')}
@@ -283,6 +283,12 @@ const MenuBar = () => {
                       }}
                       anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
                       transformOrigin={{ vertical: "top", horizontal: "left" }}
+                      sx={{
+                        "& .MuiPaper-root": {
+                          backgroundColor: "#002855", 
+                          color: "#000000",          
+                        }
+                      }}
                     >
                       {item.dropdown.map((subItem, subIndex) => (
                         <MenuItem
@@ -336,7 +342,7 @@ const MenuBar = () => {
                                 position: 'relative',
                                 zIndex: 1,
                                 '&:hover': {
-                                  bgcolor: 'rgba(139, 0, 0, 0.08)',
+                                  bgcolor: 'rgba(0, 40, 85, 0.08)',
                                   transform: 'translateY(-2px)',
                                   boxShadow: 2,
                                   zIndex: 2
@@ -383,7 +389,11 @@ const MenuBar = () => {
                   sx={{ 
                     textTransform: "none", 
                     fontSize: "16px",
-                    whiteSpace: "nowrap"
+                    whiteSpace: "nowrap",
+                    textDecoration: "none",
+                    '&:hover': {
+                      textDecoration: 'underline'
+                    }
                   }}
                 >
                   {item.label}

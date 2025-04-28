@@ -40,61 +40,61 @@ const layersConfig = [
     id: "6cabc6993a8f44f9aadd1d884cf9cf84",
     title: "DHHR Offices",
     icon: <LocalHospitalIcon sx={{ fontSize: 48 }} />,
-    color: "#e57373", // Red
+    color: "#002855", // Red
   },
   {
     id: "37ec841dae7e46278d111f26a98b83cb",
     title: "WIC Offices",
     icon: <StorefrontIcon sx={{ fontSize: 48 }} />,
-    color: "#64b5f6", // Blue
+    color: "#1C2B39", // Blue
   },
   {
     id: "fe5b84fd9977470ea0a56be091175356",
     title: "Family Resource Network Offices",
     icon: <HomeRepairServiceIcon sx={{ fontSize: 48 }} />,
-    color: "#81c784", // Green
+    color: "#0062A3", // Green
   },
   {
     id: "37fdc5c991f2443e9e30afc80745d00e",
     title: "Family Support Centers",
     icon: <RestaurantIcon sx={{ fontSize: 48 }} />,
-    color: "#ffb74d", // Orange
+    color: "#554741", // Orange
   },
   {
     id: "fdedf6d54b1c4bc9928af7fd3ec520c8",
     title: "Senior Services",
     icon: <ElderlyIcon sx={{ fontSize: 48 }} />,
-    color: "#9575cd", // Purple
+    color: "#988E8B", // Purple
   },
   {
     id: "a6ff9a5145eb47f6aadc08170fc53bd5",
     title: "Food Resources",
     icon: <FastfoodIcon sx={{ fontSize: 48 }} />,
-    color: "#4db6ac", // Teal
+    color: "##BEB7B3", // Teal
   },
   {
     id: "d16bf58fe37747849a8536c7870c8d80",
     title: "Charitable Food Programs",
     icon: <VolunteerActivismIcon sx={{ fontSize: 48 }} />,
-    color: "#f06292", // Pink
+    color: "#7F6310", // Pink
   },
   {
     id: "82a68c3787dc4efaacdf98e00328ebed",
     title: "Congregate Meal Program",
     icon: <WorkIcon sx={{ fontSize: 48 }} />,
-    color: "#ba68c8", // Light Purple
+    color: "#B3A169", // Light Purple
   },
   {
     id: "bf72aea00c1445cca1356cdcee16aa8a",
     title: "Backpack Program",
     icon: <BackpackIcon sx={{ fontSize: 48 }} />,
-    color: "#4fc3f7", // Light Blue
+    color: "#F2E6C2", // Light Blue
   },
   {
     id: "b93e8c7152204bfeac14dc9964bb37df",
     title: "Food Pantry",
     icon: <FoodBankIcon sx={{ fontSize: 48 }} />,
-    color: "#aed581", // Light Green
+    color: "#EAAA00", // Light Green
   },
 ];
 

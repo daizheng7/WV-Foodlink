@@ -234,6 +234,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
             right: { xs: 8, sm: 16 },
             zIndex: 10000,
             opacity: 0.7,
+            
             transition: 'opacity 0.2s',
             '&:hover': {
               opacity: 1
@@ -279,6 +280,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
           pointerEvents: hasScrolled ? 'none' : 'auto',
           transformOrigin: '50% 40%',
           willChange: 'transform, opacity',
+          
           margin: 0,
           padding: 0,
           boxSizing: 'border-box',
@@ -305,28 +307,44 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
         >
           {/* Background Pattern with parallax effect */}
           <motion.div
-            style={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '120%',
-              y: prefersReducedMotion ? 0 : patternYPos,
-              willChange: 'transform',
-            }}
-          >
-            <Box 
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                opacity: 0.07,
-                backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'1\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
-              }}
-            />
-          </motion.div>
+  style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    willChange: 'transform',
+    y: prefersReducedMotion ? 0 : patternYPos, // keep your parallax if needed
+    zIndex: 0,
+    overflow: 'hidden'
+  }}
+>
+  <Box
+    sx={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundImage: `url('https://static.wvu.edu/global/images/patterns/wvu/background__topo-white--2.0.0.svg')`,
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center center',
+        opacity: 1,
+        zIndex: 0
+      }
+    }}
+  />
+</motion.div>
+
           
           <Container 
             maxWidth="lg"
@@ -357,45 +375,48 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
             >
               {/* Logo Section */}
               <motion.div variants={itemVariants}>
-                <Box 
-                  sx={{ 
-                    textAlign: 'center',
-                    mb: 3,
-                    position: 'relative',
-                    width: '100%',
-                    '&::after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: -12,
-                      left: '35%',
-                      width: '30%',
-                      height: 4,
-                      background: "#EAAA00",
-                      borderRadius: 2,
-                      boxShadow: '0 2px 8px rgba(248,203,76,0.4)',
-                    }
-                  }}
-                >
-                  <motion.img
-                    src="/foodlink_white.png"
-                    alt="Foodlink Logo"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 80,
-                      damping: 10
-                    }}
-                    style={{
-                      maxWidth: '100%',
-                      height: 'auto',
-                      maxHeight: isSmallScreen ? '80px' : '110px',
-                      marginBottom: '8px',
-                      filter: 'drop-shadow(0px 2px 6px rgba(0,0,0,0.3))'
-                    }}
-                  />
-                </Box>
-              </motion.div>
+  <Box 
+    sx={{ 
+      textAlign: 'center',
+      mb: 3,
+      position: 'relative',
+      width: '100%',
+    }}
+  >
+    <motion.img
+      src="/foodlink_white.png"
+      alt="Foodlink Logo"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        type: "spring",
+        stiffness: 80,
+        damping: 10
+      }}
+      style={{
+        maxWidth: '100%',
+        height: 'auto',
+        maxHeight: isSmallScreen ? '80px' : '110px',
+        marginBottom: '8px',
+        filter: 'drop-shadow(0px 2px 6px rgba(0,0,0,0.3))'
+      }}
+    />
+
+    {/* WVU Shout Bar instead of Yellow Line */}
+    <Box 
+      className="wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+      sx={{
+        mt: 1, // Small margin top from logo
+        width: "100%",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      {/* Optional: If you want a tiny custom adjustment */}
+    </Box>
+
+  </Box>
+</motion.div>
               
               <motion.div variants={itemVariants}>
                 <Typography 
@@ -513,25 +534,25 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                   { 
                     icon: <SearchIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Find Food Assistance", 
-                    color: "#a71d1d", 
+                    color: "#1C2B39", 
                     link: "/food" 
                   },
                   { 
                     icon: <LayersIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Explore Food Atlas", 
-                    color: "#354F5B", 
+                    color: "#0062A3", 
                     link: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3" 
                   },
                   { 
                     icon: <GroupIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Organize Communities", 
-                    color: "#C84C23", 
+                    color: "#002855", 
                     link: "https://foodlink.wvu.edu/pages/organize-1" 
                   },
                   { 
                     icon: <AccessTimeFilledIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Access Resources", 
-                    color: "#39897E", 
+                    color: "#554741", 
                     link: "/home" 
                   }
                 ].map((item, index) => (
@@ -637,31 +658,41 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     } 
                   }}
                 >
+                  
                   <Button
-                    variant="outlined"
-                    onClick={handleExploreClick}
-                    endIcon={<KeyboardArrowDownIcon />}
-                    sx={{
-                      color: 'white',
-                      borderColor: 'rgba(255,255,255,0.5)',
-                      borderRadius: '24px',
-                      px: { xs: 2, sm: 3 },
-                      py: { xs: 1, sm: 1.2 },
-                      fontSize: { xs: '0.85rem', sm: '0.95rem' },
-                      fontWeight: 500,
-                      transition: 'all 0.3s ease',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                      '&:hover': {
-                        borderColor: 'white',
-                        bgcolor: '#EAAA00',
-                        transform: 'translateY(-2px)',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                      },
-                      willChange: 'transform, box-shadow'
-                    }}
-                  >
-                    Explore FoodLink
-                  </Button>
+  variant="contained"
+  onClick={handleExploreClick}
+  endIcon={<KeyboardArrowDownIcon />}
+  sx={{
+    backgroundColor: "#EAAA00",   // WVU Gold
+    color: "#002855",              // WVU Blue text
+    fontWeight: 700,
+    fontSize: { xs: '1.1rem', sm: '1.3rem', md: '1.5rem' }, // Bigger for importance
+    textTransform: 'none',
+    paddingX: { xs: 4, sm: 6 },
+    paddingY: { xs: 1.5, sm: 2 },
+    borderRadius: "32px",          // Make it a strong pill shape
+    mt: { xs: 4, sm: 6 },           // More spacing from cards above
+    transition: 'all 0.3s ease',
+    boxShadow: '0 6px 14px rgba(0,0,0,0.25)', // Stronger shadow
+    '&:hover': {
+      backgroundColor: "#FFD54F",   // Slightly lighter WVU Gold
+      color: "#002855",             // Stay WVU Blue text
+      boxShadow: '0 8px 20px rgba(0,0,0,0.3)',
+      transform: 'translateY(-2px)',
+    },
+    '&:focus': {
+      outline: '2px solid #002855',
+      outlineOffset: '3px',
+    },
+    willChange: 'transform, background-color, box-shadow',
+  }}
+>
+  Explore FoodLink
+</Button>
+
+
+
                 </motion.div>
               )}
               

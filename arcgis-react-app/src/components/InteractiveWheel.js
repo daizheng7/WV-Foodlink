@@ -33,7 +33,7 @@ const barriers = [
     id: "crisis", 
     name: "Crisis", 
     icon: AlertCircle, 
-    color: "#D32F2F", 
+    color: "#0062A3", 
     video: "https://www.youtube.com/embed/qO0RVbK7DHs", 
     description: "Refers to disasters, unemployment, health issues, or death that can undermine food access for an individual, household, or community." 
   },
@@ -41,7 +41,7 @@ const barriers = [
     id: "income", 
     name: "Income", 
     icon: DollarSign, 
-    color: "#FFA000", 
+    color: "#002855", 
     video: "https://www.youtube.com/embed/v8ePPIownaI", 
     description: "The effect of someone's wages or assets, costs of food, debts, and time constraints on accessing food." 
   },
@@ -49,7 +49,7 @@ const barriers = [
     id: "identity", 
     name: "Identity", 
     icon: Users, 
-    color: "#1976D2", 
+    color: "#1C2B39", 
     video: "https://www.youtube.com/embed/OdMCPrPn5qo", 
     description: "How gender, race, disability, sexuality, nationality, or age affects access to food." 
   },
@@ -57,7 +57,7 @@ const barriers = [
     id: "location", 
     name: "Location", 
     icon: MapPin, 
-    color: "#388E3C", 
+    color: "#554741", 
     video: "https://www.youtube.com/embed/AynwUOw45vo", 
     description: "Proximity to healthy food outlets, food availability, and the ability to grow food." 
   },
@@ -65,7 +65,7 @@ const barriers = [
     id: "knowledge", 
     name: "Knowledge", 
     icon: BookOpen, 
-    color: "#7B1FA2", 
+    color: "#7F6310", 
     video: "https://www.youtube.com/embed/UGilgNGvNd0", 
     description: "Access to education and information about food resources." 
   },
@@ -76,7 +76,7 @@ const strategies = [
     id: "state", 
     name: "State", 
     icon: Building, 
-    color: "#455A64", 
+    color: "#0062A3", 
     video: "https://www.youtube.com/embed/lYZBG4BTd0E", 
     description: "Government programs like SNAP, WIC, and school programs that provide direct subsidies for food." 
   },
@@ -84,7 +84,7 @@ const strategies = [
     id: "charity", 
     name: "Charity", 
     icon: HandHelping, 
-    color: "#8E24AA", 
+    color: "#002855", 
     video: "https://www.youtube.com/embed/WsJb8ZYxRAs", 
     description: "Food banks, pantries, and soup kitchens funded by donations." 
   },
@@ -92,7 +92,7 @@ const strategies = [
     id: "market", 
     name: "Market", 
     icon: ShoppingCart, 
-    color: "#F57C00", 
+    color: "#1C2B39", 
     video: "https://www.youtube.com/embed/GSf_odoe4kg", 
     description: "Grocery stores, convenience stores, and restaurants where food is exchanged for money." 
   },
@@ -100,7 +100,7 @@ const strategies = [
     id: "selfprovision", 
     name: "Self-Provisioning", 
     icon: Home, 
-    color: "#5D4037", 
+    color: "#554741", 
     video: "https://www.youtube.com/embed/XcDbcUslsNg", 
     description: "Hunting, foraging, fishing, or growing food independently." 
   },
@@ -108,7 +108,7 @@ const strategies = [
     id: "farming", 
     name: "Farming", 
     icon: Factory, 
-    color: "#2E7D32", 
+    color: "#7F6310", 
     video: "https://www.youtube.com/embed/WmgW6TPL9hI", 
     description: "Grower-based initiatives to sell produce through farmers' markets and other mechanisms." 
   },

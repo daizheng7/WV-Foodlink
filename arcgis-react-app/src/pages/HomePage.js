@@ -426,50 +426,37 @@ const HomePage = () => {
         backgroundColor: colors.base,
         margin: 0,
         padding: 0,
+        
       }}
     >
       <IntroModal />
 
       <Box
-        sx={{
-          width: `calc(100vw - ${scrollbarWidth}px)`,
-          height: { xs: "65vh", md: "100vh" },
-          position: "relative",
-          overflow: "hidden",
-          borderBottom: `2px solid ${alpha(MAIN_COLOR, 0.3)}`,
-          margin: 0,
-          padding: 0,
+      sx={{
+        width: `calc(100vw - ${scrollbarWidth}px)`,
+        height: { xs: "65vh", md: "100vh" },
+        position: "relative",
+        overflow: "hidden",
+        margin: 0,
+        padding: 0,
+        borderBottom: `2px solid ${alpha(MAIN_COLOR, 0.3)}`,
+        display: "block",
+        "& > div": {
+          width: "100%",
+          height: "100%",
+        },
+        "& .esri-view, & .esri-view-root, & .esri-view-surface, & .esri-ui": {
+          width: "100%",
+          height: "100%",
+        },
+        "& canvas": {
+          width: "100%",
+          height: "100%",
           display: "block",
-          "& > div": {
-            height: "100% !important",
-            margin: "0 !important",
-            padding: "0 !important",
-          },
-          "& .mapDiv, & div[ref='mapDiv']": {
-            padding: "0 !important",
-            margin: "0 !important",
-            width: "100% !important",
-            height: "100% !important"
-          },
-          "& .esri-view": {
-            width: "100% !important",
-            height: "100% !important",
-            padding: "0 !important",
-            margin: "0 !important",
-          },
-          "& .esri-view-surface": {
-            width: "100% !important",
-            height: "100% !important"
-          },
-          "& .esri-ui": {
-            inset: "auto !important"
-          },
-          "& canvas": {
-            display: "block !important",
-            height: "100% !important"
-          }
-        }}
+        }
+      }}
       >
+        
         <FoodRetailer />
       </Box>
 
