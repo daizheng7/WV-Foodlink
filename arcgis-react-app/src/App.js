@@ -84,15 +84,13 @@ const AppContent = () => {
           zIndex: isHomePage && !showContent ? 1 : 10, // Ensure content is above intro when visible
         }}
       >
-        <a href="#main-content" className="skip-link">
-  Skip to main content
-</a>{/* Navigation Menu */}
+     {/* Navigation Menu */}
         <MenuBar />
 
         {/* Main Content Area */}
         <main id="main-content" tabIndex={-1}>
   <Box sx={{ 
-    marginTop: "80px", 
+    
     padding: 2
   }}>
     <Routes>
