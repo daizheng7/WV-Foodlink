@@ -53,6 +53,7 @@ const FoodRetailer = () => {
   const [filterFreshProduce, setFilterFreshProduce] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [popupContent, setPopupContent] = useState(null);
+  const [visibleFeatures, setVisibleFeatures] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [activeFilters, setActiveFilters] = useState(0);
 
@@ -245,8 +246,18 @@ const FoodRetailer = () => {
         .filter(Boolean)
         .join(" AND ");
 
-      retailerLayer.definitionExpression = definitionExpression;
-    }
+        retailerLayer.definitionExpression = definitionExpression;
+
+        // Query features after filter is applied to update accessible list
+        retailerLayer.queryFeatures({
+          where: definitionExpression || "1=1",
+          outFields: ["*"],
+          returnGeometry: false
+        }).then((result) => {
+          setVisibleFeatures(result.features);
+        }).catch((error) => {
+          console.error("Failed to update visible features for accessibility:", error);
+        });    }
   }, [activeCategories, filterWIC, filterFreshProduce, view]);
 
   return (
@@ -257,6 +268,9 @@ const FoodRetailer = () => {
   style={{ width: "100%", height: "100%" }}
   tabIndex={0}
   aria-label="Interactive map showing locations of food retailers. Use arrow keys to navigate."
+  onFocus={() => {
+    if (view) view.focus();
+  }}
 ></div>
       {/* Store details popup */}
       {popupContent && (
@@ -494,6 +508,28 @@ const FoodRetailer = () => {
           </Badge>
         </IconButton>
       </Tooltip>
+      <Box
+  component="ul"
+  sx={{
+    position: 'absolute',
+    left: '-9999px',
+    width: '1px',
+    height: '1px',
+    overflow: 'hidden'
+  }}
+  aria-label="List of visible food retailers on the map"
+>
+  {visibleFeatures.map((feature, i) => {
+    const a = feature.attributes || {};
+    return (
+      <li key={i} tabIndex={0}>
+        {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
+        Category: {a.Retail_Category || 'N/A'}.
+        SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
+      </li>
+    );
+  })}
+</Box>
     </Box>
   );
 };

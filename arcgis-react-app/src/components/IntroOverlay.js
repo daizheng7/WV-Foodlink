@@ -266,6 +266,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
     
       <motion.div
         ref={overlayRef}
+        
         style={{
           opacity,
           y: yPos,
@@ -420,7 +421,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
               
               <motion.div variants={itemVariants}>
                 <Typography 
-                  variant="h5" 
+                  variant="h2" component="h5"
                   sx={{ 
                     fontWeight: 400,
                     maxWidth: '100%',
@@ -581,6 +582,8 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                       }}
                       whileTap={{ scale: 0.98 }}
                       style={{ height: '100%' }}
+                      tabIndex={-1}
+  aria-hidden="true"
                     >
                       <Button
                         component="a"
