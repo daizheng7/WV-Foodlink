@@ -20,7 +20,7 @@ const theme = createTheme({
     }
   },
   components: {
-    MuiButton: { styleOverrides: { root: { color: "white", textTransform: "none", fontSize: "16px", '&:hover': { color: "#f0f0f0", backgroundColor: "transparent" } } } },
+    MuiButton: { styleOverrides: { root: { color: "white", textTransform: "none", fontSize: "16px", '&:hover': { color: "#002854", backgroundColor: "transparent" } } } },
     MuiMenuItem: { styleOverrides: { root: { color: "white", '&:hover': { color: "#f0f0f0", backgroundColor: "#003366" } } } },
     MuiListItemButton: { styleOverrides: { root: { color: "white", '&:hover': { color: "#f0f0f0", backgroundColor: "#003366" } } } },
     MuiPaper: { styleOverrides: { root: { '&[component="a"]': { color: "white", textDecoration: "none", '&:hover': { color: "#f0f0f0", backgroundColor: "#003366", textDecoration: "underline" } } } } }
