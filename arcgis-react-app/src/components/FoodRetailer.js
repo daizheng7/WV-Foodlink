@@ -708,7 +708,7 @@ const FoodRetailer = () => {
         }}
       >
         <Box sx={{ p: 2, pb: 1 }}>
-          <Typography variant="h5" fontWeight="bold" gutterBottom>
+          <Typography variant="h5" component="h1" fontWeight="bold" gutterBottom>
             Food Retailers
           </Typography>
           <Typography variant="body2" color="text.secondary" gutterBottom>
