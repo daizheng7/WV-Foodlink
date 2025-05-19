@@ -34,6 +34,9 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import NearMeIcon from "@mui/icons-material/NearMe";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const categoryStyles = {
   Grocery: { color: "#002855", textColor: "#ffffff", icon: <LocalGroceryStoreIcon /> }, // wvu-blue
@@ -43,7 +46,6 @@ const categoryStyles = {
   Specialty: { color: "#F58672", textColor: "#1C2B39", icon: <BusinessIcon /> }, // sunset
   "Big Box": { color: "#7F6310", textColor: "#ffffff", icon: <BusinessIcon /> }, // old-gold
 };
-
 
 const FoodRetailer = () => {
   const mapDiv = useRef(null);
@@ -56,6 +58,11 @@ const FoodRetailer = () => {
   const [visibleFeatures, setVisibleFeatures] = useState([]);
   const [isFilterOpen, setIsFilterOpen] = useState(true);
   const [activeFilters, setActiveFilters] = useState(0);
+  
+  // New state for keyboard navigation
+  const [focusedPoiIndex, setFocusedPoiIndex] = useState(-1);
+  const [isPoiListVisible, setIsPoiListVisible] = useState(false);
+  const [isHelpVisible, setIsHelpVisible] = useState(false);
 
   // Calculate number of active filters
   useEffect(() => {
@@ -122,6 +129,68 @@ const FoodRetailer = () => {
     }
   }, [userLocation, view]);
 
+  // Handle keyboard navigation
+  const handleKeyDown = useCallback((e) => {
+    // Only handle keyboard navigation when POI list is visible
+    if (!isPoiListVisible || visibleFeatures.length === 0) return;
+    
+    switch (e.key) {
+      case 'ArrowRight':
+      case 'Tab':
+        if (e.key === 'Tab' && !e.shiftKey) {
+          e.preventDefault(); // Prevent default tab behavior
+          setFocusedPoiIndex(prev => 
+            prev >= visibleFeatures.length - 1 ? 0 : prev + 1
+          );
+        } else if (e.key === 'ArrowRight') {
+          setFocusedPoiIndex(prev => 
+            prev >= visibleFeatures.length - 1 ? 0 : prev + 1
+          );
+        }
+        break;
+      case 'ArrowLeft':
+        if (e.key === 'Tab' && e.shiftKey) {
+          e.preventDefault(); // Prevent default shift+tab behavior
+          setFocusedPoiIndex(prev => 
+            prev <= 0 ? visibleFeatures.length - 1 : prev - 1
+          );
+        } else if (e.key === 'ArrowLeft') {
+          setFocusedPoiIndex(prev => 
+            prev <= 0 ? visibleFeatures.length - 1 : prev - 1
+          );
+        }
+        break;
+      case 'Enter':
+      case ' ':
+        // Show popup for the selected POI
+        if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
+          const feature = visibleFeatures[focusedPoiIndex];
+          const attributes = feature.attributes || {};
+          setPopupContent({
+            title: attributes.Store_Name || "No Name Available",
+            category: attributes.Retail_Category || "N/A",
+            address: attributes.Address || "N/A",
+            city: attributes.City || "N/A",
+            state: attributes.State || "N/A",
+            zip: attributes.Zip || "N/A",
+            freshProduce: attributes.Fresh_Produce === "Yes",
+            snap: attributes.SNAP === "Yes",
+            wic: attributes.WIC === "Yes"
+          });
+          e.preventDefault(); // Prevent default space behavior (scroll)
+        }
+        break;
+      case 'Escape':
+        // Exit POI navigation mode
+        setIsPoiListVisible(false);
+        setFocusedPoiIndex(-1);
+        e.preventDefault();
+        break;
+      default:
+        break;
+    }
+  }, [isPoiListVisible, visibleFeatures, focusedPoiIndex]);
+
   // Initialize map
   useEffect(() => {
     if (!mapDiv.current) return;
@@ -169,7 +238,6 @@ const FoodRetailer = () => {
       },
       constraints: {
         snapToZoom: false,
-
       },
       ui: {
         components: ["zoom", "compass", "attribution"]
@@ -179,13 +247,19 @@ const FoodRetailer = () => {
     mapView.when(() => {
       setView(mapView);
       mapView.navigation.mouseWheelZoomEnabled = false;
+    }).catch(err => {
+      console.error("Error initializing map view:", err);
     });
 
     // Clean up function
     return () => {
       if (mapView) {
-        mapView.map.removeAll();
-        mapView.destroy();
+        try {
+          mapView.map.removeAll();
+          mapView.destroy();
+        } catch (error) {
+          console.error("Error cleaning up map view:", error);
+        }
       }
     };
   }, []);
@@ -232,6 +306,7 @@ const FoodRetailer = () => {
       // Only apply filter if there are active categories
       if (activeCategories.length === 0) {
         retailerLayer.definitionExpression = "1=0"; // Show nothing if no categories selected
+        setVisibleFeatures([]);
         return;
       }
       
@@ -246,57 +321,234 @@ const FoodRetailer = () => {
         .filter(Boolean)
         .join(" AND ");
 
-        retailerLayer.definitionExpression = definitionExpression;
+      retailerLayer.definitionExpression = definitionExpression;
 
-        // Query features after filter is applied to update accessible list
-        retailerLayer.queryFeatures({
-          where: definitionExpression || "1=1",
-          outFields: ["*"],
-          returnGeometry: false
-        }).then((result) => {
-          setVisibleFeatures(result.features);
-        }).catch((error) => {
-          console.error("Failed to update visible features for accessibility:", error);
-        });    }
+      // Query features after filter is applied to update accessible list
+      retailerLayer.queryFeatures({
+        where: definitionExpression || "1=1",
+        outFields: ["*"],
+        returnGeometry: true // Changed to true to get geometry for highlighting
+      }).then((result) => {
+        // Reset focused POI index when filters change
+        setFocusedPoiIndex(-1);
+        setVisibleFeatures(result.features);
+      }).catch((error) => {
+        console.error("Failed to update visible features for accessibility:", error);
+        setVisibleFeatures([]);
+      });    
+    }
   }, [activeCategories, filterWIC, filterFreshProduce, view]);
+
+  // Effect for global keyboard events
+  useEffect(() => {
+    const handleGlobalKeyDown = (e) => {
+      // Skip if we're in an input field or textarea
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      if (e.key === 'k' || e.key === 'K') {
+        // Toggle keyboard navigation mode
+        setIsPoiListVisible(prev => !prev);
+        if (!isPoiListVisible && visibleFeatures.length > 0) {
+          setFocusedPoiIndex(0);
+        }
+      } else if (isPoiListVisible) {
+        handleKeyDown(e);
+      }
+    };
+    
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleGlobalKeyDown);
+    };
+  }, [handleKeyDown, isPoiListVisible, visibleFeatures]);
+
+  // Add effect to highlight focused POI on the map
+  useEffect(() => {
+    if (!view || focusedPoiIndex < 0 || focusedPoiIndex >= visibleFeatures.length) return;
+    
+    const retailerLayer = view.map.findLayerById("retailerLayer");
+    if (!retailerLayer) return;
+    
+    // Clear any existing highlights
+    if (view.graphics && typeof view.graphics.removeAll === 'function') {
+      view.graphics.removeAll();
+    }
+    
+    const focusedFeature = visibleFeatures[focusedPoiIndex];
+    if (!focusedFeature) return;
+    
+    const attributes = focusedFeature.attributes || {};
+    
+    try {
+      // Center the map on the focused POI with error handling
+      if (focusedFeature.geometry) {
+        view.goTo({
+          target: focusedFeature.geometry,
+          zoom: view.zoom // Maintain current zoom level
+        }, {
+          duration: 500,
+          easing: "ease-in-out"
+        }).catch(err => {
+          // Silently handle any navigation errors
+          console.debug("Map navigation was interrupted", err);
+        });
+      }
+      
+      // Create a highlight graphic
+      const category = attributes.Retail_Category || "N/A";
+      const color = categoryStyles[category]?.color || "#cccccc";
+      
+      if (view.graphics && typeof view.graphics.add === 'function') {
+        const highlightGraphic = {
+          geometry: focusedFeature.geometry,
+          symbol: {
+            type: "simple-marker",
+            color: color,
+            size: 16,
+            outline: {
+              color: "#ffffff",
+              width: 3
+            }
+          }
+        };
+        
+        view.graphics.add(highlightGraphic);
+      }
+      
+      // Show details for the feature instead of using popup
+      // This avoids using the problematic popup.open method
+      if (focusedFeature.geometry) {
+        // Instead of using popup, we'll just update our state to show the details card
+        const poiData = {
+          title: attributes.Store_Name || "No Name Available",
+          category: attributes.Retail_Category || "N/A",
+          address: attributes.Address || "N/A",
+          city: attributes.City || "N/A",
+          state: attributes.State || "N/A",
+          zip: attributes.Zip || "N/A",
+          freshProduce: attributes.Fresh_Produce === "Yes",
+          snap: attributes.SNAP === "Yes",
+          wic: attributes.WIC === "Yes"
+        };
+        
+        // Only update popup content if Enter is pressed or explicit selection is made
+        // This prevents every navigation from triggering a popup
+        // We'll update this in the handleKeyDown function instead
+      }
+    } catch (error) {
+      console.error("Error highlighting POI:", error);
+    }
+    
+  }, [view, focusedPoiIndex, visibleFeatures, categoryStyles]);
 
   return (
     <Box sx={{ position: "relative", width: "100%", height: "85vh", overflow: "hidden" }}>
+      {/* Skip link for keyboard accessibility */}
+      <Button
+        sx={{
+          position: 'absolute',
+          left: '0',
+          top: '-100px',
+          zIndex: 1500,
+          '&:focus': {
+            top: '0',
+            left: '0',
+            backgroundColor: 'white',
+          },
+        }}
+        variant="contained"
+        onClick={() => {
+          // Find the next focusable element after the map and focus it
+          const focusableElements = document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
+          let foundMap = false;
+          for (let i = 0; i < focusableElements.length; i++) {
+            if (foundMap) {
+              focusableElements[i].focus();
+              break;
+            }
+            if (focusableElements[i] === mapDiv.current) {
+              foundMap = true;
+            }
+          }
+        }}
+      >
+        Skip Map Navigation
+      </Button>
+      
       {/* Map container */}
       <div
-  ref={mapDiv}
-  style={{ width: "100%", height: "100%" }}
-  tabIndex={0}
-  aria-label="Interactive map showing locations of food retailers. Use arrow keys to navigate."
-  onFocus={() => {
-    if (view) view.focus();
-  }}
-></div>
+        ref={mapDiv}
+        style={{ width: "100%", height: "100%" }}
+        tabIndex={0}
+        aria-label="Interactive map showing locations of food retailers. Press 'K' to enter keyboard navigation mode, Tab to navigate away from map."
+        onKeyDown={(e) => {
+          // Global keyboard shortcuts
+          if (e.key === 'k' || e.key === 'K') {
+            // Toggle keyboard navigation mode
+            setIsPoiListVisible(prev => !prev);
+            if (!isPoiListVisible && visibleFeatures.length > 0) {
+              setFocusedPoiIndex(0);
+            }
+            e.preventDefault();
+          } else if (e.key === 'Tab' && !isPoiListVisible) {
+            // Allow Tab navigation out of the map when not in POI navigation mode
+            // The default behavior will work
+          } else {
+            handleKeyDown(e);
+          }
+        }}
+        onFocus={() => {
+          if (view) view.focus();
+        }}
+      ></div>
+
+      {/* ARIA live region for screen reader announcements */}
+      <div
+        aria-live="polite"
+        className="sr-only"
+        style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}
+      >
+        {isPoiListVisible && focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length && (
+          <span>
+            {`Now focusing on ${visibleFeatures[focusedPoiIndex].attributes.Store_Name || "Unknown Location"}, 
+            ${visibleFeatures[focusedPoiIndex].attributes.Address || ""}, 
+            ${visibleFeatures[focusedPoiIndex].attributes.City || ""}. 
+            Item ${focusedPoiIndex + 1} of ${visibleFeatures.length}.`}
+          </span>
+        )}
+      </div>
+
       {/* Store details popup */}
       {popupContent && (
-  <Fade in>
-    <Card
-      elevation={5}
-      tabIndex={0}
-      role="dialog"
-      aria-label={`Store details for ${popupContent.title}`}
-      onKeyDown={(e) => {
-        if (e.key === "Escape") {
-          setPopupContent(null);
-        }
-      }}
-      sx={{
-        position: "absolute",
-        top: 20,
-        right: 20,
-        width: 320,
-        borderRadius: 2,
-        overflow: "visible",
-        zIndex: 1000,
-        backgroundColor: "rgba(255, 255, 255, 0.97)",
-      }}
-    >
+        <Fade in>
+          <Card
+            elevation={5}
+            tabIndex={0}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="store-details-title"
+            aria-describedby="store-details-description"
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                setPopupContent(null);
+              }
+            }}
+            sx={{
+              position: "absolute",
+              top: 20,
+              right: 20,
+              width: 320,
+              borderRadius: 2,
+              overflow: "visible",
+              zIndex: 1000,
+              backgroundColor: "rgba(255, 255, 255, 0.97)",
+            }}
+          >
             <CardHeader
+              id="store-details-title"
               title={
                 <Typography variant="h6" noWrap title={popupContent.title}>
                   {popupContent.title}
@@ -315,13 +567,16 @@ const FoodRetailer = () => {
                 />
               }
               action={
-                <IconButton onClick={() => setPopupContent(null)}>
+                <IconButton 
+                  onClick={() => setPopupContent(null)}
+                  aria-label="Close details"
+                >
                   <CloseIcon />
                 </IconButton>
               }
             />
             <Divider />
-            <CardContent>
+            <CardContent id="store-details-description">
               <Typography variant="body2" gutterBottom>
                 {popupContent.address}<br />
                 {popupContent.city}, {popupContent.state} {popupContent.zip}
@@ -374,6 +629,63 @@ const FoodRetailer = () => {
         </Fade>
       )}
 
+      {/* Keyboard Navigation Panel */}
+      {isPoiListVisible && visibleFeatures.length > 0 && (
+        <Paper
+          elevation={4}
+          sx={{
+            position: "absolute",
+            bottom: 20,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "auto",
+            maxWidth: "90%",
+            p: 2,
+            zIndex: 1000,
+            backgroundColor: "rgba(255, 255, 255, 0.97)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+            Keyboard Navigation ({focusedPoiIndex >= 0 ? focusedPoiIndex + 1 : 0} of {visibleFeatures.length})
+          </Typography>
+          
+          <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+            <Button 
+              onClick={() => setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1)}
+              startIcon={<KeyboardArrowLeftIcon />}
+              variant="outlined"
+              size="small"
+              sx={{ mr: 1 }}
+            >
+              Previous
+            </Button>
+            
+            <Typography variant="body2" sx={{ mx: 2 }}>
+              {focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length ? 
+                visibleFeatures[focusedPoiIndex].attributes.Store_Name || "Unknown Location" :
+                "No location selected"}
+            </Typography>
+            
+            <Button 
+              onClick={() => setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1)}
+              endIcon={<KeyboardArrowRightIcon />}
+              variant="outlined"
+              size="small"
+              sx={{ ml: 1 }}
+            >
+              Next
+            </Button>
+          </Box>
+          
+          <Typography variant="caption" color="text.secondary">
+            Use ← → arrow keys to navigate • Enter to select • Esc to exit navigation mode
+          </Typography>
+        </Paper>
+      )}
+
       {/* Filter panel */}
       <Paper
         elevation={4}
@@ -409,28 +721,28 @@ const FoodRetailer = () => {
             {Object.entries(categoryStyles).map(([category, style]) => (
               <Grid item xs={6} key={category}>
                 <Tooltip title={category} placement="top">
-                <Button
-  onClick={() => toggleCategory(category)}
-  variant={activeCategories.includes(category) ? "contained" : "outlined"}
-  startIcon={style.icon}
-  size="small"
-  fullWidth
-  sx={{
-    backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
-    borderColor: style.color,
-    color: activeCategories.includes(category) ? style.textColor : style.color,
-    justifyContent: "flex-start",
-    textTransform: "none",
-    mb: 1,
-    '&:hover': {
-      backgroundColor: activeCategories.includes(category) 
-        ? style.color 
-        : `${style.color}22`
-    }
-  }}
->
-  {category.length > 10 ? `${category.substring(0, 9)}...` : category}
-</Button>
+                  <Button
+                    onClick={() => toggleCategory(category)}
+                    variant={activeCategories.includes(category) ? "contained" : "outlined"}
+                    startIcon={style.icon}
+                    size="small"
+                    fullWidth
+                    sx={{
+                      backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
+                      borderColor: style.color,
+                      color: activeCategories.includes(category) ? style.textColor : style.color,
+                      justifyContent: "flex-start",
+                      textTransform: "none",
+                      mb: 1,
+                      '&:hover': {
+                        backgroundColor: activeCategories.includes(category) 
+                          ? style.color 
+                          : `${style.color}22`
+                      }
+                    }}
+                  >
+                    {category.length > 10 ? `${category.substring(0, 9)}...` : category}
+                  </Button>
                 </Tooltip>
               </Grid>
             ))}
@@ -480,7 +792,19 @@ const FoodRetailer = () => {
             Find My Location
           </Button>
           
-         
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => {
+              setIsPoiListVisible(true);
+              if (visibleFeatures.length > 0) {
+                setFocusedPoiIndex(0);
+              }
+            }}
+            sx={{ mt: 1 }}
+          >
+            Enter Keyboard Navigation Mode
+          </Button>
         </Box>
       </Paper>
 
@@ -508,28 +832,86 @@ const FoodRetailer = () => {
           </Badge>
         </IconButton>
       </Tooltip>
+
+      {/* Help button */}
+      <Tooltip title="Keyboard Help">
+        <IconButton
+          onClick={() => setIsHelpVisible(true)}
+          sx={{
+            position: "absolute",
+            right: 20,
+            bottom: 20,
+            backgroundColor: "white",
+            border: "1px solid #ddd",
+            zIndex: 1001,
+            "&:hover": {
+              backgroundColor: "#f5f5f5"
+            }
+          }}
+        >
+          <HelpOutlineIcon />
+        </IconButton>
+      </Tooltip>
+
+      {/* Help modal */}
+      {isHelpVisible && (
+        <Paper
+          elevation={4}
+          role="dialog"
+          aria-labelledby="keyboard-help-title"
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            maxWidth: "90%",
+            p: 3,
+            zIndex: 1500,
+            backgroundColor: "white",
+          }}
+        >
+          <Typography id="keyboard-help-title" variant="h6" gutterBottom>
+            Keyboard Navigation Help
+          </Typography>
+          <Box component="ul" sx={{ pl: 2 }}>
+            <li><Typography>Press <strong>Enter</strong> to view details of selected point</Typography></li>
+            <li><Typography>Press <strong>Esc</strong> to exit navigation mode</Typography></li>
+            <li><Typography>Press <strong>Tab</strong> to navigate to the next element on the page</Typography></li>
+          </Box>
+          <Button 
+            variant="contained"
+            onClick={() => setIsHelpVisible(false)}
+            sx={{ mt: 2 }}
+          >
+            Close
+          </Button>
+        </Paper>
+      )}
+
+      {/* Hidden accessible list of POIs for screen readers */}
       <Box
-  component="ul"
-  sx={{
-    position: 'absolute',
-    left: '-9999px',
-    width: '1px',
-    height: '1px',
-    overflow: 'hidden'
-  }}
-  aria-label="List of visible food retailers on the map"
->
-  {visibleFeatures.map((feature, i) => {
-    const a = feature.attributes || {};
-    return (
-      <li key={i} tabIndex={0}>
-        {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
-        Category: {a.Retail_Category || 'N/A'}.
-        SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
-      </li>
-    );
-  })}
-</Box>
+        component="ul"
+        sx={{
+          position: 'absolute',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden'
+        }}
+        aria-label="List of visible food retailers on the map"
+      >
+        {visibleFeatures.map((feature, i) => {
+          const a = feature.attributes || {};
+          return (
+            <li key={i} tabIndex={0}>
+              {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
+              Category: {a.Retail_Category || 'N/A'}.
+              SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
+            </li>
+          );
+        })}
+      </Box>
     </Box>
   );
 };
