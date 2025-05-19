@@ -656,11 +656,15 @@ const FoodRetailer = () => {
             <Button 
               onClick={() => setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1)}
               startIcon={<KeyboardArrowLeftIcon />}
-              variant="outlined"
+              variant="contained"
+              color = 'primary'
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1,
+                 xs: "0.75rem", 
+      sm: "0.85rem",
+              }}
             >
-              Previous
+              Prev.
             </Button>
             
             <Typography variant="body2" sx={{ mx: 2 }}>
@@ -672,7 +676,8 @@ const FoodRetailer = () => {
             <Button 
               onClick={() => setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1)}
               endIcon={<KeyboardArrowRightIcon />}
-              variant="outlined"
+              variant="contained"
+              color = "primary"
               size="small"
               sx={{ ml: 1 }}
             >
@@ -717,36 +722,55 @@ const FoodRetailer = () => {
             Retailer Type
           </Typography>
 
-          <Grid container spacing={1} sx={{ mb: 2 }}>
-            {Object.entries(categoryStyles).map(([category, style]) => (
-              <Grid item xs={6} key={category}>
-                <Tooltip title={category} placement="top">
-                  <Button
-                    onClick={() => toggleCategory(category)}
-                    variant={activeCategories.includes(category) ? "contained" : "outlined"}
-                    startIcon={style.icon}
-                    size="small"
-                    fullWidth
-                    sx={{
-                      backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
-                      borderColor: style.color,
-                      color: activeCategories.includes(category) ? style.textColor : style.color,
-                      justifyContent: "flex-start",
-                      textTransform: "none",
-                      mb: 1,
-                      '&:hover': {
-                        backgroundColor: activeCategories.includes(category) 
-                          ? style.color 
-                          : `${style.color}22`
-                      }
-                    }}
-                  >
-                    {category.length > 10 ? `${category.substring(0, 9)}...` : category}
-                  </Button>
-                </Tooltip>
-              </Grid>
-            ))}
-          </Grid>
+          <Box
+  sx={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 1,
+    mb: 2,
+  }}
+>
+  {Object.entries(categoryStyles).map(([category, style]) => (
+    <Tooltip key={category} title={category} placement="top">
+      <span>
+        <Button
+          onClick={() => toggleCategory(category)}
+          variant={activeCategories.includes(category) ? "contained" : "outlined"}
+          startIcon={style.icon}
+          size="small"
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            px: 1.5,
+            py: 0.5,
+            fontSize: {
+              xs: "0.72rem",
+              sm: "0.8rem",
+            },
+            minWidth: 0,
+            maxWidth: "100%",
+            flex: "1 1 130px", // flexible button sizing
+            textTransform: "none",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
+            borderColor: style.color,
+            color: activeCategories.includes(category) ? style.textColor : style.color,
+            '&:hover': {
+              backgroundColor: activeCategories.includes(category)
+                ? style.color
+                : `${style.color}22`
+            }
+          }}
+        >
+          {category}
+        </Button>
+      </span>
+    </Tooltip>
+  ))}
+</Box>
+
 
           <Divider sx={{ my: 2 }} />
           
