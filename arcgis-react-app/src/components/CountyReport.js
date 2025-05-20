@@ -34,6 +34,9 @@ import FoodBankIcon from "@mui/icons-material/FoodBank";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import MapIcon from '@mui/icons-material/Map';
 import { ResponsiveBar } from "@nivo/bar";
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import TextField from "@mui/material/TextField";
 
 const layersConfig = [
   {
@@ -98,14 +101,64 @@ const layersConfig = [
   },
 ];
 
+
 const CountyReport = () => {
   const mapDiv = useRef(null);
+  const countyLayerRef = useRef(null);
   const [view, setView] = useState(null);
   const [selectedCounty, setSelectedCounty] = useState(null);
   const [layerData, setLayerData] = useState({});
   const [layerCounts, setLayerCounts] = useState([]);
 
+const [countyOptions, setCountyOptions] = useState([]);
+const [selectedCountyOption, setSelectedCountyOption] = useState("");
+
   const theme = useTheme();
+  const loadCountyData = async (geometry, attributes) => {
+  const counts = await Promise.all(
+    layersConfig.map(async (layer) => {
+      const queryLayer = new FeatureLayer({ portalItem: { id: layer.id } });
+      const query = queryLayer.createQuery();
+      query.geometry = geometry;
+      query.spatialRelationship = "intersects";
+      query.returnGeometry = false;
+      return {
+        title: layer.title,
+        count: await queryLayer.queryFeatureCount(query),
+        icon: layer.icon,
+        color: layer.color,
+      };
+    })
+  );
+
+  const allLayerData = await Promise.all(
+    layersConfig.map(async (layer) => {
+      const queryLayer = new FeatureLayer({ portalItem: { id: layer.id } });
+      const query = queryLayer.createQuery();
+      query.geometry = geometry;
+      query.spatialRelationship = "intersects";
+      query.returnGeometry = false;
+      query.outFields = ["*"];
+      const results = await queryLayer.queryFeatures(query);
+      return {
+        id: layer.id,
+        features: results.features.map((f) => f.attributes),
+      };
+    })
+  );
+
+  const layerDataMap = allLayerData.reduce((acc, { id, features }) => {
+    const layerInfo = layersConfig.find((layer) => layer.id === id);
+    acc[layerInfo.title] = features;
+    return acc;
+  }, {});
+
+  setSelectedCounty({ name: attributes.County_Nam || "Unknown" });
+  setSelectedCountyOption(attributes.County_Nam || "");
+  setLayerCounts(counts);
+  setLayerData(layerDataMap);
+};
+
 
   useEffect(() => {
     esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
@@ -166,7 +219,20 @@ const CountyReport = () => {
       },
       effect: "bloom(1.5, 0.5px, 0.2)", 
     });
+    countyLayerRef.current = countyLayer;
+
     
+    countyLayer.when(() => {
+countyLayer.queryFeatures({
+  where: "1=1",
+  outFields: ["County_Nam"],
+  returnGeometry: false,
+}).then((results) => {
+  const names = results.features.map(f => f.attributes.County_Nam).filter(Boolean).sort();
+  setCountyOptions(names);
+});
+});
+
 
     map.add(countyLayer);
 
@@ -174,69 +240,22 @@ const CountyReport = () => {
       setView(mapView);
       mapView.navigation.mouseWheelZoomEnabled = false;
       mapView.on("click", async (event) => {
-        const response = await mapView.hitTest(event);
-        const results = response.results.filter(
-          (result) => result.graphic && result.graphic.layer === countyLayer
-        );
+  const response = await mapView.hitTest(event);
+  const results = response.results.filter(
+    (result) => result.graphic && result.graphic.layer === countyLayer
+  );
 
-        if (results.length > 0) {
-          const selectedCounty = results[0].graphic;
-          const countyGeometry = selectedCounty.geometry;
+  if (results.length > 0) {
+    const selectedCounty = results[0].graphic;
+    const geometry = selectedCounty.geometry;
+    const attributes = selectedCounty.attributes;
 
-          mapView.goTo(
-            { target: countyGeometry, zoom: 10 },
-            { duration: 4000, easing: "ease-in-out" }
-          );
+    mapView.goTo({ target: geometry, zoom: 10 }, { duration: 4000 });
+    await loadCountyData(geometry, attributes);
+  }
+});
 
-          const counts = await Promise.all(
-            layersConfig.map(async (layer) => {
-              const queryLayer = new FeatureLayer({
-                portalItem: { id: layer.id },
-              });
-              const query = queryLayer.createQuery();
-              query.geometry = countyGeometry;
-              query.spatialRelationship = "intersects";
-              query.returnGeometry = false;
 
-              const count = await queryLayer.queryFeatureCount(query);
-              return {
-                title: layer.title,
-                count,
-                icon: layer.icon,
-                color: layer.color,
-              };
-            })
-          );
-
-          const layerQueries = layersConfig.map(async (layer) => {
-            const queryLayer = new FeatureLayer({
-              portalItem: { id: layer.id },
-            });
-            const query = queryLayer.createQuery();
-            query.geometry = countyGeometry;
-            query.spatialRelationship = "intersects";
-            query.returnGeometry = false;
-            query.outFields = ["*"];
-
-            const results = await queryLayer.queryFeatures(query);
-            return {
-              id: layer.id,
-              features: results.features.map((feature) => feature.attributes),
-            };
-          });
-
-          const allLayerData = await Promise.all(layerQueries);
-          const layerDataMap = allLayerData.reduce((acc, { id, features }) => {
-            const layerInfo = layersConfig.find((layer) => layer.id === id);
-            acc[layerInfo.title] = features;
-            return acc;
-          }, {});
-
-          setSelectedCounty({ name: selectedCounty.attributes.County_Nam || "Unknown" });
-          setLayerCounts(counts);
-          setLayerData(layerDataMap);
-        }
-      });
     });
 
     return () => {
@@ -380,7 +399,87 @@ const CountyReport = () => {
           borderColor: alpha(theme.palette.primary.main, 0.12),
         }}
       >
-        
+        <FormControl fullWidth sx={{ maxWidth: 400, mb: 4 }}>
+  <InputLabel id="county-select-label">Select County</InputLabel>
+<Autocomplete
+  disablePortal
+  fullWidth
+  autoHighlight
+  clearOnEscape
+  options={countyOptions}
+  value={selectedCountyOption}
+  onChange={async (event, newValue) => {
+  if (!newValue) return;
+  setSelectedCountyOption(newValue);
+
+  const countyLayer = countyLayerRef.current;
+  if (countyLayer && view) {
+    try {
+      const res = await countyLayer.queryFeatures({
+        where: `County_Nam = '${newValue.replace(/'/g, "''")}'`,
+        outFields: ["*"],
+        returnGeometry: true,
+      });
+      if (res.features.length > 0) {
+        const selected = res.features[0];
+        await view.goTo({ target: selected.geometry, zoom: 10 }, { duration: 3000 });
+        await loadCountyData(selected.geometry, selected.attributes); 
+      }
+    } catch (err) {
+      console.error("Error querying county layer:", err);
+    }
+  }
+}}
+
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Select County"
+      variant="outlined"
+      sx={{
+        "& .MuiOutlinedInput-root": {
+          backgroundColor: "#FFFFFF",
+          color: theme.palette.primary.main,
+          borderRadius: 2,
+          "&:hover": {
+            backgroundColor: theme.palette.primary.main,
+            color: "#FFFFFF",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.main,
+            },
+            "& .MuiInputBase-input": {
+              color: "#FFFFFF",
+            },
+          },
+          "&.Mui-focused": {
+            backgroundColor: theme.palette.primary.main,
+            color: "#FFFFFF",
+            "& .MuiOutlinedInput-notchedOutline": {
+              borderColor: theme.palette.primary.dark,
+            },
+            "& .MuiInputBase-input": {
+              color: "#FFFFFF",
+            },
+          },
+        },
+        "& .MuiInputLabel-root": {
+          color: theme.palette.primary.main,
+          "&.Mui-focused": {
+            color: "#FFFFFF",
+          },
+        },
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderColor: theme.palette.primary.main,
+        },
+        "& .MuiAutocomplete-popupIndicator": {
+          color: theme.palette.primary.main,
+        },
+      }}
+    />
+  )}
+/>
+
+</FormControl>
         
         {selectedCounty && (
           <Chip 
@@ -458,6 +557,39 @@ const CountyReport = () => {
           </Box>
 
           <Grid container spacing={3}>
+  <Grid item xs={12} sm={6} md={4}>
+    <FormControl fullWidth sx={{ mb: 4 }}>
+      <InputLabel id="county-select-label">Select County</InputLabel>
+      <Select
+  labelId="county-select-label"
+  value={selectedCountyOption}
+  label="Select County"
+  onChange={(e) => {
+    const name = e.target.value;
+    const countyLayer = countyLayerRef.current;
+    setSelectedCountyOption(name);
+    if (countyLayer && view) {
+      countyLayer.queryFeatures({
+        where: `County_Nam = '${name}'`, 
+        outFields: ["*"],
+        returnGeometry: true,
+      }).then(res => {
+        if (res.features.length > 0) {
+          const selected = res.features[0];
+          const geometry = selected.geometry;
+          view.goTo({ target: geometry, zoom: 10 }, { duration: 3000 });
+        }
+      });
+    }
+  }}
+>
+  {countyOptions.map((name) => (
+    <MenuItem key={name} value={name}>{name}</MenuItem>
+  ))}
+</Select>
+    </FormControl>
+  </Grid>
+
             {Object.entries(layerData).map(([title, features]) => {
               const layerConfig = layersConfig.find((layer) => layer.title === title);
               const layerColor = layerConfig?.color || theme.palette.primary.main;
@@ -522,7 +654,39 @@ const CountyReport = () => {
                         }} 
                       />
                     </Box>
-                    
+                    <FormControl fullWidth sx={{ mb: 4 }}>
+  <InputLabel id="county-select-label">Select County</InputLabel>
+  <Select
+    labelId="county-select-label"
+    value={selectedCountyOption}
+    label="Select County"
+    onChange={(e) => {
+      const name = e.target.value;
+      const countyLayer = countyLayerRef.current;
+      setSelectedCountyOption(name);
+      const countyFeature = countyOptions.find(opt => opt === name);
+      if (countyFeature && view) {
+        countyLayer.queryFeatures({
+          where: `NAME = '${name}'`,
+          outFields: ["*"],
+          returnGeometry: true
+        }).then(res => {
+          if (res.features.length > 0) {
+            const selected = res.features[0];
+            const geometry = selected.geometry;
+            view.goTo({ target: geometry, zoom: 10 }, { duration: 3000 });
+            // Optionally re-trigger the same logic as map click event
+          }
+        });
+      }
+    }}
+  >
+    {countyOptions.map((name) => (
+      <MenuItem key={name} value={name}>{name}</MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
                     <Box sx={{ padding: 3 }}>
                       {features && features.length > 0 ? (
                         <>
