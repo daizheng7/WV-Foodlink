@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import esriConfig from "@arcgis/core/config";
 import Map from "@arcgis/core/Map";
 import MapView from "@arcgis/core/views/MapView";
@@ -37,6 +37,19 @@ import { ResponsiveBar } from "@nivo/bar";
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import { Button } from "@mui/material";
+import { saveAs } from "file-saver";
+import Tooltip from "@mui/material/Tooltip";
+import DownloadIcon from "@mui/icons-material/Download";
+import GraphicsLayer from "@arcgis/core/layers/GraphicsLayer";
+import Graphic from "@arcgis/core/Graphic";
+import { List, ListItem, ListItemText } from "@mui/material";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import CloseIcon from '@mui/icons-material/Close';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import KeyboardIcon from '@mui/icons-material/Keyboard';
+import { darken } from '@mui/material/styles';
 
 const layersConfig = [
   {
@@ -102,6 +115,7 @@ const layersConfig = [
 ];
 
 
+
 const CountyReport = () => {
   const mapDiv = useRef(null);
   const countyLayerRef = useRef(null);
@@ -109,12 +123,23 @@ const CountyReport = () => {
   const [selectedCounty, setSelectedCounty] = useState(null);
   const [layerData, setLayerData] = useState({});
   const [layerCounts, setLayerCounts] = useState([]);
+  const [visibleFeatures, setVisibleFeatures] = useState([]);
+const [focusedPoiIndex, setFocusedPoiIndex] = useState(-1);
+const [isPoiListVisible, setIsPoiListVisible] = useState(false);
+
+const graphicsLayerRef = useRef(null); // ✅ Declare here
 
 const [countyOptions, setCountyOptions] = useState([]);
 const [selectedCountyOption, setSelectedCountyOption] = useState("");
 
   const theme = useTheme();
-  const loadCountyData = async (geometry, attributes) => {
+const loadCountyData = async (geometry, attributes) => {
+  // Clear previous graphics
+  if (graphicsLayerRef.current) {
+    graphicsLayerRef.current.removeAll();
+  }
+
+  // First: get counts
   const counts = await Promise.all(
     layersConfig.map(async (layer) => {
       const queryLayer = new FeatureLayer({ portalItem: { id: layer.id } });
@@ -131,33 +156,137 @@ const [selectedCountyOption, setSelectedCountyOption] = useState("");
     })
   );
 
+  // Second: get full features with geometry and add to map
   const allLayerData = await Promise.all(
-    layersConfig.map(async (layer) => {
-      const queryLayer = new FeatureLayer({ portalItem: { id: layer.id } });
-      const query = queryLayer.createQuery();
-      query.geometry = geometry;
-      query.spatialRelationship = "intersects";
-      query.returnGeometry = false;
-      query.outFields = ["*"];
-      const results = await queryLayer.queryFeatures(query);
-      return {
-        id: layer.id,
-        features: results.features.map((f) => f.attributes),
-      };
-    })
-  );
+  layersConfig.map(async (layer) => {
+    const queryLayer = new FeatureLayer({ portalItem: { id: layer.id } });
+    const query = queryLayer.createQuery();
+    query.geometry = geometry;
+    query.spatialRelationship = "intersects";
+    query.returnGeometry = true; // Needed for rendering on map
+    query.outFields = ["*"];
+
+    const results = await queryLayer.queryFeatures(query);
+
+    // Add each point as a graphic to the map
+    results.features.forEach((feature) => {
+      const graphic = new Graphic({
+        geometry: feature.geometry,
+        symbol: {
+          type: "simple-marker",
+          style: "circle",
+          color: layer.color,
+          size: 8,
+          outline: {
+            color: "white",
+            width: 1,
+          },
+        },
+        attributes: feature.attributes,
+        popupTemplate: {
+          title: layer.title,
+          content: Object.entries(feature.attributes)
+            .map(([k, v]) => `<b>${k}</b>: ${v}`)
+            .join("<br>"),
+        },
+      });
+      graphicsLayerRef.current.add(graphic);
+    });
+
+    return {
+      id: layer.id,
+      features: results.features.map((f) => f.attributes),
+    };
+  })
+);
+
 
   const layerDataMap = allLayerData.reduce((acc, { id, features }) => {
     const layerInfo = layersConfig.find((layer) => layer.id === id);
     acc[layerInfo.title] = features;
     return acc;
   }, {});
+const combinedVisible = allLayerData.flatMap(({ id, features }) =>
+  features.map((f, idx) => ({
+    attributes: f,
+    layerId: id,
+    index: idx,
+  }))
+);
 
+
+setVisibleFeatures(combinedVisible);
+setFocusedPoiIndex(combinedVisible.length > 0 ? 0 : -1);
   setSelectedCounty({ name: attributes.County_Nam || "Unknown" });
   setSelectedCountyOption(attributes.County_Nam || "");
   setLayerCounts(counts);
   setLayerData(layerDataMap);
 };
+
+const renderMapLegend = () => (
+  <Paper
+    elevation={3}
+      role="region"
+  aria-labelledby="map-legend-title"
+    sx={{
+      
+      position: "absolute",
+      bottom: 24,
+      right: 24,
+      padding: 2,
+      borderRadius: 2,
+      backgroundColor: theme.palette.background.paper,
+      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+      maxWidth: 280,
+      zIndex: 999,
+    }}
+  >
+    <Typography id="map-legend-title" variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+      Resource Categories
+    </Typography>
+    <Grid container spacing={1}>
+      {layersConfig.map(({ title, color }, index) => (
+        <Grid item xs={12} key={index} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box
+            sx={{
+              width: 16,
+              height: 16,
+              borderRadius: "50%",
+              backgroundColor: color,
+              marginRight: 1,
+              border: "1px solid #ccc",
+            }}
+          />
+          <Typography variant="body2" sx={{ fontSize: "0.8rem" }}>
+            {title}
+          </Typography>
+        </Grid>
+      ))}
+    </Grid>
+  </Paper>
+);
+
+const scrollToFeature = useCallback((feature) => {
+  const graphic = findMatchingGraphic(feature);
+  if (graphic && view) {
+    view.graphics.removeAll();
+    view.graphics.add(new Graphic({
+      geometry: graphic.geometry,
+      symbol: {
+        type: "simple-marker",
+        style: "circle",
+        color: "#FFA500",
+        size: 14,
+        outline: { color: "white", width: 2 },
+      },
+    }));
+    view.goTo({ target: graphic.geometry, zoom: view.zoom + 1 }, { duration: 600 }).then(() => {
+      view.popup.features = [graphic];
+      view.popup.location = graphic.geometry;
+      view.popup.visible = true;
+    });
+  }
+}, [view]);
 
 
   useEffect(() => {
@@ -235,6 +364,10 @@ countyLayer.queryFeatures({
 
 
     map.add(countyLayer);
+const graphicsLayer = new GraphicsLayer();
+map.add(graphicsLayer);
+
+graphicsLayerRef.current = graphicsLayer;
 
     mapView.when(() => {
       setView(mapView);
@@ -265,6 +398,87 @@ countyLayer.queryFeatures({
       }
     };
   }, []);
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (!visibleFeatures.length) return;
+
+    switch (e.key) {
+      case "k":
+      case "K":
+        setIsPoiListVisible(true);
+        setFocusedPoiIndex(0);
+        break;
+      case "ArrowRight":
+      case "ArrowDown":
+        if (isPoiListVisible) {
+          e.preventDefault();
+          setFocusedPoiIndex((prev) => (prev + 1) % visibleFeatures.length);
+        }
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        if (isPoiListVisible) {
+          e.preventDefault();
+          setFocusedPoiIndex((prev) => (prev - 1 + visibleFeatures.length) % visibleFeatures.length);
+        }
+        break;
+      case "Enter":
+        if (isPoiListVisible && focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
+          scrollToFeature(visibleFeatures[focusedPoiIndex]);
+        }
+        break;
+      case "Escape":
+        setIsPoiListVisible(false);
+        setFocusedPoiIndex(-1);
+        if (view && view.popup.visible) {
+          view.popup.close();
+        }
+        break;
+      default:
+        break;
+    }
+  };
+  window.addEventListener("keydown", handleKeyDown);
+  return () => window.removeEventListener("keydown", handleKeyDown);
+}, [visibleFeatures, isPoiListVisible, focusedPoiIndex, view, scrollToFeature]);
+
+
+
+const findMatchingGraphic = (feature) => {
+  if (!graphicsLayerRef.current) return null;
+  
+  // Get all graphics from the graphics layer
+  const graphics = graphicsLayerRef.current.graphics.items;
+  
+
+  for (const graphic of graphics) {
+    if (!graphic.attributes) continue;
+    
+    // Check if key attributes match
+    const featureAttrs = feature.attributes;
+    const graphicAttrs = graphic.attributes;
+    
+    // Look for common identifying fields
+    const possibleIdFields = ['OBJECTID', 'FID', 'ID', 'Name', 'ADDRESS'];
+    
+    for (const field of possibleIdFields) {
+      if (featureAttrs[field] && graphicAttrs[field] && featureAttrs[field] === graphicAttrs[field]) {
+        return graphic;
+      }
+    }
+    
+    // If no ID field matched, try matching on coordinates if available
+    if (featureAttrs.x && featureAttrs.y && 
+        graphicAttrs.x && graphicAttrs.y && 
+        featureAttrs.x === graphicAttrs.x && 
+        featureAttrs.y === graphicAttrs.y) {
+      return graphic;
+    }
+  }
+  
+  return null;
+};
+
 
   const renderFoodResourcesChart = (features) => {
     const groupedData = features.reduce((acc, feature) => {
@@ -385,178 +599,625 @@ countyLayer.queryFeatures({
       ))}
     </Grid>
   );
+  const exportToCSV = () => {
+  if (!selectedCounty || !layerData) return;
 
-  return (
-    <Box sx={{ padding: { xs: 2, md: 4 } }}>
-      <Paper 
-        elevation={0} 
-        sx={{ 
-          padding: 3, 
-          marginBottom: 4, 
-          borderRadius: 3,
-          boxShadow: '0 6px 20px rgba(0,0,0,0.07)',
-          border: '1px solid',
-          borderColor: alpha(theme.palette.primary.main, 0.12),
-        }}
-      >
-        <FormControl fullWidth sx={{ maxWidth: 400, mb: 4 }}>
-  <InputLabel id="county-select-label">Select County</InputLabel>
-<Autocomplete
-  disablePortal
-  fullWidth
-  autoHighlight
-  clearOnEscape
-  options={countyOptions}
-  value={selectedCountyOption}
-  onChange={async (event, newValue) => {
-  if (!newValue) return;
-  setSelectedCountyOption(newValue);
+  const excludedKeys = [
+    "New Location Since 2019", "ObjectId", "STATEFP", "TRACTCE", "BLKGRPCE",
+    "AFFGEOID", "GEOID", "NAME", "LSAD", "ALAND", "State", "FID",
+    "OBJECTID", "Shape", "GlobalID"
+  ];
 
-  const countyLayer = countyLayerRef.current;
-  if (countyLayer && view) {
-    try {
-      const res = await countyLayer.queryFeatures({
-        where: `County_Nam = '${newValue.replace(/'/g, "''")}'`,
-        outFields: ["*"],
-        returnGeometry: true,
-      });
-      if (res.features.length > 0) {
-        const selected = res.features[0];
-        await view.goTo({ target: selected.geometry, zoom: 10 }, { duration: 3000 });
-        await loadCountyData(selected.geometry, selected.attributes); 
-      }
-    } catch (err) {
-      console.error("Error querying county layer:", err);
+  const sanitize = (str) =>
+    (str || "").toString().replace(/\n|\r/g, " ").replace(/,/g, ";");
+
+  const rows = [];
+
+  Object.entries(layerData).forEach(([title, features]) => {
+    if (!features.length) return;
+    const keys = Object.keys(features[0]).filter(
+      (k) => !excludedKeys.includes(k) && !k.includes("__") && k.trim() !== ""
+    );
+
+    rows.push([`Category: ${title}`]);
+    rows.push(keys);
+    features.forEach((f) => rows.push(keys.map((k) => sanitize(f[k]))));
+    rows.push([""]); // spacing between categories
+  });
+
+  const csvContent = rows.map((r) => r.join(",")).join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  saveAs(blob, `${selectedCounty.name}_resources.csv`);
+};
+const KeyboardNavigationOverlay = ({ 
+  isVisible, 
+  features, 
+  focusedIndex, 
+  onClose, 
+  onSelect, 
+  onFocusChange,
+  layersConfig
+}) => {
+  const theme = useTheme();
+  
+  if (!isVisible) return null;
+  
+  // Group features by their category/layer
+const groupedFeatures = features.reduce((acc, feature) => {
+  let layerTitle = "Unknown";
+  let layerColor = theme.palette.primary.main;
+
+  // ✅ Fix: define variables BEFORE using them
+  let category = "Unknown";
+  let color = theme.palette.primary.main;
+
+  if (feature.layerId) {
+    const match = layersConfig.find((layer) => layer.id === feature.layerId);
+    if (match) {
+      category = match.title;
+      color = match.color;
+      layerTitle = category;
+      layerColor = color;
     }
   }
-}}
 
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      label="Select County"
-      variant="outlined"
+  if (!acc[layerTitle]) {
+    acc[layerTitle] = {
+      features: [],
+      color: layerColor
+    };
+  }
+
+  acc[layerTitle].features.push(feature);
+  return acc;
+}, {});
+
+  // Sort features and enhance with better display attributes
+  const enhancedFeatures = features.map(feature => {
+    const attrs = feature.attributes;
+    
+    // Determine best name field
+    const nameFields = ['Name', 'ADDRESS', 'OFFICE_NAM', 'Organization', 'ORGANIZATION', 'Program_Name', 'PROGRAM', 'FACILITY_N'];
+    let name = "Unknown Location";
+    for (const field of nameFields) {
+      if (attrs[field] && typeof attrs[field] === 'string' && attrs[field].trim() !== '') {
+        name = attrs[field];
+        break;
+      }
+    }
+    
+    // Determine best description field
+    const descFields = ['Address', 'LOCATION', 'City', 'Description', 'Services', 'SERVICES', 'Phone', 'PHONE'];
+    let description = "";
+    for (const field of descFields) {
+      if (attrs[field] && typeof attrs[field] === 'string' && attrs[field].trim() !== '') {
+        description = attrs[field];
+        break;
+      }
+    }
+    
+    // Determine layer/category
+    let category = "Unknown";
+    let color = theme.palette.primary.main;
+    for (const layer of layersConfig) {
+      if (attrs && (
+        (attrs.source_layer && attrs.source_layer.includes(layer.title)) ||
+        (attrs.Layer && attrs.Layer.includes(layer.title)) ||
+        (attrs.CATEGORY && attrs.CATEGORY.includes(layer.title))
+      )) {
+        category = layer.title;
+        color = layer.color;
+        break;
+      }
+    }
+    
+    return {
+      ...feature,
+      displayName: name,
+      displayDescription: description,
+      category,
+      color
+    };
+  });
+  
+  return (
+    <Box
       sx={{
-        "& .MuiOutlinedInput-root": {
-          backgroundColor: "#FFFFFF",
-          color: theme.palette.primary.main,
-          borderRadius: 2,
-          "&:hover": {
-            backgroundColor: theme.palette.primary.main,
-            color: "#FFFFFF",
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.main,
-            },
-            "& .MuiInputBase-input": {
-              color: "#FFFFFF",
-            },
-          },
-          "&.Mui-focused": {
-            backgroundColor: theme.palette.primary.main,
-            color: "#FFFFFF",
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: theme.palette.primary.dark,
-            },
-            "& .MuiInputBase-input": {
-              color: "#FFFFFF",
-            },
-          },
-        },
-        "& .MuiInputLabel-root": {
-          color: theme.palette.primary.main,
-          "&.Mui-focused": {
-            color: "#FFFFFF",
-          },
-        },
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderColor: theme.palette.primary.main,
-        },
-        "& .MuiAutocomplete-popupIndicator": {
-          color: theme.palette.primary.main,
-        },
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        zIndex: 1002,
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        boxShadow: '0 -4px 10px rgba(0,0,0,0.1)',
+        borderTopLeftRadius: 12,
+        borderTopRightRadius: 12,
+        maxHeight: '40vh',
+        display: 'flex',
+        flexDirection: 'column'
       }}
-    />
-  )}
-/>
-
-</FormControl>
+    >
+      <Box sx={{ 
+        p: 2, 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        borderBottom: '1px solid',
+        borderColor: 'divider'
+      }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600, mr: 2 }}>
+            Resource Navigation
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Use ← → keys to browse • Enter to select • ESC to exit
+          </Typography>
+        </Box>
+        <Button 
+          variant="outlined" 
+          onClick={onClose}
+          size="small"
+          startIcon={<CloseIcon />}
+        >
+          Close
+        </Button>
+      </Box>
+      
+      <Box sx={{ 
+        overflowY: 'auto',
+        flex: 1,
+        px: 2,
+        py: 1
+      }}>
+        <Grid container spacing={2}>
+          {enhancedFeatures.map((feature, index) => {
+            // Get a color based on the feature's category
+            const categoryColor = feature.color || theme.palette.primary.main;
+            
+            return (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Paper
+                  onClick={() => {
+                    onFocusChange(index);
+                    onSelect(feature);
+                  }}
+                  sx={{
+                    p: 2,
+                    borderRadius: 2,
+                    cursor: 'pointer',
+                    border: '2px solid',
+                    borderColor: index === focusedIndex ? categoryColor : 'transparent',
+                    boxShadow: index === focusedIndex 
+                      ? `0 0 0 4px ${alpha(categoryColor, 0.2)}`
+                      : '0 1px 3px rgba(0,0,0,0.1)',
+                    transition: 'all 0.2s ease',
+                    backgroundColor: index === focusedIndex 
+                      ? alpha(categoryColor, 0.05)
+                      : 'background.paper',
+                    '&:hover': {
+                      backgroundColor: alpha(categoryColor, 0.08),
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 8px rgba(0,0,0,0.1)'
+                    },
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: '100%'
+                  }}
+                >
+                  <Box sx={{ 
+                    mb: 1, 
+                    pb: 1, 
+                    borderBottom: '1px solid',
+                    borderColor: 'divider',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}>
+                    <Chip 
+                      size="small" 
+                      label={feature.category}
+                      sx={{
+                        backgroundColor: alpha(categoryColor, 0.1),
+                        color: darken(categoryColor, 0.2),
+                        borderColor: alpha(categoryColor, 0.3),
+                        fontWeight: 500
+                      }}
+                    />
+                    <Typography variant="caption" color="text.secondary">
+                      Item {index + 1}/{enhancedFeatures.length}
+                    </Typography>
+                  </Box>
+                  
+                  <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
+                    {feature.displayName}
+                  </Typography>
+                  
+                  {feature.displayDescription && (
+                    <Typography variant="body2" color="text.secondary" sx={{ 
+                      mb: 1,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: '-webkit-box',
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: 'vertical'
+                    }}>
+                      {feature.displayDescription}
+                    </Typography>
+                  )}
+                  
+                  <Box sx={{ 
+                    mt: 'auto', 
+                    pt: 1, 
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    alignItems: 'center'
+                  }}>
+                    <Button 
+                      size="small" 
+                      variant={index === focusedIndex ? "contained" : "text"}
+                      sx={{ 
+                        minWidth: 0, 
+                        backgroundColor: index === focusedIndex ? categoryColor : 'transparent',
+                        color: index === focusedIndex ? 'white' : categoryColor,
+                        '&:hover': {
+                          backgroundColor: index === focusedIndex 
+                            ? darken(categoryColor, 0.1)
+                            : alpha(categoryColor, 0.1)
+                        }
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onFocusChange(index);
+                        onSelect(feature);
+                      }}
+                    >
+                      <LocationOnIcon fontSize="small" />
+                    </Button>
+                  </Box>
+                </Paper>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Box>
+      
+      <Box sx={{ 
+        p: 2, 
+        borderTop: '1px solid',
+        borderColor: 'divider',
+        display: 'flex',
+        justifyContent: 'space-between'
+      }}>
+        <Button
+          disabled={focusedIndex <= 0}
+          onClick={() => onFocusChange((focusedIndex - 1 + features.length) % features.length)}
+          startIcon={<ArrowBackIcon />}
+        >
+          Previous
+        </Button>
         
-        {selectedCounty && (
-          <Chip 
-            label={`Viewing: ${selectedCounty.name} County`} 
-            color="primary.dark" 
+        <Typography variant="body2" sx={{ 
+          alignSelf: 'center',
+          fontWeight: 500 
+        }}>
+          {focusedIndex + 1} of {features.length}
+        </Typography>
+        
+        <Button
+          disabled={focusedIndex >= features.length - 1}
+          onClick={() => onFocusChange((focusedIndex + 1) % features.length)}
+          endIcon={<ArrowForwardIcon />}
+        >
+          Next
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+  return (
+   <Box sx={{ px: { xs: 2, md: 4 }, py: 3 }}>
+    {/* County Selection Panel */}
+
+
+<Paper
+  elevation={1}
+  sx={{
+    p: { xs: 3, md: 4 },
+    mb: 5,
+    borderRadius: 3,
+    boxShadow: '0 6px 20px rgba(0,0,0,0.05)',
+    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
+    backgroundColor: alpha(theme.palette.primary.light, 0.04)
+  }}
+>
+  <Box display="flex" alignItems="center" mb={3}>
+    <MapIcon sx={{ fontSize: 32, color: theme.palette.primary.main, mr: 1 }} />
+    <Box>
+      <Typography variant="h5" fontWeight={700} gutterBottom>
+        Explore County Resources
+      </Typography>
+      <Typography variant="body2" color="text.secondary">
+        Choose a county to view available programs and download a detailed summary.
+      </Typography>
+    </Box>
+  </Box>
+
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: { xs: 'column', sm: 'row' },
+      alignItems: 'flex-start',
+      gap: 2,
+      flexWrap: 'wrap',
+      mb: 3
+    }}
+  >
+    <FormControl fullWidth sx={{ maxWidth: 420 }}>
+      <Autocomplete
+        disablePortal
+        autoHighlight
+        fullWidth
+        options={countyOptions}
+        value={selectedCountyOption}
+        onChange={async (event, newValue) => {
+          if (!newValue) return;
+          setSelectedCountyOption(newValue);
+          const countyLayer = countyLayerRef.current;
+          if (countyLayer && view) {
+            try {
+              const res = await countyLayer.queryFeatures({
+                where: `County_Nam = '${newValue.replace(/'/g, "''")}'`,
+                outFields: ["*"],
+                returnGeometry: true,
+              });
+              if (res.features.length > 0) {
+                const selected = res.features[0];
+                await view.goTo({ target: selected.geometry, zoom: 10 }, { duration: 3000 });
+                await loadCountyData(selected.geometry, selected.attributes);
+              }
+            } catch (err) {
+              console.error("Error querying county layer:", err);
+            }
+          }
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Select County"
             variant="outlined"
-            sx={{ 
-              fontSize: '1rem', 
-              py: 2.5, 
-              px: 2, 
-              borderRadius: 5,
-              fontWeight: 600,
-              marginBottom: 3,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            }} 
+            aria-label="Select a county"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                backgroundColor: "#fff",
+                borderRadius: 2,
+                "& fieldset": {
+                  borderColor: alpha(theme.palette.primary.main, 0.4),
+                },
+                "&:hover fieldset": {
+                  borderColor: theme.palette.primary.main,
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: theme.palette.primary.dark,
+                },
+              },
+              "& .MuiInputLabel-root": {
+                color: theme.palette.primary.main,
+                "&.Mui-focused": {
+                  color: theme.palette.primary.dark,
+                },
+              },
+            }}
           />
         )}
-      </Paper>
+      />
+    </FormControl>
 
-      <Box
+    <Button
+      onClick={exportToCSV}
+      startIcon={<DownloadIcon />}
+      variant="outlined"
+      size="large"
+      disabled={!selectedCounty}
+      sx={{
+        height: '56px',
+        px: 3,
+        fontWeight: 500,
+        mt: { xs: 1, sm: 0 },
+        borderColor: theme.palette.primary.main,
+        color: theme.palette.primary.main,
+        '&:hover': {
+          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+          borderColor: theme.palette.primary.dark,
+          color: theme.palette.primary.dark,
+        },
+        '&.Mui-disabled': {
+          color: theme.palette.grey[400],
+          borderColor: theme.palette.grey[300],
+        }
+      }}
+    >
+      Download CSV
+    </Button>
+    <Button
+  variant="outlined"
+  size="small"
+  onClick={() => {
+    if (visibleFeatures.length > 0) {
+      setFocusedPoiIndex(0);
+      setIsPoiListVisible(true);
+    }
+  }}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    zIndex: 1001,
+    backgroundColor: '#fff',
+    '&:hover': {
+      backgroundColor: '#f0f0f0'
+    }
+  }}
+>
+  Enter Keyboard Navigation (K)
+</Button>
+  </Box>
+
+  {selectedCounty && (
+    <>
+      <Chip
+        label={`Currently viewing: ${selectedCounty.name} County`}
+        color="primary"
+        variant="outlined"
         sx={{
-          position: "relative",
-          width: "100%",
-          height: "70vh",
-          marginBottom: 4,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 3,
-          overflow: "hidden",
-          boxShadow: '0 6px 18px rgba(0,0,0,0.1)',
+          mb: 3,
+          px: 2,
+          py: 1,
+          fontSize: '0.9rem',
+          fontWeight: 500,
+          borderRadius: 2,
+          boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+        }}
+      />
+
+      <Typography
+        variant="h6"
+        fontWeight={600}
+        sx={{
+          mb: 2,
+          color: theme.palette.text.primary,
         }}
       >
-        <div ref={mapDiv} style={{ width: "100%", height: "100%" }}></div>
-      </Box>
+        Resource Summary
+      </Typography>
 
-      {selectedCounty && (
-        <Container maxWidth="xl" sx={{ mt: 6, mb: 8 }}>
-          <Box sx={{ marginBottom: 5 }}>
-            <Typography 
-              variant="h4" 
-              gutterBottom 
-              fontWeight="600" 
-              color="#000000"
-              sx={{ 
-                mb: 3,
-                position: 'relative',
-                display: 'inline-block',
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-8px',
-                  left: 0,
-                  width: '60px',
-                  height: '4px',
-                  backgroundColor: theme.palette.primary,
-                  borderRadius: '2px',
-                }
-              }}
-            >
-              Resource Summary
-            </Typography>
-            <Paper 
-              elevation={0} 
-              sx={{ 
-                padding: 3, 
-                borderRadius: 3, 
-                background: alpha(theme.palette.background.paper, 0.8),
-                marginBottom: 4,
-                boxShadow: '0 6px 20px rgba(0,0,0,0.05)',
-                border: '1px solid',
-                borderColor: theme.palette.divider,
-              }}
-            >
-              {renderLayerSummary()}
-            </Paper>
-          </Box>
+      {renderLayerSummary()}
+    </>
+  )}
+</Paper>
 
-          <Grid container spacing={3}>
+
+
+    {/* ArcGIS Map Box */}
+<Box
+  sx={{
+    position: "relative",
+    width: "100%",
+    height: "70vh",
+    mb: 5,
+    border: `1px solid ${theme.palette.divider}`,
+    borderRadius: 3,
+    overflow: "hidden",
+    boxShadow: '0 6px 20px rgba(0,0,0,0.08)',
+  }}
+>
+  {/* Improved keyboard navigation overlay */}
+  <KeyboardNavigationOverlay
+    isVisible={isPoiListVisible}
+    features={visibleFeatures}
+    focusedIndex={focusedPoiIndex}
+    onClose={() => setIsPoiListVisible(false)}
+    onSelect={(feature) => {
+      const graphic = findMatchingGraphic(feature);
+      if (graphic && view) {
+        view.goTo({
+          target: graphic.geometry,
+          zoom: view.zoom + 1
+        }, { duration: 1000 });
+        
+        // Show a popup for this feature - using the compatible API
+       if (view && graphic) {
+  view.popup.features = [graphic];
+  view.popup.location = graphic.geometry;
+  view.popup.visible = true;
+}
+
+      }
+    }}
+    onFocusChange={(index) => setFocusedPoiIndex(index)}
+    layersConfig={layersConfig}
+  />
+
+  {/* Skip map button for accessibility */}
+  <Button
+    sx={{
+      position: 'absolute',
+      top: -100,
+      left: 0,
+      zIndex: 1000,
+      '&:focus': {
+        top: 0,
+        left: 0,
+        backgroundColor: '#fff',
+      },
+    }}
+    onClick={() => {
+      const focusable = document.querySelectorAll(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      for (let i = 0; i < focusable.length; i++) {
+        if (focusable[i] === mapDiv.current && focusable[i + 1]) {
+          focusable[i + 1].focus();
+          break;
+        }
+      }
+    }}
+  >
+    Skip Map
+  </Button>
+
+  {/* Keyboard navigation button with better positioning */}
+  <Button
+    id="keyboard-nav-button"
+    variant="contained"
+    size="small"
+    onClick={() => {
+      if (visibleFeatures.length > 0) {
+        setFocusedPoiIndex(0);
+        setIsPoiListVisible(true);
+      }
+    }}
+    disabled={visibleFeatures.length === 0}
+    startIcon={<KeyboardIcon />}
+    sx={{
+      position: 'absolute',
+      top: 16,
+      right: 16,
+      zIndex: 1001,
+      backgroundColor: theme.palette.primary.main,
+      color: '#fff',
+      '&:hover': {
+        backgroundColor: theme.palette.primary.dark
+      },
+      '&.Mui-disabled': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.4),
+        color: '#fff'
+      }
+    }}
+  >
+    Keyboard Navigation (K)
+  </Button>
+
+  <div 
+    ref={mapDiv} 
+    tabIndex={0}
+    role="region"
+    aria-label="Interactive map of county resources. Use tab to exit or press 'K' to enter keyboard navigation mode."
+    onFocus={() => {
+      if (view) view.focus();
+    }} 
+    style={{ width: "100%", height: "100%" }} 
+  />
+  {renderMapLegend()}
+</Box>
+
+    {/* Resource Summary */}
+    {selectedCounty && (
+      <Container maxWidth="xl" sx={{ mt: 2 }}>
+       
+
+          {/* <Grid container spacing={3}>
   <Grid item xs={12} sm={6} md={4}>
     <FormControl fullWidth sx={{ mb: 4 }}>
       <InputLabel id="county-select-label">Select County</InputLabel>
@@ -675,7 +1336,7 @@ countyLayer.queryFeatures({
             const selected = res.features[0];
             const geometry = selected.geometry;
             view.goTo({ target: geometry, zoom: 10 }, { duration: 3000 });
-            // Optionally re-trigger the same logic as map click event
+      
           }
         });
       }
@@ -710,8 +1371,45 @@ countyLayer.queryFeatures({
                                     !key.startsWith("OBJECTID") && 
                                     !key.includes("GlobalID") && 
                                     !key.includes("Shape") &&
+                                    !key.includes("COUNTY") &&
                                     !key.includes("__") &&
+                                     key.trim() !== "" &&
+    !key.startsWith(" ") &&
+    !key.startsWith("OBJECTID") && 
+    !key.includes("GlobalID") && 
+    !key.includes("Shape") &&
+    !key.includes("COUNTY") &&
+    !key.includes("__") &&
+    !key.startsWith("SiteLat") && 
+    !key.startsWith("DAYS") && 
+    !key.startsWith("SiteLon") &&
+    !key.startsWith("FAX") &&
+    !key.startsWith("Hours") &&
+    !key.startsWith("Days") &&
+    !key.startsWith("Services") &&
+    !key.startsWith("x") &&
+    !key.startsWith("y") &&
+    !key.startsWith("Zip Code") &&
+    !key.startsWith("Latitu") &&
+    !key.startsWith("Long") &&
+    !key.startsWith("FHFB") &&
+    !key.startsWith("Volunteer") &&
+    !key.startsWith("MFB") &&
+    !key.startsWith("SERVICES") &&
+    key !== "FID" &&
+    key !== "New Location Since 2019" &&
+    key !== "ObjectId" &&
+    key !== "STATEFP" &&
+    key !== "TRACTCE" &&
+    key !== "BLKGRPCE" &&
+    key !== "AFFGEOID" &&
+    key !== "GEOID" &&
+    key !== "NAME" &&
+    key !== "LSAD" &&
+    key !== "ALAND" &&
+    key !== "State" &&
                                     !key.startsWith("SiteLat") && 
+                                    !key.startsWith("DAYS") && 
                                     !key.startsWith("SiteLon") &&
                                     !key.startsWith("FAX") &&
                                     !key.startsWith("Hours") &&
@@ -844,7 +1542,7 @@ countyLayer.queryFeatures({
                 </Grid>
               );
             })}
-          </Grid>
+          </Grid> */}
         </Container>
       )}
     </Box>
