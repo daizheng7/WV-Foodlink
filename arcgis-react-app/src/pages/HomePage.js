@@ -344,8 +344,8 @@ const HomePage = () => {
       backgroundColor: colors.medium,
       title: "Interactive County Report",
       subtitle: "Select a county on the map below to view detailed resource information and statistics.",
-      align: "right", 
-      layout: "split-right", 
+      align: "center", 
+ layout: "standard",
       variant: "featured",
       dividerStyle: "none"
     },
