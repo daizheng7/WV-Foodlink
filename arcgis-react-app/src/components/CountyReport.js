@@ -50,7 +50,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import KeyboardIcon from '@mui/icons-material/Keyboard';
 import { darken } from '@mui/material/styles';
-
+import * as XLSX from "xlsx"; 
 // Step 1: Add the same highlighting graphic helper function from FoodRetailer
 const createHighlightGraphic = (geometry, color) => {
   return new Graphic({
@@ -705,6 +705,7 @@ const CountyReport = () => {
         boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         maxWidth: 280,
         zIndex: 999,
+        display: { xs: 'none', md: 'block' },
       }}
     >
       <Typography id="map-legend-title" variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
@@ -792,36 +793,405 @@ const CountyReport = () => {
     </Grid>
   );
 
-  const exportToCSV = () => {
-    if (!selectedCounty || !layerData) return;
+const exportToExcel = () => {
+  if (!selectedCounty || !layerData) return;
 
-    const excludedKeys = [
-      "New Location Since 2019", "ObjectId", "STATEFP", "TRACTCE", "BLKGRPCE",
-      "AFFGEOID", "GEOID", "NAME", "LSAD", "ALAND", "State", "FID",
-      "OBJECTID", "Shape", "GlobalID"
-    ];
+  const excludedKeys = [
+    "New Location Since 2019", "ObjectId", "STATEFP", "TRACTCE", "BLKGRPCE",
+    "AFFGEOID", "GEOID", "NAME", "LSAD", "ALAND", "State", "FID",
+    "OBJECTID", "Shape", "GlobalID"
+  ];
 
-    const sanitize = (str) =>
-      (str || "").toString().replace(/\n|\r/g, " ").replace(/,/g, ";");
+  const workbook = XLSX.utils.book_new();
 
-    const rows = [];
+  // Create a summary sheet first
+  const summaryData = [
+    ["🏛️ County Resource Report"],
+    [`📍 ${selectedCounty.name} County, West Virginia`],
+    [`📅 Generated: ${new Date().toLocaleDateString('en-US', { 
+      year: 'numeric', month: 'long', day: 'numeric' 
+    })}`],
+    [`⏰ Time: ${new Date().toLocaleTimeString('en-US')}`],
+    [""],
+    ["📊 Resource Summary"],
+    ["Category", "Total Resources"]
+  ];
 
-    Object.entries(layerData).forEach(([title, features]) => {
-      if (!features.length) return;
-      const keys = Object.keys(features[0]).filter(
-        (k) => !excludedKeys.includes(k) && !k.includes("__") && k.trim() !== ""
-      );
+  // Add summary counts
+  Object.entries(layerData).forEach(([title, features]) => {
+    if (features.length > 0) {
+      summaryData.push([title, features.length]);
+    }
+  });
 
-      rows.push([`Category: ${title}`]);
-      rows.push(keys);
-      features.forEach((f) => rows.push(keys.map((k) => sanitize(f[k]))));
-      rows.push([""]); // spacing between categories
+  summaryData.push(
+    [""],
+    [`📈 Total Resources Found: ${Object.values(layerData).reduce((sum, features) => sum + features.length, 0)}`],
+    [""],
+    ["💡 Navigate to individual sheets below for detailed listings"]
+  );
+
+  const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+
+  // Enhanced summary sheet styling
+  summarySheet['A1'].s = {
+    font: { bold: true, size: 18, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "002855" } },
+    alignment: { horizontal: "center", vertical: "center" }
+  };
+
+  summarySheet['A2'].s = {
+    font: { bold: true, size: 14, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "0062A3" } },
+    alignment: { horizontal: "center", vertical: "center" }
+  };
+
+  // Style the summary table header
+  summarySheet['A7'].s = {
+    font: { bold: true, size: 12, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "554741" } },
+    alignment: { horizontal: "center", vertical: "center" },
+    border: {
+      top: { style: "medium", color: { rgb: "000000" } },
+      bottom: { style: "medium", color: { rgb: "000000" } },
+      left: { style: "medium", color: { rgb: "000000" } },
+      right: { style: "thin", color: { rgb: "000000" } }
+    }
+  };
+
+  summarySheet['B7'].s = {
+    font: { bold: true, size: 12, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "554741" } },
+    alignment: { horizontal: "center", vertical: "center" },
+    border: {
+      top: { style: "medium", color: { rgb: "000000" } },
+      bottom: { style: "medium", color: { rgb: "000000" } },
+      left: { style: "thin", color: { rgb: "000000" } },
+      right: { style: "medium", color: { rgb: "000000" } }
+    }
+  };
+
+  summarySheet['!cols'] = [{ width: 40 }, { width: 18 }];
+  summarySheet['!rows'] = [
+    { hpt: 25 }, // Row 1 height
+    { hpt: 20 }, // Row 2 height
+  ];
+
+  XLSX.utils.book_append_sheet(workbook, summarySheet, "📊 Summary");
+
+  // Process each category with enhanced table formatting
+  Object.entries(layerData).forEach(([title, features]) => {
+    if (!features.length) return;
+
+    const keys = Object.keys(features[0]).filter(
+      (k) => !excludedKeys.includes(k) && !k.includes("__") && k.trim() !== ""
+    );
+
+    // Clean up header names for better presentation
+    const cleanHeaders = keys.map(key => {
+      return key
+        .replace(/_/g, ' ')
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^\w/, c => c.toUpperCase())
+        .trim();
     });
 
-    const csvContent = rows.map((r) => r.join(",")).join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `${selectedCounty.name}_resources.csv`);
+    const sanitizedData = features.map((f) => {
+      const row = {};
+      keys.forEach((key, index) => {
+        let value = (f[key] || "").toString().replace(/\n|\r/g, " ").replace(/,/g, ";");
+        
+        // Enhanced data formatting
+        if (key.toLowerCase().includes('phone') && value.length === 10) {
+          value = `(${value.slice(0,3)}) ${value.slice(3,6)}-${value.slice(6)}`;
+        }
+        
+        if (key.toLowerCase().includes('email') && value.includes('@')) {
+          // Keep email formatting clean
+          value = value.toLowerCase().trim();
+        }
+        
+        if (key.toLowerCase().includes('website') || key.toLowerCase().includes('url')) {
+          if (value && !value.startsWith('http')) {
+            value = `https://${value}`;
+          }
+        }
+        
+        row[cleanHeaders[index]] = value;
+      });
+      return row;
+    });
+
+    // Create sheet with title section
+    const titleData = [
+      [`📋 ${title} Resources`],
+      [`📍 ${selectedCounty.name} County, West Virginia`],
+      [`📊 Total Locations: ${features.length}`],
+      [`📅 Generated: ${new Date().toLocaleDateString()}`],
+      [""] // Empty row before table
+    ];
+
+    const sheet = XLSX.utils.aoa_to_sheet(titleData);
+    
+    // Add the data table starting from row 6
+    XLSX.utils.sheet_add_json(sheet, sanitizedData, { 
+      origin: 'A6',
+      header: cleanHeaders
+    });
+
+    const range = XLSX.utils.decode_range(sheet['!ref']);
+
+    // Enhanced title styling
+    sheet['A1'].s = {
+      font: { bold: true, size: 16, color: { rgb: "FFFFFF" } },
+      fill: { fgColor: { rgb: "002855" } },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+
+    sheet['A2'].s = {
+      font: { bold: true, size: 12, color: { rgb: "FFFFFF" } },
+      fill: { fgColor: { rgb: "0062A3" } },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+
+    sheet['A3'].s = {
+      font: { bold: true, size: 11, color: { rgb: "002855" } },
+      fill: { fgColor: { rgb: "E6F3FF" } },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+
+    sheet['A4'].s = {
+      font: { size: 10, color: { rgb: "666666" } },
+      alignment: { horizontal: "center", vertical: "center" }
+    };
+
+    // **Enhanced Table Header Styling (Row 6)**
+    for (let C = 0; C < cleanHeaders.length; ++C) {
+      const headerCell = XLSX.utils.encode_cell({ r: 5, c: C }); // Row 6 (0-indexed as 5)
+      if (sheet[headerCell]) {
+        sheet[headerCell].s = {
+          font: { 
+            bold: true, 
+            size: 11, 
+            color: { rgb: "FFFFFF" } 
+          },
+          fill: { fgColor: { rgb: "554741" } },
+          alignment: { 
+            horizontal: "center", 
+            vertical: "center",
+            wrapText: true 
+          },
+          border: {
+            top: { style: "medium", color: { rgb: "000000" } },
+            bottom: { style: "medium", color: { rgb: "000000" } },
+            left: { style: "medium", color: { rgb: "000000" } },
+            right: { style: "medium", color: { rgb: "000000" } }
+          }
+        };
+      }
+    }
+
+    // **Enhanced Data Row Styling with Table Format**
+    const dataStartRow = 6; // Row 7 (0-indexed as 6)
+    for (let R = dataStartRow; R <= range.e.r; ++R) {
+      const isEvenRow = (R - dataStartRow) % 2 === 0;
+      
+      for (let C = 0; C < cleanHeaders.length; ++C) {
+        const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+        if (sheet[cellRef]) {
+          sheet[cellRef].s = {
+            font: { size: 10 },
+            fill: { 
+              fgColor: { 
+                rgb: isEvenRow ? "FFFFFF" : "F8F9FA" 
+              } 
+            },
+            alignment: { 
+              horizontal: "left", 
+              vertical: "center",
+              wrapText: true 
+            },
+            border: {
+              top: { style: "thin", color: { rgb: "CCCCCC" } },
+              bottom: { style: "thin", color: { rgb: "CCCCCC" } },
+              left: { style: "thin", color: { rgb: "CCCCCC" } },
+              right: { style: "thin", color: { rgb: "CCCCCC" } }
+            }
+          };
+          
+          // Special formatting for specific column types
+          const headerName = cleanHeaders[C].toLowerCase();
+          if (headerName.includes('phone')) {
+            sheet[cellRef].s.alignment.horizontal = "center";
+          } else if (headerName.includes('email') || headerName.includes('website')) {
+            sheet[cellRef].s.font.color = { rgb: "0066CC" };
+          } else if (headerName.includes('address')) {
+            sheet[cellRef].s.alignment.wrapText = true;
+          }
+        }
+      }
+    }
+
+    // **Auto-size columns with intelligent width calculation**
+    const colWidths = cleanHeaders.map((header, index) => {
+      const headerWidth = header.length;
+      const dataWidths = sanitizedData.map(row => 
+        (row[header] || "").toString().length
+      );
+      const maxDataWidth = Math.max(...dataWidths);
+      const optimalWidth = Math.max(headerWidth, maxDataWidth) + 3;
+      
+      // Set smart column width limits based on content type
+      const headerLower = header.toLowerCase();
+      if (headerLower.includes('phone')) {
+        return { width: 15 };
+      } else if (headerLower.includes('email')) {
+        return { width: Math.min(optimalWidth, 35) };
+      } else if (headerLower.includes('address')) {
+        return { width: Math.min(optimalWidth, 45) };
+      } else if (headerLower.includes('name') || headerLower.includes('organization')) {
+        return { width: Math.min(optimalWidth, 40) };
+      } else {
+        return { width: Math.min(optimalWidth, 25) };
+      }
+    });
+    
+    sheet['!cols'] = colWidths;
+
+    // **Set row heights for better readability**
+    const rowHeights = [];
+    rowHeights[0] = { hpt: 25 }; // Title row
+    rowHeights[1] = { hpt: 20 }; // Subtitle row
+    rowHeights[2] = { hpt: 18 }; // Count row
+    rowHeights[3] = { hpt: 15 }; // Date row
+    rowHeights[5] = { hpt: 22 }; // Header row
+    
+    // Data rows
+    for (let i = dataStartRow; i <= range.e.r; i++) {
+      rowHeights[i] = { hpt: 18 };
+    }
+    
+    sheet['!rows'] = rowHeights;
+
+    // **Add professional footer section**
+    const footerStartRow = range.e.r + 3;
+    const footerData = [
+      [""],
+      ["📍 Data Sources & Attribution"],
+      ["This data was compiled from verified government and community sources."],
+      ["For the most current information, please contact locations directly."],
+      [""],
+      ["🏛️ Center for Resilient Communities, West Virginia University"],
+      ["🌐 Website: https://resilientcommunities.wvu.edu/"],
+      [`📧 Contact: resilient@mail.wvu.edu`],
+      [""],
+      [`📅 Report Generated: ${new Date().toLocaleString()}`]
+    ];
+
+    XLSX.utils.sheet_add_aoa(sheet, footerData, { origin: `A${footerStartRow}` });
+
+    // Style footer section
+    const footerHeaderCell = `A${footerStartRow + 1}`;
+    if (sheet[footerHeaderCell]) {
+      sheet[footerHeaderCell].s = {
+        font: { bold: true, size: 11, color: { rgb: "002855" } },
+        fill: { fgColor: { rgb: "F0F8FF" } }
+      };
+    }
+
+    // Get category emoji for sheet tab
+    const categoryEmojis = {
+      "DHHR Offices": "🏥",
+      "WIC Offices": "🏪", 
+      "Family Resource Network Offices": "🏠",
+      "Family Support Centers": "🤝",
+      "Senior Services": "👴",
+      "Food Resources": "🍎",
+      "Charitable Food Programs": "❤️",
+      "Congregate Meal Program": "🍽️",
+      "Backpack Program": "🎒",
+      "Food Pantry": "📦"
+    };
+
+    const emoji = categoryEmojis[title] || "📍";
+    const sheetName = `${emoji} ${title}`.substring(0, 31);
+    
+    XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
+  });
+
+  // Enhanced attribution sheet (keeping existing code but with better formatting)
+  const attributionData = [
+    ["📍 FoodLink County Resource Report"],
+    [""],
+    ["🏛️ About This Report"],
+    ["This comprehensive resource directory was generated using FoodLink,"],
+    ["a geospatial analysis tool developed by the Center for Resilient"],
+    ["Communities at West Virginia University."],
+    [""],
+    ["🎯 Purpose"],
+    ["To provide community members, service providers, and policymakers"],
+    ["with accessible information about available resources in their county."],
+    [""],
+    ["📊 Data Sources"],
+    ["• West Virginia Department of Health and Human Resources"],
+    ["• Local community organizations"],
+    ["• Government databases"],
+    ["• Verified community submissions"],
+    [""],
+    ["⚠️ Important Notes"],
+    ["• Resource availability may change - please contact locations directly"],
+    ["• This report reflects data available at time of generation"],
+    ["• For the most current information, visit our website"],
+    [""],
+    ["📞 Contact Information"],
+    ["Center for Resilient Communities"],
+    ["West Virginia University"],
+    ["Website: https://resilientcommunities.wvu.edu/projects/foodlink"],
+    ["Email: resilient@mail.wvu.edu"],
+    [""],
+    [`📅 Report Generated: ${new Date().toLocaleString()}`],
+    [`🏛️ County: ${selectedCounty.name}, West Virginia`]
+  ];
+
+  const attributionSheet = XLSX.utils.aoa_to_sheet(attributionData);
+
+  // Enhanced attribution sheet styling
+  attributionSheet['A1'].s = {
+    font: { bold: true, size: 18, color: { rgb: "FFFFFF" } },
+    fill: { fgColor: { rgb: "002855" } },
+    alignment: { horizontal: "center", vertical: "center" }
   };
+
+  ['A3', 'A8', 'A13', 'A18', 'A22'].forEach(cellRef => {
+    if (attributionSheet[cellRef]) {
+      attributionSheet[cellRef].s = {
+        font: { bold: true, size: 13, color: { rgb: "002855" } },
+        fill: { fgColor: { rgb: "E6F3FF" } }
+      };
+    }
+  });
+
+  attributionSheet['!cols'] = [{ width: 85 }];
+  attributionSheet['!rows'] = [{ hpt: 25 }]; // Title row height
+
+  XLSX.utils.book_append_sheet(workbook, attributionSheet, "ℹ️ About");
+
+  // Write and save
+  const timestamp = new Date().toISOString().slice(0, 10);
+  const filename = `${selectedCounty.name}_County_Resources_${timestamp}.xlsx`;
+  
+  const excelBuffer = XLSX.write(workbook, { 
+    bookType: "xlsx", 
+    type: "array", 
+    cellStyles: true 
+  });
+  
+  const blob = new Blob([excelBuffer], { 
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" 
+  });
+  
+  saveAs(blob, filename);
+};
 
   return (
     <Box sx={{ px: { xs: 2, md: 4 }, py: 3 }}>
@@ -910,32 +1280,35 @@ const CountyReport = () => {
             />
           </FormControl>
 
-          <Button
-            onClick={exportToCSV}
-            startIcon={<DownloadIcon />}
-            variant="outlined"
-            size="large"
-            disabled={!selectedCounty}
-            sx={{
-              height: '56px',
-              px: 3,
-              fontWeight: 500,
-              mt: { xs: 1, sm: 0 },
-              borderColor: theme.palette.primary.main,
-              color: theme.palette.primary.main,
-              '&:hover': {
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                borderColor: theme.palette.primary.dark,
-                color: theme.palette.primary.dark,
-              },
-              '&.Mui-disabled': {
-                color: theme.palette.grey[400],
-                borderColor: theme.palette.grey[300],
-              }
-            }}
-          >
-            Download CSV
-          </Button>
+         <Button
+  onClick={exportToExcel}
+  startIcon={<DownloadIcon />}
+  variant="contained"
+  color="primary"
+  size="large"
+  disabled={!selectedCounty}
+  sx={{
+    height: '56px',
+    px: 3,
+    fontWeight: 600,
+    mt: { xs: 1, sm: 0 },
+    color: '#fff', // Initial text color
+    backgroundColor: theme.palette.primary.main,
+    border: `2px solid ${theme.palette.primary.main}`,
+    '&:hover': {
+      backgroundColor: theme.palette.primary.dark,
+      borderColor: theme.palette.primary.dark,
+      color: '#fff', // <- ensure this stays white
+    },
+    '&.Mui-disabled': {
+      backgroundColor: theme.palette.grey[300],
+      borderColor: theme.palette.grey[300],
+      color: theme.palette.grey[500],
+    }
+  }}
+>
+  Download County Data
+</Button>
         </Box>
 
         {selectedCounty && (
@@ -1047,10 +1420,11 @@ const CountyReport = () => {
             borderRadius: 3,
             boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
             '&:hover': {
-              backgroundColor: theme.palette.primary.dark,
-              transform: 'translateY(-2px)',
-              boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
-            },
+  backgroundColor: theme.palette.primary.dark,
+  transform: 'translateY(-2px)',
+  boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
+  color: '#fff', 
+},
             '&.Mui-disabled': {
               backgroundColor: alpha(theme.palette.primary.main, 0.4),
               color: '#fff'
