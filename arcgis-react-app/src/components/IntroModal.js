@@ -14,7 +14,7 @@ const IntroModal = () => {
   const quickLinks = [
     { icon: <SearchIcon />, text: 'Find Food Assistance', color: '#1C2B39', path: '/food' },
     { icon: <LayersIcon />, text: 'Explore Food Data', color: '#0062A3', path: 'https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3' },
-    { icon: <GroupIcon />, text: 'Organize', color: '#002855', path: 'https://foodlink.wvu.edu/pages/organize-1' },
+    { icon: <GroupIcon />, text: 'Organize', color: '#002855', path: 'https://organize-communities-wvu.hub.arcgis.com/pages/organize' },
     { icon: <AccessTimeFilledIcon />, text: 'Access Resources', color: '#554741', path: '/home' }
   ];
 

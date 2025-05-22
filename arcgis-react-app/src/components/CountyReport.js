@@ -1083,7 +1083,7 @@ const exportToExcel = () => {
       [""],
       ["🏛️ Center for Resilient Communities, West Virginia University"],
       ["🌐 Website: https://resilientcommunities.wvu.edu/"],
-      [`📧 Contact: resilient@mail.wvu.edu`],
+      [`📧 Contact: foodjustice@mail.wvu.edu`],
       [""],
       [`📅 Report Generated: ${new Date().toLocaleString()}`]
     ];

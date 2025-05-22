@@ -50,7 +50,7 @@ const Footer = () => {
     { title: 'Home', url: '/' },
     { title: 'Food Atlas', url: 'https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3' },
     { title: 'About Us', url: '/about' },
-    { title: 'Organize', url: 'https://foodlink.wvu.edu/pages/organize-1' },
+    { title: 'Organize', url: 'https://organize-communities-wvu.hub.arcgis.com/pages/organize' },
     { title: 'Contact', url: '/contact' },
   ];
 

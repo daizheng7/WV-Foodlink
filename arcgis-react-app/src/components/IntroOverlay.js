@@ -548,7 +548,7 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
                     icon: <GroupIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
                     text: "Organize Communities", 
                     color: "#002855", 
-                    link: "https://foodlink.wvu.edu/pages/organize-1" 
+                    link: "https://organize-communities-wvu.hub.arcgis.com/pages/organize" 
                   },
                   { 
                     icon: <AccessTimeFilledIcon sx={{ fontSize: { xs: 24, md: 28 }, fill: "white", color: "white" }} />, 
