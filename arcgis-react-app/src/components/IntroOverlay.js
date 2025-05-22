@@ -178,12 +178,12 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
       scrollableElement.style.height = originalStyles.height;
       
       // Create subtle scroll hint after unlocking
-      setTimeout(() => {
-        window.scrollTo({
-          top: 10,
-          behavior: 'smooth'
-        });
-      }, 300);
+     setTimeout(() => {
+  scrollableElement.style.scrollBehavior = 'smooth';
+  scrollableElement.style.overflow = originalStyles.overflow;
+  scrollableElement.style.height = originalStyles.height;
+}, 1500);
+
     }, 1500);
     
     return () => {
@@ -265,30 +265,20 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
       )}
     
       <motion.div
-        ref={overlayRef}
-        
-        style={{
-          opacity,
-          y: yPos,
-          scale: prefersReducedMotion ? 1 : scale,
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          width: '100%',
-          height: '100vh',
-          zIndex: 9999,
-          pointerEvents: hasScrolled ? 'none' : 'auto',
-          transformOrigin: '50% 40%',
-          willChange: 'transform, opacity',
-          
-          margin: 0,
-          padding: 0,
-          boxSizing: 'border-box',
-          overflowX: 'hidden'
-        }}
-        aria-hidden={hasScrolled}
-      >
+  ref={overlayRef}
+  style={{
+    opacity,
+    y: yPos,
+    scale: prefersReducedMotion ? 1 : scale,
+    position: 'relative', // <- KEY CHANGE
+    width: '100%',
+    height: '100vh',
+    zIndex: 5,
+    transformOrigin: '50% 40%',
+    willChange: 'transform, opacity',
+    overflow: 'hidden',
+  }}
+>
         <Box
           sx={{
             width: '100%',
@@ -727,6 +717,37 @@ const IntroOverlay = ({ hasScrolled, onExploreClick }) => {
             </motion.div>
           </Container>
         </Box>
+        {!prefersReducedMotion && scrollProgress > 0.25 && (
+  <Box
+    sx={{
+      position: 'fixed',
+      bottom: { xs: 16, sm: 24 },
+      right: { xs: 16, sm: 24 },
+      zIndex: 10000,
+    }}
+  >
+    <Button
+      variant="contained"
+      aria-label="Back to top"
+      onClick={() =>
+        window.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'auto' : 'smooth' })
+      }
+      sx={{
+        backgroundColor: "#EAAA00",
+        color: "#002855",
+        borderRadius: "24px",
+        fontWeight: 600,
+        boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
+        '&:hover': {
+          backgroundColor: "#FFD54F"
+        }
+      }}
+    >
+      ↑ Top
+    </Button>
+  </Box>
+)}
+
       </motion.div>
     </>
   );

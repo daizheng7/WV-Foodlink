@@ -9,6 +9,7 @@ import CountyReport from "../components/CountyReport";
 import PartnerHome from "../components/PartnerHome";
 import WestVirginiaFoodSecurityTabs from "../components/WestVirginiaFoodSecurityTab";
 import AppalachianFoodSystemsExplorer from "../components/AppalachianFoodSystemsExplorer";
+import IntroOverlay from "../components/IntroOverlay";
 
 // Main color theme
 const MAIN_COLOR = "#002855";
@@ -429,6 +430,7 @@ const HomePage = () => {
         
       }}
     >
+     
       <IntroModal />
 
       <Box
