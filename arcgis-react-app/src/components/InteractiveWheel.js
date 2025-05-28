@@ -24,7 +24,8 @@ import {
   Paper,
   Divider,
   Tooltip,
-  Container
+  Container,
+  Button
 } from "@mui/material";
 
 // Data Arrays
@@ -175,33 +176,49 @@ const DetailCard = ({ item }) => (
 
 const SelectionButton = ({ item, isSelected, onClick }) => (
   <Tooltip title={item.description} placement="right" arrow>
-    <Paper 
-      elevation={isSelected ? 3 : 1}
+    <Button
+      fullWidth
+      variant="text"
+      onClick={() => onClick(item)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick(item);
+        }
+      }}
       sx={{ 
         p: 1.5, 
         mb: 1.5, 
         borderRadius: 2,
-        cursor: 'pointer',
+        textAlign: 'left',
+        justifyContent: 'flex-start',
         transition: 'all 0.2s ease',
         borderLeft: isSelected ? `4px solid ${item.color}` : '4px solid transparent',
         backgroundColor: isSelected ? `${item.color}10` : 'white',
+        boxShadow: isSelected ? '0 2px 8px rgba(0,0,0,0.12)' : '0 1px 3px rgba(0,0,0,0.08)',
+        textTransform: 'none',
         '&:hover': {
           backgroundColor: `${item.color}15`,
-          transform: 'translateX(5px)'
+          transform: 'translateX(5px)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)'
+        },
+        '&:focus': {
+          outline: '2px solid #005fcc',
+          outlineOffset: '2px',
+          backgroundColor: `${item.color}15`
         }
       }}
-      onClick={() => onClick(item)}
     >
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <item.icon size={24} color={item.color} style={{ marginRight: 12 }} />
-          <Typography variant="subtitle1" sx={{ fontWeight: isSelected ? 600 : 400 }}>
+          <Typography variant="subtitle1" sx={{ fontWeight: isSelected ? 600 : 400, color: 'text.primary' }}>
             {item.name}
           </Typography>
         </Box>
         {isSelected && <ChevronRight size={16} color={item.color} />}
       </Box>
-    </Paper>
+    </Button>
   </Tooltip>
 );
 
@@ -232,6 +249,31 @@ const InteractiveWheel = () => {
     };
   }, []);
 
+  // Keyboard navigation handlers
+  const handleBarrierKeyDown = (e, currentIndex) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % barriers.length;
+      setSelectedBarrier(barriers[nextIndex]);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + barriers.length) % barriers.length;
+      setSelectedBarrier(barriers[prevIndex]);
+    }
+  };
+
+  const handleStrategyKeyDown = (e, currentIndex) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % strategies.length;
+      setSelectedStrategy(strategies[nextIndex]);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + strategies.length) % strategies.length;
+      setSelectedStrategy(strategies[prevIndex]);
+    }
+  };
+
   return (
     <Container maxWidth="xl" sx={{ py: 6 }}>
       <motion.div 
@@ -261,14 +303,24 @@ const InteractiveWheel = () => {
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 
-                {barriers.map((barrier) => (
-                  <SelectionButton 
-                    key={barrier.id}
-                    item={barrier}
-                    isSelected={selectedBarrier.id === barrier.id}
-                    onClick={setSelectedBarrier}
-                  />
-                ))}
+                <Box 
+                  role="group" 
+                  aria-label="Barriers to Food Access"
+                  onKeyDown={(e) => {
+                    const currentIndex = barriers.findIndex(b => b.id === selectedBarrier.id);
+                    handleBarrierKeyDown(e, currentIndex);
+                  }}
+                >
+                  {barriers.map((barrier, index) => (
+                    <Box key={barrier.id} onKeyDown={(e) => handleBarrierKeyDown(e, index)}>
+                      <SelectionButton 
+                        item={barrier}
+                        isSelected={selectedBarrier.id === barrier.id}
+                        onClick={setSelectedBarrier}
+                      />
+                    </Box>
+                  ))}
+                </Box>
               </Paper>
 
               {/* Selected Barrier Detail */}
@@ -291,14 +343,24 @@ const InteractiveWheel = () => {
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
                 
-                {strategies.map((strategy) => (
-                  <SelectionButton 
-                    key={strategy.id}
-                    item={strategy}
-                    isSelected={selectedStrategy.id === strategy.id}
-                    onClick={setSelectedStrategy}
-                  />
-                ))}
+                <Box 
+                  role="group" 
+                  aria-label="Strategies for Improvement"
+                  onKeyDown={(e) => {
+                    const currentIndex = strategies.findIndex(s => s.id === selectedStrategy.id);
+                    handleStrategyKeyDown(e, currentIndex);
+                  }}
+                >
+                  {strategies.map((strategy, index) => (
+                    <Box key={strategy.id} onKeyDown={(e) => handleStrategyKeyDown(e, index)}>
+                      <SelectionButton 
+                        item={strategy}
+                        isSelected={selectedStrategy.id === strategy.id}
+                        onClick={setSelectedStrategy}
+                      />
+                    </Box>
+                  ))}
+                </Box>
               </Paper>
 
               {/* Selected Strategy Detail */}
