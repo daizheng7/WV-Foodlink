@@ -33,3 +33,24 @@
     overflow-x: hidden;
   }
   
+/* Disable all focus in the map */
+.esri-view * {
+  pointer-events: none !important;
+}
+
+/* But allow pointer events on our custom controls */
+.esri-view button {
+  pointer-events: auto !important;
+}
+
+/* Hide focus outlines */
+.esri-view .esri-ui:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Hide all ArcGIS UI elements */
+.esri-ui-corner,
+.esri-ui-inner-container {
+  display: none !important;
+}

@@ -49,6 +49,7 @@ const categoryStyles = {
 
 const FoodRetailer = () => {
   const mapDiv = useRef(null);
+  const mapViewRef = useRef(null);
   const [view, setView] = useState(null);
   const [activeCategories, setActiveCategories] = useState(Object.keys(categoryStyles));
   const [filterWIC, setFilterWIC] = useState(false);
@@ -129,67 +130,76 @@ const FoodRetailer = () => {
     }
   }, [userLocation, view]);
 
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback((e) => {
-    // Only handle keyboard navigation when POI list is visible
-    if (!isPoiListVisible || visibleFeatures.length === 0) return;
-    
-    switch (e.key) {
-      case 'ArrowRight':
-      case 'Tab':
-        if (e.key === 'Tab' && !e.shiftKey) {
-          e.preventDefault(); // Prevent default tab behavior
-          setFocusedPoiIndex(prev => 
-            prev >= visibleFeatures.length - 1 ? 0 : prev + 1
-          );
-        } else if (e.key === 'ArrowRight') {
-          setFocusedPoiIndex(prev => 
-            prev >= visibleFeatures.length - 1 ? 0 : prev + 1
-          );
-        }
-        break;
-      case 'ArrowLeft':
-        if (e.key === 'Tab' && e.shiftKey) {
-          e.preventDefault(); // Prevent default shift+tab behavior
-          setFocusedPoiIndex(prev => 
-            prev <= 0 ? visibleFeatures.length - 1 : prev - 1
-          );
-        } else if (e.key === 'ArrowLeft') {
-          setFocusedPoiIndex(prev => 
-            prev <= 0 ? visibleFeatures.length - 1 : prev - 1
-          );
-        }
-        break;
-      case 'Enter':
-      case ' ':
-        // Show popup for the selected POI
-        if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
-          const feature = visibleFeatures[focusedPoiIndex];
-          const attributes = feature.attributes || {};
-          setPopupContent({
-            title: attributes.Store_Name || "No Name Available",
-            category: attributes.Retail_Category || "N/A",
-            address: attributes.Address || "N/A",
-            city: attributes.City || "N/A",
-            state: attributes.State || "N/A",
-            zip: attributes.Zip || "N/A",
-            freshProduce: attributes.Fresh_Produce === "Yes",
-            snap: attributes.SNAP === "Yes",
-            wic: attributes.WIC === "Yes"
-          });
-          e.preventDefault(); // Prevent default space behavior (scroll)
-        }
-        break;
-      case 'Escape':
-        // Exit POI navigation mode
-        setIsPoiListVisible(false);
-        setFocusedPoiIndex(-1);
-        e.preventDefault();
-        break;
-      default:
-        break;
+  // Handle keyboard navigation for POI list
+  const handlePoiKeyDown = useCallback((e) => {
+    if (!isPoiListVisible || visibleFeatures.length === 0) {
+      return;
+    }
+
+    // Allow Tab to work normally - don't prevent default
+    if (e.key === 'Tab') {
+      return;
+    }
+
+    const isNavKey = ['ArrowRight', 'ArrowLeft', 'Enter', ' ', 'Escape'].includes(e.key);
+    if (!isNavKey) return;
+
+    e.preventDefault();
+
+    if (e.key === 'ArrowRight') {
+      setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1);
+    } else if (e.key === 'ArrowLeft') {
+      setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1);
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
+        const feature = visibleFeatures[focusedPoiIndex];
+        const attributes = feature.attributes || {};
+        setPopupContent({
+          title: attributes.Store_Name || "No Name Available",
+          category: attributes.Retail_Category || "N/A",
+          address: attributes.Address || "N/A",
+          city: attributes.City || "N/A",
+          state: attributes.State || "N/A",
+          zip: attributes.Zip || "N/A",
+          freshProduce: attributes.Fresh_Produce === "Yes",
+          snap: attributes.SNAP === "Yes",
+          wic: attributes.WIC === "Yes"
+        });
+      }
+    } else if (e.key === 'Escape') {
+      setIsPoiListVisible(false);
+      setFocusedPoiIndex(-1);
     }
   }, [isPoiListVisible, visibleFeatures, focusedPoiIndex]);
+
+  // Global keyboard handler for 'K' key only
+  const handleGlobalKeyDown = useCallback((e) => {
+    // Skip if we're in an input field or textarea
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+      return;
+    }
+    
+    // Only handle 'K' key globally for POI navigation toggle
+    if (e.key === 'k' || e.key === 'K') {
+      e.preventDefault();
+      setIsPoiListVisible(prev => {
+        const newValue = !prev;
+        if (newValue && visibleFeatures.length > 0) {
+          setFocusedPoiIndex(0);
+        } else {
+          setFocusedPoiIndex(-1);
+        }
+        return newValue;
+      });
+    }
+    
+    // Handle ESC key globally to exit POI navigation
+    if (e.key === 'Escape' && isPoiListVisible) {
+      e.preventDefault();
+      setIsPoiListVisible(false);
+      setFocusedPoiIndex(-1);
+    }
+  }, [isPoiListVisible, visibleFeatures]);
 
   // Initialize map
   useEffect(() => {
@@ -239,14 +249,103 @@ const FoodRetailer = () => {
       constraints: {
         snapToZoom: false,
       },
+      // Disable all UI components
       ui: {
-        components: ["zoom", "compass", "attribution"]
+        components: []
       }
     });
 
     mapView.when(() => {
       setView(mapView);
+      mapViewRef.current = mapView;
+      
+      // Disable mouse wheel zoom
       mapView.navigation.mouseWheelZoomEnabled = false;
+      
+      // Remove focus from the map view completely
+      const mapContainer = mapView.container;
+      
+      // Make map non-focusable but still clickable
+      mapContainer.setAttribute('tabindex', '-1');
+      mapContainer.setAttribute('aria-hidden', 'true');
+      
+      // Override focus method to prevent focus trapping
+      mapView.focus = () => {};
+      
+      // Remove all focusable elements from the map
+      const removeFocusFromElements = (element) => {
+        if (element.nodeType === Node.ELEMENT_NODE) {
+          if (element.tabIndex >= 0) {
+            element.tabIndex = -1;
+          }
+          // Remove focus outline
+          element.style.outline = 'none';
+          
+          // Process child elements
+          Array.from(element.children).forEach(removeFocusFromElements);
+        }
+      };
+      
+      // Apply to map container and all its children
+      removeFocusFromElements(mapContainer);
+      
+      // Add mutation observer to handle dynamically added elements
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === Node.ELEMENT_NODE) {
+              removeFocusFromElements(node);
+            }
+          });
+        });
+      });
+      
+      observer.observe(mapContainer, {
+        childList: true,
+        subtree: true
+      });
+      
+      // Store observer reference for cleanup
+      mapView._focusObserver = observer;
+      
+      // Add custom zoom controls that are not focusable
+      const zoomControls = document.createElement('div');
+      zoomControls.style.position = 'absolute';
+      zoomControls.style.right = '20px';
+      zoomControls.style.top = '20px';
+      zoomControls.style.zIndex = '100';
+      zoomControls.style.display = 'flex';
+      zoomControls.style.flexDirection = 'column';
+      zoomControls.style.gap = '5px';
+      
+      const zoomInBtn = document.createElement('button');
+      zoomInBtn.innerHTML = '+';
+      zoomInBtn.style.width = '40px';
+      zoomInBtn.style.height = '40px';
+      zoomInBtn.style.border = '1px solid #ccc';
+      zoomInBtn.style.backgroundColor = 'white';
+      zoomInBtn.style.cursor = 'pointer';
+      zoomInBtn.style.fontSize = '18px';
+      zoomInBtn.tabIndex = -1;
+      zoomInBtn.setAttribute('aria-hidden', 'true');
+      zoomInBtn.onclick = () => mapView.goTo({ zoom: mapView.zoom + 1 });
+      
+      const zoomOutBtn = document.createElement('button');
+      zoomOutBtn.innerHTML = '−';
+      zoomOutBtn.style.width = '40px';
+      zoomOutBtn.style.height = '40px';
+      zoomOutBtn.style.border = '1px solid #ccc';
+      zoomOutBtn.style.backgroundColor = 'white';
+      zoomOutBtn.style.cursor = 'pointer';
+      zoomOutBtn.style.fontSize = '18px';
+      zoomOutBtn.tabIndex = -1;
+      zoomOutBtn.setAttribute('aria-hidden', 'true');
+      zoomOutBtn.onclick = () => mapView.goTo({ zoom: mapView.zoom - 1 });
+      
+      zoomControls.appendChild(zoomInBtn);
+      zoomControls.appendChild(zoomOutBtn);
+      mapContainer.appendChild(zoomControls);
+      
     }).catch(err => {
       console.error("Error initializing map view:", err);
     });
@@ -255,6 +354,10 @@ const FoodRetailer = () => {
     return () => {
       if (mapView) {
         try {
+          // Clean up observer
+          if (mapView._focusObserver) {
+            mapView._focusObserver.disconnect();
+          }
           mapView.map.removeAll();
           mapView.destroy();
         } catch (error) {
@@ -291,7 +394,6 @@ const FoodRetailer = () => {
       });
     });
     
-    // Return cleanup function
     return () => {
       clickHandler.remove();
     };
@@ -327,9 +429,8 @@ const FoodRetailer = () => {
       retailerLayer.queryFeatures({
         where: definitionExpression || "1=1",
         outFields: ["*"],
-        returnGeometry: true // Changed to true to get geometry for highlighting
+        returnGeometry: true
       }).then((result) => {
-        // Reset focused POI index when filters change
         setFocusedPoiIndex(-1);
         setVisibleFeatures(result.features);
       }).catch((error) => {
@@ -341,39 +442,28 @@ const FoodRetailer = () => {
 
   // Effect for global keyboard events
   useEffect(() => {
-    const handleGlobalKeyDown = (e) => {
-      // Skip if we're in an input field or textarea
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
-        return;
-      }
-      
-      if (e.key === 'k' || e.key === 'K') {
-        // Toggle keyboard navigation mode
-        setIsPoiListVisible(prev => !prev);
-        if (!isPoiListVisible && visibleFeatures.length > 0) {
-          setFocusedPoiIndex(0);
-        }
-      } else if (isPoiListVisible) {
-        handleKeyDown(e);
-      }
-    };
-    
     window.addEventListener('keydown', handleGlobalKeyDown);
     
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown);
     };
-  }, [handleKeyDown, isPoiListVisible, visibleFeatures]);
+  }, [handleGlobalKeyDown]);
 
   // Add effect to highlight focused POI on the map
   useEffect(() => {
-    if (!view || focusedPoiIndex < 0 || focusedPoiIndex >= visibleFeatures.length) return;
+    if (!view || focusedPoiIndex < 0 || focusedPoiIndex >= visibleFeatures.length) {
+      // Clear highlights when no POI is focused
+      if (view && view.graphics) {
+        view.graphics.removeAll();
+      }
+      return;
+    }
     
     const retailerLayer = view.map.findLayerById("retailerLayer");
     if (!retailerLayer) return;
     
     // Clear any existing highlights
-    if (view.graphics && typeof view.graphics.removeAll === 'function') {
+    if (view.graphics) {
       view.graphics.removeAll();
     }
     
@@ -387,12 +477,11 @@ const FoodRetailer = () => {
       if (focusedFeature.geometry) {
         view.goTo({
           target: focusedFeature.geometry,
-          zoom: view.zoom // Maintain current zoom level
+          zoom: Math.max(view.zoom, 10) // Ensure minimum zoom level
         }, {
           duration: 500,
           easing: "ease-in-out"
         }).catch(err => {
-          // Silently handle any navigation errors
           console.debug("Map navigation was interrupted", err);
         });
       }
@@ -401,115 +490,48 @@ const FoodRetailer = () => {
       const category = attributes.Retail_Category || "N/A";
       const color = categoryStyles[category]?.color || "#cccccc";
       
-      if (view.graphics && typeof view.graphics.add === 'function') {
-        const highlightGraphic = {
-          geometry: focusedFeature.geometry,
-          symbol: {
-            type: "simple-marker",
-            color: color,
-            size: 16,
-            outline: {
-              color: "#ffffff",
-              width: 3
-            }
+      const highlightGraphic = {
+        geometry: focusedFeature.geometry,
+        symbol: {
+          type: "simple-marker",
+          color: color,
+          size: 16,
+          outline: {
+            color: "#ffffff",
+            width: 3
           }
-        };
-        
-        view.graphics.add(highlightGraphic);
-      }
+        }
+      };
       
-      // Show details for the feature instead of using popup
-      // This avoids using the problematic popup.open method
-      if (focusedFeature.geometry) {
-        // Instead of using popup, we'll just update our state to show the details card
-        const poiData = {
-          title: attributes.Store_Name || "No Name Available",
-          category: attributes.Retail_Category || "N/A",
-          address: attributes.Address || "N/A",
-          city: attributes.City || "N/A",
-          state: attributes.State || "N/A",
-          zip: attributes.Zip || "N/A",
-          freshProduce: attributes.Fresh_Produce === "Yes",
-          snap: attributes.SNAP === "Yes",
-          wic: attributes.WIC === "Yes"
-        };
-        
-        // Only update popup content if Enter is pressed or explicit selection is made
-        // This prevents every navigation from triggering a popup
-        // We'll update this in the handleKeyDown function instead
-      }
+      view.graphics.add(highlightGraphic);
     } catch (error) {
       console.error("Error highlighting POI:", error);
     }
     
-  }, [view, focusedPoiIndex, visibleFeatures, categoryStyles]);
+  }, [view, focusedPoiIndex, visibleFeatures]);
 
   return (
     <Box sx={{ position: "relative", width: "100%", height: "85vh", overflow: "hidden" }}>
-      {/* Skip link for keyboard accessibility */}
-      <Button
-        sx={{
-          position: 'absolute',
-          left: '0',
-          top: '-100px',
-          zIndex: 1500,
-          '&:focus': {
-            top: '0',
-            left: '0',
-            backgroundColor: 'white',
-          },
-        }}
-        variant="contained"
-        onClick={() => {
-          // Find the next focusable element after the map and focus it
-          const focusableElements = document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])');
-          let foundMap = false;
-          for (let i = 0; i < focusableElements.length; i++) {
-            if (foundMap) {
-              focusableElements[i].focus();
-              break;
-            }
-            if (focusableElements[i] === mapDiv.current) {
-              foundMap = true;
-            }
-          }
-        }}
-      >
-        Skip Map Navigation
-      </Button>
       
       {/* Map container */}
       <div
         ref={mapDiv}
         style={{ width: "100%", height: "100%" }}
-        tabIndex={0}
-        aria-label="Interactive map showing locations of food retailers. Press 'K' to enter keyboard navigation mode, Tab to navigate away from map."
-        onKeyDown={(e) => {
-          // Global keyboard shortcuts
-          if (e.key === 'k' || e.key === 'K') {
-            // Toggle keyboard navigation mode
-            setIsPoiListVisible(prev => !prev);
-            if (!isPoiListVisible && visibleFeatures.length > 0) {
-              setFocusedPoiIndex(0);
-            }
-            e.preventDefault();
-          } else if (e.key === 'Tab' && !isPoiListVisible) {
-            // Allow Tab navigation out of the map when not in POI navigation mode
-            // The default behavior will work
-          } else {
-            handleKeyDown(e);
-          }
-        }}
-        onFocus={() => {
-          if (view) view.focus();
-        }}
-      ></div>
+        aria-label="Interactive map showing locations of food retailers. Press 'K' to enter keyboard navigation mode."
+        role="img"
+      />
 
       {/* ARIA live region for screen reader announcements */}
       <div
         aria-live="polite"
-        className="sr-only"
-        style={{ position: 'absolute', width: '1px', height: '1px', overflow: 'hidden' }}
+        aria-atomic="true"
+        style={{ 
+          position: 'absolute', 
+          left: '-10000px',
+          width: '1px', 
+          height: '1px', 
+          overflow: 'hidden' 
+        }}
       >
         {isPoiListVisible && focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length && (
           <span>
@@ -526,7 +548,6 @@ const FoodRetailer = () => {
         <Fade in>
           <Card
             elevation={5}
-            tabIndex={0}
             role="dialog"
             aria-modal="true"
             aria-labelledby="store-details-title"
@@ -614,16 +635,24 @@ const FoodRetailer = () => {
               </Grid>
               
               <Button 
-                variant="outlined" 
-                fullWidth
-                startIcon={<NearMeIcon />}
-                sx={{ mt: 1 }}
-                onClick={() => {
-                  window.open(`https://maps.google.com/?q=${popupContent.address}, ${popupContent.city}, ${popupContent.state} ${popupContent.zip}`, '_blank');
-                }}
-              >
-                Directions
-              </Button>
+  variant="contained"
+  color="primary"
+  fullWidth
+  startIcon={<NearMeIcon />}
+  sx={{ 
+    mt: 1,
+    color: 'white',
+    backgroundColor: 'primary.main',
+    '&:hover': {
+      backgroundColor: 'white'
+    }
+  }}
+  onClick={() => {
+    window.open(`https://maps.google.com/?q=${popupContent.address}, ${popupContent.city}, ${popupContent.state} ${popupContent.zip}`, '_blank');
+  }}
+>
+  Directions
+</Button>
             </CardContent>
           </Card>
         </Fade>
@@ -633,6 +662,10 @@ const FoodRetailer = () => {
       {isPoiListVisible && visibleFeatures.length > 0 && (
         <Paper
           elevation={4}
+          role="dialog"
+          aria-labelledby="keyboard-navigation-title"
+          aria-describedby="keyboard-navigation-description"
+          onKeyDown={handlePoiKeyDown}
           sx={{
             position: "absolute",
             bottom: 20,
@@ -645,11 +678,18 @@ const FoodRetailer = () => {
             backgroundColor: "rgba(255, 255, 255, 0.97)",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            outline: 'none'
           }}
         >
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          <Typography id="keyboard-navigation-title" variant="subtitle1" fontWeight="bold" gutterBottom>
             Keyboard Navigation ({focusedPoiIndex >= 0 ? focusedPoiIndex + 1 : 0} of {visibleFeatures.length})
+          </Typography>
+          
+          <Typography id="keyboard-navigation-description" variant="body2" sx={{ mb: 2 }}>
+            {focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length ? 
+              visibleFeatures[focusedPoiIndex].attributes.Store_Name || "Unknown Location" :
+              "No location selected"}
           </Typography>
           
           <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
@@ -657,33 +697,51 @@ const FoodRetailer = () => {
               onClick={() => setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1)}
               startIcon={<KeyboardArrowLeftIcon />}
               variant="contained"
-              color = 'primary'
+              color="primary"
               size="small"
-              sx={{ mr: 1,
-                 xs: "0.75rem", 
-      sm: "0.85rem",
-              }}
+              sx={{ mr: 1 }}
             >
-              Prev.
+              Previous
             </Button>
-            
-            <Typography variant="body2" sx={{ mx: 2 }}>
-              {focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length ? 
-                visibleFeatures[focusedPoiIndex].attributes.Store_Name || "Unknown Location" :
-                "No location selected"}
-            </Typography>
             
             <Button 
               onClick={() => setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1)}
               endIcon={<KeyboardArrowRightIcon />}
               variant="contained"
-              color = "primary"
+              color="primary"
               size="small"
               sx={{ ml: 1 }}
             >
               Next
             </Button>
           </Box>
+          
+          <Button 
+            onClick={() => {
+              if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
+                const feature = visibleFeatures[focusedPoiIndex];
+                const attributes = feature.attributes || {};
+                setPopupContent({
+                  title: attributes.Store_Name || "No Name Available",
+                  category: attributes.Retail_Category || "N/A",
+                  address: attributes.Address || "N/A",
+                  city: attributes.City || "N/A",
+                  state: attributes.State || "N/A",
+                  zip: attributes.Zip || "N/A",
+                  freshProduce: attributes.Fresh_Produce === "Yes",
+                  snap: attributes.SNAP === "Yes",
+                  wic: attributes.WIC === "Yes"
+                });
+              }
+            }}
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ mb: 1 }}
+            disabled={focusedPoiIndex < 0}
+          >
+            View Details
+          </Button>
           
           <Typography variant="caption" color="text.secondary">
             Use ← → arrow keys to navigate • Enter to select • Esc to exit navigation mode
@@ -723,54 +781,51 @@ const FoodRetailer = () => {
           </Typography>
 
           <Box
-  sx={{
-    display: "flex",
-    flexWrap: "wrap",
-    gap: 1,
-    mb: 2,
-  }}
->
-  {Object.entries(categoryStyles).map(([category, style]) => (
-    <Tooltip key={category} title={category} placement="top">
-      <span>
-        <Button
-          onClick={() => toggleCategory(category)}
-          variant={activeCategories.includes(category) ? "contained" : "outlined"}
-          startIcon={style.icon}
-          size="small"
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            px: 1.5,
-            py: 0.5,
-            fontSize: {
-              xs: "0.72rem",
-              sm: "0.8rem",
-            },
-            minWidth: 0,
-            maxWidth: "100%",
-            flex: "1 1 130px", // flexible button sizing
-            textTransform: "none",
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
-            borderColor: style.color,
-            color: activeCategories.includes(category) ? style.textColor : style.color,
-            '&:hover': {
-              backgroundColor: activeCategories.includes(category)
-                ? style.color
-                : `${style.color}22`
-            }
-          }}
-        >
-          {category}
-        </Button>
-      </span>
-    </Tooltip>
-  ))}
-</Box>
-
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 1,
+              mb: 2,
+            }}
+          >
+            {Object.entries(categoryStyles).map(([category, style]) => (
+              <Tooltip key={category} title={category} placement="top">
+                <Button
+                  onClick={() => toggleCategory(category)}
+                  variant={activeCategories.includes(category) ? "contained" : "outlined"}
+                  startIcon={style.icon}
+                  size="small"
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    px: 1.5,
+                    py: 0.5,
+                    fontSize: {
+                      xs: "0.72rem",
+                      sm: "0.8rem",
+                    },
+                    minWidth: 0,
+                    maxWidth: "100%",
+                    flex: "1 1 130px",
+                    textTransform: "none",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
+                    borderColor: style.color,
+                    color: activeCategories.includes(category) ? style.textColor : style.color,
+                    
+                    '&:focus': {
+                      outline: '2px solid #005fcc',
+                      outlineOffset: '2px'
+                    }
+                  }}
+                >
+                  {category}
+                </Button>
+              </Tooltip>
+            ))}
+          </Box>
 
           <Divider sx={{ my: 2 }} />
           
@@ -784,6 +839,9 @@ const FoodRetailer = () => {
                 checked={filterWIC}
                 onChange={() => setFilterWIC((prev) => !prev)}
                 color="primary"
+                inputProps={{ 
+                  'aria-label': 'Filter by WIC acceptance'
+                }}
               />
             }
             label={<Typography variant="body2">WIC Accepted</Typography>}
@@ -796,6 +854,9 @@ const FoodRetailer = () => {
                 checked={filterFreshProduce}
                 onChange={() => setFilterFreshProduce((prev) => !prev)}
                 color="success"
+                inputProps={{ 
+                  'aria-label': 'Filter by fresh produce availability'
+                }}
               />
             }
             label={<Typography variant="body2">Fresh Produce Available</Typography>}
@@ -811,7 +872,13 @@ const FoodRetailer = () => {
             onClick={getUserLocation}
             fullWidth
             color="primary"
-            sx={{ mb: 1 }}
+            sx={{ 
+              mb: 1,
+              '&:focus': {
+                outline: '2px solid #005fcc',
+                outlineOffset: '2px'
+              }
+            }}
           >
             Find My Location
           </Button>
@@ -826,7 +893,13 @@ const FoodRetailer = () => {
                 setFocusedPoiIndex(0);
               }
             }}
-            sx={{ mt: 1 }}
+            sx={{ 
+              mt: 1,
+              '&:focus': {
+                outline: '2px solid #005fcc',
+                outlineOffset: '2px'
+              }
+            }}
           >
             Enter Keyboard Navigation Mode
           </Button>
@@ -849,6 +922,10 @@ const FoodRetailer = () => {
             transition: "left 0.3s ease",
             "&:hover": {
               backgroundColor: "#f5f5f5"
+            },
+            '&:focus': {
+              outline: '2px solid #005fcc',
+              outlineOffset: '2px'
             }
           }}
         >
@@ -871,6 +948,10 @@ const FoodRetailer = () => {
             zIndex: 1001,
             "&:hover": {
               backgroundColor: "#f5f5f5"
+            },
+            '&:focus': {
+              outline: '2px solid #005fcc',
+              outlineOffset: '2px'
             }
           }}
         >
@@ -884,6 +965,7 @@ const FoodRetailer = () => {
           elevation={4}
           role="dialog"
           aria-labelledby="keyboard-help-title"
+          aria-modal="true"
           sx={{
             position: "absolute",
             top: "50%",
@@ -900,43 +982,52 @@ const FoodRetailer = () => {
             Keyboard Navigation Help
           </Typography>
           <Box component="ul" sx={{ pl: 2 }}>
+            <li><Typography>Press <strong>K</strong> to toggle POI navigation mode</Typography></li>
+            <li><Typography>Press <strong>Tab</strong> to navigate between interface elements</Typography></li>
+            <li><Typography>Press <strong>← →</strong> arrow keys to navigate POIs when in navigation mode</Typography></li>
             <li><Typography>Press <strong>Enter</strong> to view details of selected point</Typography></li>
             <li><Typography>Press <strong>Esc</strong> to exit navigation mode</Typography></li>
-            <li><Typography>Press <strong>Tab</strong> to navigate to the next element on the page</Typography></li>
           </Box>
           <Button 
             variant="contained"
             onClick={() => setIsHelpVisible(false)}
-            sx={{ mt: 2 }}
+            sx={{ 
+              mt: 2,
+              '&:focus': {
+                outline: '2px solid #005fcc',
+                outlineOffset: '2px'
+              }
+            }}
           >
             Close
           </Button>
         </Paper>
       )}
 
-      {/* Hidden accessible list of POIs for screen readers */}
-      <Box
-        component="ul"
-        sx={{
+      {/* Screen reader only: accessible list of POIs */}
+      <div
+        style={{
           position: 'absolute',
-          left: '-9999px',
+          left: '-10000px',
           width: '1px',
           height: '1px',
           overflow: 'hidden'
         }}
         aria-label="List of visible food retailers on the map"
       >
-        {visibleFeatures.map((feature, i) => {
-          const a = feature.attributes || {};
-          return (
-            <li key={i} tabIndex={0}>
-              {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
-              Category: {a.Retail_Category || 'N/A'}.
-              SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
-            </li>
-          );
-        })}
-      </Box>
+        <ul>
+          {visibleFeatures.map((feature, i) => {
+            const a = feature.attributes || {};
+            return (
+              <li key={i}>
+                {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
+                Category: {a.Retail_Category || 'N/A'}.
+                SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </Box>
   );
 };

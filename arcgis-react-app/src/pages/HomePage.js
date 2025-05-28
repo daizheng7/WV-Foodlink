@@ -431,36 +431,40 @@ const HomePage = () => {
       }}
     >
      
-      <IntroModal />
+      
 
-      <Box
-      sx={{
-        width: `calc(100vw - ${scrollbarWidth}px)`,
-        height: { xs: "65vh", md: "100vh" },
-        position: "relative",
-        overflow: "hidden",
-        margin: 0,
-        padding: 0,
-        borderBottom: `2px solid ${alpha(MAIN_COLOR, 0.3)}`,
-        display: "block",
-        "& > div": {
-          width: "100%",
-          height: "100%",
-        },
-        "& .esri-view, & .esri-view-root, & .esri-view-surface, & .esri-ui": {
-          width: "100%",
-          height: "100%",
-        },
-        "& canvas": {
-          width: "100%",
-          height: "100%",
-          display: "block",
-        }
-      }}
-      >
-        
-        <FoodRetailer />
-      </Box>
+   <Box
+  sx={{
+    width: `calc(100vw - ${scrollbarWidth}px)`,
+    height: { xs: "65vh", md: "100vh" },
+    position: "relative",
+    overflow: "hidden",
+    margin: 0,
+    padding: 0,
+    borderBottom: `2px solid ${alpha(MAIN_COLOR, 0.3)}`,
+    display: "block",
+    "& > div": {
+      width: "100%",
+      height: "100%",
+    },
+    "& .esri-view, & .esri-view-root, & .esri-view-surface, & .esri-ui": {
+      width: "100%",
+      height: "100%",
+    },
+    "& canvas": {
+      width: "100%",
+      height: "100%",
+      display: "block",
+    },
+    // Add this to prevent focus
+    "& .esri-view": {
+      outline: "none !important"
+    }
+  }}
+  tabIndex={-1}
+>
+  <FoodRetailer />
+</Box>
 
       {sections.map((section, index) => (
         <Section
