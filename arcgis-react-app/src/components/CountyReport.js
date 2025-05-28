@@ -586,108 +586,169 @@ const CountyReport = () => {
 
   // Original map initialization code continues here...
   useEffect(() => {
-    esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
+  esriConfig.apiKey = process.env.REACT_APP_ARCGIS_API_KEY;
 
-    const map = new Map({
-      basemap: "arcgis-light-gray",
-    });
+  const map = new Map({
+    basemap: "arcgis-light-gray",
+  });
 
-    const mapView = new MapView({
-      container: mapDiv.current,
-      map: map,
-      center: [-80.39, 39.109],
-      zoom: 7,
-      constraints: {
-        snapToZoom: false,
-        mouseWheelZoomEnabled: false,
+  const mapView = new MapView({
+    container: mapDiv.current,
+    map: map,
+    center: [-80.39, 39.109],
+    zoom: 7,
+    constraints: {
+      snapToZoom: false,
+      mouseWheelZoomEnabled: false,
+    },
+    ui: {
+      components: ["zoom", "compass", "attribution"]
+    }
+  });
+
+  const countyLayer = new FeatureLayer({
+    portalItem: { id: "bbc434ff13854e76a9a5acc29bc1e025" },
+    renderer: {
+      type: "simple",
+      symbol: {
+        type: "simple-fill",
+        color: [0, 40, 85, 0.2],
+        outline: {
+          color: [0, 40, 85, 1],
+          width: 1.5,
+        },
       },
-      ui: {
-        components: ["zoom", "compass", "attribution"]
-      }
-    });
-
-    const countyLayer = new FeatureLayer({
-      portalItem: { id: "bbc434ff13854e76a9a5acc29bc1e025" },
-      renderer: {
-        type: "simple",
+    },
+    labelingInfo: [
+      {
         symbol: {
-          type: "simple-fill",
-          color: [0, 40, 85, 0.2],
-          outline: {
-            color: [0, 40, 85, 1],
-            width: 1.5,
+          type: "text",
+          color: "white", 
+          haloColor: "black", 
+          haloSize: 1,
+          font: {
+            size: 12,
+            weight: "bold",
           },
         },
-      },
-      labelingInfo: [
-        {
-          symbol: {
-            type: "text",
-            color: "white", 
-            haloColor: "black", 
-            haloSize: 1,
-            font: {
-              size: 12,
-              weight: "bold",
-            },
-          },
-          labelExpressionInfo: {
-            expression: "$feature.NAME", 
-          },
-          labelPlacement: "always-horizontal", 
+        labelExpressionInfo: {
+          expression: "$feature.NAME", 
         },
-      ],
-      outFields: ["*"],
-      popupTemplate: {
-        title: "{NAME}", 
+        labelPlacement: "always-horizontal", 
       },
-      effect: "bloom(1.5, 0.5px, 0.2)", 
+    ],
+    outFields: ["*"],
+    popupTemplate: {
+      title: "{NAME}", 
+    },
+    effect: "bloom(1.5, 0.5px, 0.2)", 
+  });
+  countyLayerRef.current = countyLayer;
+
+  countyLayer.when(() => {
+    countyLayer.queryFeatures({
+      where: "1=1",
+      outFields: ["County_Nam"],
+      returnGeometry: false,
+    }).then((results) => {
+      const names = results.features.map(f => f.attributes.County_Nam).filter(Boolean).sort();
+      setCountyOptions(names);
     });
-    countyLayerRef.current = countyLayer;
+  });
 
-    countyLayer.when(() => {
-      countyLayer.queryFeatures({
-        where: "1=1",
-        outFields: ["County_Nam"],
-        returnGeometry: false,
-      }).then((results) => {
-        const names = results.features.map(f => f.attributes.County_Nam).filter(Boolean).sort();
-        setCountyOptions(names);
-      });
-    });
+  map.add(countyLayer);
+  const graphicsLayer = new GraphicsLayer();
+  map.add(graphicsLayer);
+  graphicsLayerRef.current = graphicsLayer;
 
-    map.add(countyLayer);
-    const graphicsLayer = new GraphicsLayer();
-    map.add(graphicsLayer);
-    graphicsLayerRef.current = graphicsLayer;
-
-    mapView.when(() => {
-      setView(mapView);
-      mapView.navigation.mouseWheelZoomEnabled = false;
-      mapView.on("click", async (event) => {
-        const response = await mapView.hitTest(event);
-        const results = response.results.filter(
-          (result) => result.graphic && result.graphic.layer === countyLayer
-        );
-
-        if (results.length > 0) {
-          const selectedCounty = results[0].graphic;
-          const geometry = selectedCounty.geometry;
-          const attributes = selectedCounty.attributes;
-
-          mapView.goTo({ target: geometry, zoom: 10 }, { duration: 4000 });
-          await loadCountyData(geometry, attributes);
+  mapView.when(() => {
+    setView(mapView);
+    
+    // ===== FOCUS MANAGEMENT FIXES (copied from FoodRetailer) =====
+    
+    // Disable mouse wheel zoom
+    mapView.navigation.mouseWheelZoomEnabled = false;
+    
+    // Remove focus from the map view completely
+    const mapContainer = mapView.container;
+    
+    // Make map non-focusable but still clickable
+    mapContainer.setAttribute('tabindex', '-1');
+    mapContainer.setAttribute('aria-hidden', 'true');
+    
+    // Override focus method to prevent focus trapping
+    mapView.focus = () => {};
+    
+    // Remove all focusable elements from the map
+    const removeFocusFromElements = (element) => {
+      if (element.nodeType === Node.ELEMENT_NODE) {
+        if (element.tabIndex >= 0) {
+          element.tabIndex = -1;
         }
-      });
-    });
-
-    return () => {
-      if (mapView) {
-        mapView.map.removeAll();
-        mapView.destroy();
+        // Remove focus outline
+        element.style.outline = 'none';
+        
+        // Process child elements
+        Array.from(element.children).forEach(removeFocusFromElements);
       }
     };
-  }, []);
+    
+    // Apply to map container and all its children
+    removeFocusFromElements(mapContainer);
+    
+    // Add mutation observer to handle dynamically added elements
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            removeFocusFromElements(node);
+          }
+        });
+      });
+    });
+    
+    observer.observe(mapContainer, {
+      childList: true,
+      subtree: true
+    });
+    
+    // Store observer reference for cleanup
+    mapView._focusObserver = observer;
+    
+    // ===== END FOCUS MANAGEMENT FIXES =====
+    
+    mapView.on("click", async (event) => {
+      const response = await mapView.hitTest(event);
+      const results = response.results.filter(
+        (result) => result.graphic && result.graphic.layer === countyLayer
+      );
+
+      if (results.length > 0) {
+        const selectedCounty = results[0].graphic;
+        const geometry = selectedCounty.geometry;
+        const attributes = selectedCounty.attributes;
+
+        mapView.goTo({ target: geometry, zoom: 10 }, { duration: 4000 });
+        await loadCountyData(geometry, attributes);
+      }
+    });
+  });
+
+  return () => {
+    if (mapView) {
+      try {
+        // Clean up observer
+        if (mapView._focusObserver) {
+          mapView._focusObserver.disconnect();
+        }
+        mapView.map.removeAll();
+        mapView.destroy();
+      } catch (error) {
+        console.error("Error cleaning up map view:", error);
+      }
+    }
+  };
+}, []);
 
   // Rest of your existing functions (renderMapLegend, renderFoodResourcesChart, etc.)
   const renderMapLegend = () => (
