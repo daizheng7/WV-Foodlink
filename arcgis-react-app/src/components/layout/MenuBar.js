@@ -9,6 +9,9 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  Collapse,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -31,6 +34,8 @@ import {
   NaturePeople,
   AccountBalance,
   Public,
+  ExpandMore,
+  ExpandLess,
 } from "@mui/icons-material";
 
 const WVUHeader = () => (
@@ -81,18 +86,26 @@ const WVUMenuBar = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const [mobileOpen, setMobileOpen] = useState(false);
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
   const [openIndex, setOpenIndex] = useState(null);
-  const handleItemToggle = (index) =>
-  setOpenIndex(openIndex === index ? null : index);
+  const [anchorEls, setAnchorEls] = useState({});
+
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
+  const handleItemToggle = (index) => setOpenIndex(openIndex === index ? null : index);
+
+  const handleDesktopMenuOpen = (event, index) => {
+    setAnchorEls(prev => ({ ...prev, [index]: event.currentTarget }));
+  };
+
+  const handleDesktopMenuClose = (index) => {
+    setAnchorEls(prev => ({ ...prev, [index]: null }));
+  };
 
   const menuItems = [
     { label: "Home", icon: <Home />, href: "/" },
     {
       label: "Food Atlas",
       icon: <Map />,
-      href:
-        "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3",
+      href: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3",
     },
     { label: "About Us", icon: <Info />, href: "/about" },
     {
@@ -107,14 +120,12 @@ const WVUMenuBar = () => {
     {
       label: "Organize",
       icon: <Group />,
-      href:
-        "https://wvfoodlink-wvu.hub.arcgis.com/pages/organize-1",
+      href: "https://wvfoodlink-wvu.hub.arcgis.com/pages/organize-1",
     },
     {
       label: "Policies",
       icon: <GavelOutlined />,
-      href:
-        "https://wvfoodlink-wvu.hub.arcgis.com/pages/nourishing-networks-reports",
+      href: "https://wvfoodlink-wvu.hub.arcgis.com/pages/nourishing-networks-reports",
     },
     {
       label: "Resources",
@@ -122,50 +133,42 @@ const WVUMenuBar = () => {
       children: [
         {
           label: "SNAP + WIC",
-          href:
-            "https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f",
+          href: "https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f",
           icon: <CreditCard />,
         },
         {
           label: "SNAP-ED",
-          href:
-            "https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851",
+          href: "https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851",
           icon: <School />,
         },
         {
           label: "Congregate Meals",
-          href:
-            "https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=b442bf3a130248938d3f4323840fe50e",
+          href: "https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=b442bf3a130248938d3f4323840fe50e",
           icon: <Restaurant />,
         },
         {
           label: "Charitable Food",
-          href:
-            "https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b",
+          href: "https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b",
           icon: <LocalMall />,
         },
         {
           label: "Farmers Markets",
-          href:
-            "https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36",
+          href: "https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36",
           icon: <Storefront />,
         },
         {
           label: "Agricultural Data",
-          href:
-            "https://www.arcgis.com/apps/dashboards/2100f46c379b49ba8d5d4184c68d0ab0",
+          href: "https://www.arcgis.com/apps/dashboards/2100f46c379b49ba8d5d4184c68d0ab0",
           icon: <Agriculture />,
         },
         {
           label: "Self-Provisioning",
-          href:
-            "https://www.arcgis.com/apps/dashboards/60c2dc75756c485f9d135d14826464f4",
+          href: "https://www.arcgis.com/apps/dashboards/60c2dc75756c485f9d135d14826464f4",
           icon: <NaturePeople />,
         },
         {
           label: "Political Participation",
-          href:
-            "https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec",
+          href: "https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec",
           icon: <AccountBalance />,
         },
         { label: "County Summary", href: "/county", icon: <Public /> },
@@ -193,64 +196,134 @@ const WVUMenuBar = () => {
         )}
 
         {/* Desktop menu */}
-        <ul className="wvu-site-nav__items list-unstyled d-none d-lg-flex align-items-center mb-0 flex-wrap">
-          {menuItems.map((item, i) => (
-            <li
-              key={i}
-              className={`position-relative d-lg-flex ${
-                item.children ? "wvu-site-nav__menu-item-has-children" : ""
-              }`}
-            >
-              <a
-                href={item.href}
-                target={item.href?.startsWith("http") ? "_blank" : "_self"}
-                rel={
-                  item.href?.startsWith("http") ? "noopener noreferrer" : undefined
-                }
-                className="nav-link px-2 py-2 d-flex align-items-center gap-1"
-              >
-                {item.icon}
-                {item.label}
-              </a>
-              {item.children && (
-                <ul className="wvu-site-nav__sub-menu list-unstyled small bg-wvu-accent--blue-dark ms-2">
-                  {item.children.map((child, ci) => (
-                    <li key={ci}>
-                      <a
+        <Box sx={{ display: { xs: 'none', lg: 'flex' }, alignItems: 'center', flexGrow: 1 }}>
+          {menuItems.map((item, index) => (
+            <Box key={index} sx={{ position: 'relative' }}>
+              {item.children ? (
+                <>
+                  <Button
+                    onClick={(e) => handleDesktopMenuOpen(e, index)}
+                    onMouseEnter={(e) => handleDesktopMenuOpen(e, index)}
+                    sx={{
+                      color: 'white',
+                      textTransform: 'none',
+                      px: 2,
+                      py: 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
+                      '&:hover': {
+                        backgroundColor: 'rgba(255,255,255,0.08)'
+                      },
+                      '&:focus': {
+                        outline: '2px solid #fff',
+                        outlineOffset: '2px'
+                      }
+                    }}
+                    endIcon={<ExpandMore />}
+                    aria-haspopup="true"
+                    aria-expanded={Boolean(anchorEls[index])}
+                    aria-controls={`menu-${index}`}
+                  >
+                    {item.icon}
+                    {item.label}
+                  </Button>
+                  <Menu
+                    id={`menu-${index}`}
+                    anchorEl={anchorEls[index]}
+                    open={Boolean(anchorEls[index])}
+                    onClose={() => handleDesktopMenuClose(index)}
+                    MenuListProps={{
+                      onMouseLeave: () => handleDesktopMenuClose(index),
+                    }}
+                    sx={{
+                      '& .MuiPaper-root': {
+                        backgroundColor: theme.palette.primary.dark,
+                        color: 'white',
+                        minWidth: 200
+                      }
+                    }}
+                  >
+                    {item.children.map((child, childIndex) => (
+                      <MenuItem
+                        key={childIndex}
+                        onClick={() => handleDesktopMenuClose(index)}
+                        component="a"
                         href={child.href}
                         target={child.href?.startsWith("http") ? "_blank" : "_self"}
-                        rel={
-                          child.href?.startsWith("http")
-                            ? "noopener noreferrer"
-                            : undefined
-                        }
-                        className="nav-link px-2 py-2 d-flex align-items-center gap-1"
+                        rel={child.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                        sx={{
+                          color: 'white',
+                          textDecoration: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 1,
+                          '&:hover': {
+                            backgroundColor: 'rgba(255,255,255,0.08)'
+                          },
+                          '&:focus': {
+                            outline: '2px solid #fff',
+                            outlineOffset: '2px'
+                          }
+                        }}
                       >
                         {child.icon}
                         {child.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </>
+              ) : (
+                <Button
+                  component="a"
+                  href={item.href}
+                  target={item.href?.startsWith("http") ? "_blank" : "_self"}
+                  rel={item.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                  sx={{
+                    color: 'white',
+                    textTransform: 'none',
+                    px: 2,
+                    py: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1,
+                    textDecoration: 'none',
+                    '&:hover': {
+                      backgroundColor: 'rgba(255,255,255,0.08)'
+                    },
+                    '&:focus': {
+                      outline: '2px solid #fff',
+                      outlineOffset: '2px'
+                    }
+                  }}
+                >
+                  {item.icon}
+                  {item.label}
+                </Button>
               )}
-            </li>
+            </Box>
           ))}
-        </ul>
+        </Box>
 
-        {/* Search toggle stays here */}
-        <div className="ms-auto d-flex align-items-center">
-          <button
-            className="bg-transparent border-0 text-white py-2 px-2"
-            type="button"
+        {/* Search toggle */}
+        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
+          <IconButton
+            sx={{ 
+              color: 'white',
+              '&:focus': {
+                outline: '2px solid #fff',
+                outlineOffset: '2px'
+              }
+            }}
             data-bs-toggle="collapse"
             data-bs-target="#wvuNavSearchCollapse2"
             aria-controls="wvuNavSearchCollapse2"
             aria-expanded="false"
+            aria-label="Toggle Search"
           >
             <span className="fa-solid fa-magnifying-glass" />
-            <span className="visually-hidden">Toggle Search</span>
-          </button>
-        </div>
+          </IconButton>
+        </Box>
       </div>
 
       {/* Mobile drawer */}
@@ -262,72 +335,92 @@ const WVUMenuBar = () => {
           "& .MuiDrawer-paper": {
             backgroundColor: theme.palette.primary.dark,
             color: "#fff",
-            width: 260,
+            width: 280,
           },
         }}
       >
         <Box role="presentation" sx={{ p: 2 }}>
-         <List>
-  {menuItems.map((item, index) => (
-    <React.Fragment key={index}>
-      
-      
-
-      {item.children ? (
-  <ListItem
-    button
-    onClick={() => handleItemToggle(index)}
-    sx={{
-      color: 'white',
-      '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' }
-    }}
-  >
-    <Box sx={{ mr: 1, color: 'white' }}>{item.icon}</Box>
-    <ListItemText primary={item.label} sx={{ color: 'white' }} />
-    {/* Indicate expanded/collapsed state */}
-    <Box sx={{ ml: 1 }}>
-      {openIndex === index ? '▾' : '▸'}
-    </Box>
-  </ListItem>
-) : (
-  <ListItem
-    button
-    component="a"
-    href={item.href}
-    onClick={() => setMobileOpen(false)}
-    sx={{
-      color: 'white',
-      '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' }
-    }}
-  >
-    <Box sx={{ mr: 1, color: 'white' }}>{item.icon}</Box>
-    <ListItemText primary={item.label} sx={{ color: 'white' }} />
-  </ListItem>
-)}
-
-{item.children && openIndex === index &&
-  item.children.map((child, idx) => (
-    <ListItem
-      key={idx}
-      button
-      component="a"
-      href={child.href}
-      onClick={() => setMobileOpen(false)}
-      sx={{
-        pl: 6,
-        color: 'white',
-        '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' }
-      }}
-    >
-      <Box sx={{ mr: 1, color: 'white' }}>{child.icon}</Box>
-      <ListItemText primary={child.label} sx={{ color: 'white' }} />
-    </ListItem>
-  ))}
-
-    </React.Fragment>
-  ))}
-</List>
-
+          <List>
+            {menuItems.map((item, index) => (
+              <React.Fragment key={index}>
+                {item.children ? (
+                  <>
+                    <ListItem
+                      button
+                      onClick={() => handleItemToggle(index)}
+                      sx={{
+                        color: 'white',
+                        '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
+                        '&:focus': {
+                          outline: '2px solid #fff',
+                          outlineOffset: '2px'
+                        }
+                      }}
+                    >
+                      <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
+                        {item.icon}
+                      </Box>
+                      <ListItemText primary={item.label} sx={{ color: 'white' }} />
+                      {openIndex === index ? <ExpandLess /> : <ExpandMore />}
+                    </ListItem>
+                    <Collapse in={openIndex === index} timeout="auto" unmountOnExit>
+                      <List component="div" disablePadding>
+                        {item.children.map((child, childIndex) => (
+                          <ListItem
+                            key={childIndex}
+                            button
+                            component="a"
+                            href={child.href}
+                            target={child.href?.startsWith("http") ? "_blank" : "_self"}
+                            rel={child.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                            onClick={() => setMobileOpen(false)}
+                            sx={{
+                              pl: 6,
+                              color: 'white',
+                              textDecoration: 'none',
+                              '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
+                              '&:focus': {
+                                outline: '2px solid #fff',
+                                outlineOffset: '2px'
+                              }
+                            }}
+                          >
+                            <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
+                              {child.icon}
+                            </Box>
+                            <ListItemText primary={child.label} sx={{ color: 'white' }} />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Collapse>
+                  </>
+                ) : (
+                  <ListItem
+                    button
+                    component="a"
+                    href={item.href}
+                    target={item.href?.startsWith("http") ? "_blank" : "_self"}
+                    rel={item.href?.startsWith("http") ? "noopener noreferrer" : undefined}
+                    onClick={() => setMobileOpen(false)}
+                    sx={{
+                      color: 'white',
+                      textDecoration: 'none',
+                      '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
+                      '&:focus': {
+                        outline: '2px solid #fff',
+                        outlineOffset: '2px'
+                      }
+                    }}
+                  >
+                    <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
+                      {item.icon}
+                    </Box>
+                    <ListItemText primary={item.label} sx={{ color: 'white' }} />
+                  </ListItem>
+                )}
+              </React.Fragment>
+            ))}
+          </List>
         </Box>
       </Drawer>
     </nav>
