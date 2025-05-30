@@ -89,10 +89,7 @@ const AppContent = () => {
 
         {/* Main Content Area */}
         <main id="main-content" tabIndex={-1}>
-  <Box sx={{ 
-    
-    padding: 2
-  }}>
+  <Box >
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/assistance" element={<Assistance />} />

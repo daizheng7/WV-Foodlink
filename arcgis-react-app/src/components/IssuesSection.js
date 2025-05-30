@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -8,9 +8,9 @@ import {
   useMediaQuery,
   useTheme,
   Grid,
-  IconButton,
+  Collapse,
   Alert,
-  CircularProgress
+  Chip
 } from "@mui/material";
 import {
   LocationOn as LocationOnIcon,
@@ -23,327 +23,420 @@ import {
   LocalAtm as LocalAtmIcon,
   Home as HomeIcon,
   Launch as LaunchIcon,
-  ArrowBackIosNew as ArrowBackIosNewIcon,
-  ArrowForwardIos as ArrowForwardIosIcon,
-  Pause as PauseIcon,
-  PlayArrow as PlayArrowIcon,
-  KeyboardArrowRight as KeyboardArrowRightIcon
+  ExpandMore as ExpandMoreIcon,
+  ExpandLess as ExpandLessIcon,
+  ViewModule as ViewModuleIcon,
+  ViewList as ViewListIcon
 } from "@mui/icons-material";
 
-const IssuesSection = ({ defaultView = "carousel" }) => {
+const IssuesSection = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+
+  const [showAll, setShowAll] = useState(false);
+  const [viewMode, setViewMode] = useState("grid"); // "grid" or "list"
 
   const stats = [
     {
       title: "Poverty Rate",
       value: "16.7%",
       description: "West Virginia's poverty rate compared to the national average of 11.1%.",
-      icon: <TrendingUpIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <TrendingUpIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#0062A3",
       link: "https://www.wvpolicy.org/data/poverty-in-west-virginia/",
-      org: "WV Center on Budget & Policy"
+      org: "WV Center on Budget & Policy",
+      priority: "high"
     },
     {
       title: "Child Poverty",
       value: "1 in 5",
       description: "Children in poverty represent 20% of the state's population.",
-      icon: <ChildFriendlyIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <ChildFriendlyIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#002855",
       link: "https://www.childrensdefense.org/state/west-virginia/",
-      org: "Children's Defense Fund"
+      org: "Children's Defense Fund",
+      priority: "critical"
     },
     {
       title: "Food Insecurity",
       value: "16.3%",
       description: "Households affected by food insecurity from 2018 to 2022.",
-      icon: <RestaurantIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <RestaurantIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#1C2B39",
       link: "https://feedingamerica.org/hunger-in-america/west-virginia/",
-      org: "Feeding America"
+      org: "Feeding America",
+      priority: "critical"
     },
     {
       title: "Fresh Produce Access",
       value: "12%",
       description: "Only 12% of food retailers in WV offer fresh produce.",
-      icon: <ShoppingCartIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <ShoppingCartIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#0062A3",
       link: "https://www.wvfarm2school.org/food-access",
-      org: "WV Farm to School"
+      org: "WV Farm to School",
+      priority: "critical"
     },
     {
       title: "Food Deserts",
       value: "20%",
       description: "Residents live over 50 miles from the nearest fresh produce retailer.",
-      icon: <LocationOnIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <LocationOnIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#002855",
       link: "https://www.ruralhealthinfo.org/states/west-virginia",
-      org: "Rural Health Info"
+      org: "Rural Health Info",
+      priority: "critical"
     },
     {
       title: "Population Decline",
       value: "-34,000",
       description: "From 2020–2023, births: 55,000, deaths: 89,000.",
-      icon: <PeopleAltIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <PeopleAltIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#1C2B39",
       link: "https://www.wvpublic.org/section/population",
-      org: "WV Public Broadcasting"
+      org: "WV Public Broadcasting",
+      priority: "medium"
     },
     {
       title: "Transportation Barriers",
       value: "42%",
       description: "Rural residents with limited access to public transportation.",
-      icon: <DirectionsBusIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <DirectionsBusIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#0062A3",
       link: "https://www.transportation.wv.gov/publictransit/",
-      org: "WV Dept of Transportation"
+      org: "WV Dept of Transportation",
+      priority: "high"
     },
     {
       title: "Income Disparity",
       value: "$13K",
       description: "Income gap between WV median income and national average.",
-      icon: <LocalAtmIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <LocalAtmIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#002855",
       link: "https://www.wvpolicy.org/data/income-inequality/",
-      org: "WV Center on Budget & Policy"
+      org: "WV Center on Budget & Policy",
+      priority: "high"
     },
     {
       title: "Rising Housing Costs",
       value: "+21%",
       description: "Increase in housing costs since 2020, outpacing wage growth.",
-      icon: <HomeIcon sx={{ fontSize: 60, color: "#fff" }} />,
+      icon: <HomeIcon sx={{ fontSize: { xs: 40, sm: 60 }, color: "#fff" }} />,
       bgColor: "#1C2B39",
       link: "https://www.wvhousing.org/data",
-      org: "WV Housing Development Fund"
+      org: "WV Housing Development Fund",
+      priority: "high"
     }
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [viewMode, setViewMode] = useState(defaultView);
-  const timerRef = useRef(null);
+  // Sort by priority: critical first, then high, then medium
+  const sortedStats = [...stats].sort((a, b) => {
+    const priorityOrder = { critical: 0, high: 1, medium: 2 };
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
+  });
 
-  const itemsToShow = isMobile ? 1 : isTablet ? 2 : 3;
+  const displayedStats = isMobile 
+    ? (showAll ? sortedStats : sortedStats.slice(0, 3))
+    : sortedStats;
 
-  useEffect(() => {
-    if ((isMobile || isTablet) && stats.length <= 1 && viewMode === "carousel") {
-      setViewMode("grid");
-    }
-  }, [isMobile, isTablet, stats, viewMode]);
-
-  useEffect(() => {
-    if (isPlaying && stats.length > 0) {
-      timerRef.current = setInterval(() => {
-        setCurrentIndex((prev) => (prev + 1) % stats.length);
-      }, 5000);
-    } else {
-      clearInterval(timerRef.current);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [isPlaying, stats]);
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev + 1) % stats.length);
-    setIsPlaying(false);
-  };
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev - 1 + stats.length) % stats.length);
-    setIsPlaying(false);
-  };
-
-  const togglePlayPause = () => {
-    setIsPlaying(!isPlaying);
-  };
-
-  const goToCard = (index) => {
-    setCurrentIndex(index);
-    setIsPlaying(false);
-  };
-
-  const getVisibleItems = () => {
-    const visible = [];
-    for (let i = 0; i < itemsToShow; i++) {
-      const itemIndex = (currentIndex + i) % stats.length;
-      visible.push(stats[itemIndex]);
-    }
-    return visible;
-  };
-
-  const handleSkipToGrid = () => {
-    const region = document.querySelector('[aria-label="Issues and Statistics"]');
-    if (region) {
-      region.scrollIntoView({ behavior: "smooth" });
-      region.focus();
-    }
-  };
-
-  const handleKeyboardNavigation = (e, callback) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      callback();
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "critical": return "#d32f2f";
+      case "high": return "#f57c00";
+      case "medium": return "#1976d2";
+      default: return "#757575";
     }
   };
 
   const renderCard = (item, index) => (
+  <Grid 
+    item 
+    xs={12} 
+    sm={viewMode === "list" ? 12 : 6} 
+    lg={viewMode === "list" ? 12 : 4} 
+    key={index}
+  >
     <Card
-      key={index}
       component="a"
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${item.title}: ${item.value} - ${item.description}`}
-      tabIndex="0"
-    sx={{
-  p: { xs: 2, sm: 3 },
-  backgroundColor: item.bgColor,
-  color: "#fff",
-  borderRadius: "12px",
-  boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-  textDecoration: "none", // disable default underline
-  height: "100%",
-  display: "flex",
-  flexDirection: "column",
-  transition: "transform 0.3s ease",
-  "&:hover": {
-    transform: "translateY(-5px)",
-    boxShadow: "0 8px 20px rgba(0,0,0,0.15)",
-    color: "#fff", // force white text on hover
-    textDecoration: "underline" // enforce no underline on hover
-  },
-  "&:visited": {
-    color: "#fff" // ensure visited links stay white
-  },
-  "&:focus": {
-    outline: `3px solid ${theme.palette.primary.main}`,
-    outlineOffset: "2px"
-  }
-}}
-
+      aria-label={`${item.title}: ${item.value}. ${item.description}. Priority: ${item.priority}. Source: ${item.org}. Click to learn more.`}
+      sx={{
+        p: { xs: 1.5, sm: 2 }, // Reduced from { xs: 2, sm: 3 }
+        backgroundColor: item.bgColor,
+        color: "#fff",
+        borderRadius: { xs: "12px", sm: "16px" }, // Reduced from { xs: "16px", sm: "20px" }
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        textDecoration: "none",
+        height: "100%",
+        maxHeight: { xs: "280px", sm: "320px" }, // Add max height constraint
+        display: "flex",
+        flexDirection: viewMode === "list" && !isMobile ? "row" : "column",
+        alignItems: viewMode === "list" && !isMobile ? "center" : "stretch",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        position: "relative",
+        "&:hover": {
+          transform: isMobile ? "translateY(-2px)" : "translateY(-4px)", // Reduced hover effect
+          boxShadow: "0 6px 20px rgba(0,0,0,0.15)", // Reduced shadow
+          color: "#fff",
+          textDecoration: "none"
+        },
+        "&:visited": {
+          color: "#fff"
+        },
+        "&:focus": {
+          outline: `3px solid #EAAA00`,
+          outlineOffset: "2px",
+          transform: "translateY(-2px)" // Reduced focus effect
+        }
+      }}
     >
-      <CardContent>
-        {item.icon}
-        <Typography variant="h5" sx={{ fontWeight: "bold", mt: 2 }}>
-          {item.title}
-        </Typography>
-        <Typography variant="h3" sx={{ fontWeight: "bold", my: 1 }}>
-          {item.value}
-        </Typography>
-        <Typography variant="body2">{item.description}</Typography>
-        <Box sx={{ mt: 3, pt: 2, borderTop: "1px solid rgba(255,255,255,0.3)" }}>
-          <Typography variant="caption">
-            {item.org}
-            <LaunchIcon sx={{ fontSize: "0.8rem", ml: 0.5, verticalAlign: "middle" }} />
+      {/* Priority Badge */}
+      <Chip
+        label={item.priority.toUpperCase()}
+        size="small"
+        sx={{
+          position: "absolute",
+          top: { xs: 6, sm: 8 }, // Reduced from { xs: 8, sm: 12 }
+          right: { xs: 6, sm: 8 }, // Reduced from { xs: 8, sm: 12 }
+          backgroundColor: getPriorityColor(item.priority),
+          color: "white",
+          fontWeight: "bold",
+          fontSize: { xs: "0.6rem", sm: "0.65rem" }, // Smaller font
+          height: { xs: "20px", sm: "24px" }, // Smaller height
+          zIndex: 1
+        }}
+      />
+
+      <CardContent 
+        sx={{ 
+          p: { xs: 1.5, sm: 2 }, // Reduced padding
+          display: "flex",
+          flexDirection: viewMode === "list" && !isMobile ? "row" : "column",
+          alignItems: viewMode === "list" && !isMobile ? "center" : "flex-start",
+          gap: viewMode === "list" && !isMobile ? 2 : 0, // Reduced gap
+          width: "100%"
+        }}
+      >
+        {/* Icon and Title Section */}
+        <Box 
+          sx={{ 
+            display: "flex",
+            flexDirection: viewMode === "list" && !isMobile ? "row" : "column",
+            alignItems: viewMode === "list" && !isMobile ? "center" : "flex-start",
+            gap: viewMode === "list" && !isMobile ? 1.5 : 0.5, // Reduced gap
+            mb: viewMode === "list" && !isMobile ? 0 : 1.5, // Reduced margin
+            minWidth: viewMode === "list" && !isMobile ? "180px" : "auto" // Reduced width
+          }}
+        >
+          {/* Smaller icon */}
+          <Box sx={{ 
+            '& svg': { 
+              fontSize: { xs: 32, sm: 40 } // Reduced from { xs: 40, sm: 60 }
+            }
+          }}>
+            {item.icon}
+          </Box>
+          <Typography 
+            variant={isMobile ? "subtitle1" : "h6"} // Smaller variant
+            component="h3"
+            sx={{ 
+              fontWeight: "bold", 
+              mt: viewMode === "list" && !isMobile ? 0 : 0.5,
+              fontSize: { xs: "1rem", sm: "1.1rem" }, // Reduced font size
+              lineHeight: 1.2
+            }}
+          >
+            {item.title}
           </Typography>
+        </Box>
+
+        {/* Value */}
+        <Box 
+          sx={{ 
+            textAlign: viewMode === "list" && !isMobile ? "center" : "left",
+            minWidth: viewMode === "list" && !isMobile ? "100px" : "auto", // Reduced width
+            mb: 1 // Add margin bottom
+          }}
+        >
+          <Typography 
+            variant={isMobile ? "h5" : "h4"} // Smaller variant
+            sx={{ 
+              fontWeight: "bold", 
+              mb: 0.5, // Reduced margin
+              fontSize: { xs: "1.5rem", sm: "2rem" }, // Reduced font size
+              color: "#EAAA00"
+            }}
+          >
+            {item.value}
+          </Typography>
+        </Box>
+
+        {/* Description and Source */}
+        <Box sx={{ flexGrow: 1 }}>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              mb: 1.5, // Reduced margin
+              fontSize: { xs: "0.85rem", sm: "0.9rem" }, // Smaller font
+              lineHeight: 1.4, // Tighter line height
+              display: "-webkit-box",
+              WebkitLineClamp: 3, // Limit to 3 lines
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden"
+            }}
+          >
+            {item.description}
+          </Typography>
+          
+          <Box 
+            sx={{ 
+              pt: 1, // Reduced padding
+              borderTop: "1px solid rgba(255,255,255,0.3)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between"
+            }}
+          >
+            <Typography 
+              variant="caption"
+              sx={{ 
+                fontSize: { xs: "0.7rem", sm: "0.75rem" }, // Smaller font
+                fontWeight: "medium"
+              }}
+            >
+              {item.org}
+            </Typography>
+            <LaunchIcon sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem" }, opacity: 0.8 }} />
+          </Box>
         </Box>
       </CardContent>
     </Card>
-  );
-return (
-  <Box
-    sx={{
-      py: 6,
-      px: { xs: 2, sm: 3 },
-      background: "#f4f4f4",
-      borderRadius: "12px",
-      position: "relative"
-    }}
-    role="region"
-    aria-label="Issues and Statistics"
-  >
-    <Button
-      onClick={handleSkipToGrid}
-      onKeyDown={(e) => handleKeyboardNavigation(e, handleSkipToGrid)}
+  </Grid>
+);
+
+  return (
+    <Box
       sx={{
-        position: "absolute",
-        top: "-9999px",
-        left: "-9999px",
-        zIndex: 9999
+        py: { xs: 4, sm: 6 },
+        px: { xs: 2, sm: 3 },
+
+        borderRadius: { xs: "16px", sm: "20px" },
+        position: "relative"
       }}
-      aria-label="Skip to content"
+      role="region"
+      aria-label="West Virginia Issues and Statistics"
     >
-      Skip to Content
-    </Button>
+      
 
-    {stats.length === 0 ? (
-      <Box sx={{ textAlign: "center", p: 4 }}>
-        <CircularProgress sx={{ mb: 2 }} />
-        <Alert severity="info">Loading statistics data...</Alert>
-      </Box>
-    ) : (
-      <>
-        {/* Page Indicator */}
-        <Box sx={{ textAlign: "center", mb: 2 }}>
-          <Typography variant="body2" fontWeight="medium">
-            Item {currentIndex + 1} of {stats.length}
-          </Typography>
-        </Box>
-
-        {/* Carousel View */}
-        <Box sx={{ position: "relative" }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 2,
-              minHeight: { xs: "300px", sm: "320px", md: "340px" },
-              px: 6
+      {/* View Controls - Desktop Only */}
+      {!isMobile && (
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
+          <Box 
+            sx={{ 
+              display: "flex", 
+              backgroundColor: "white",
+              borderRadius: "12px",
+              p: 0.5,
+              boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
             }}
           >
-            {getVisibleItems().map((item, i) => (
-              <Box
-                key={`carousel-item-${i}`}
-                sx={{
-                  width: isMobile ? "85vw" : isTablet ? "40vw" : "300px",
-                  opacity: 1,
-                  transition: "opacity 0.3s ease",
-                  flexShrink: 0
-                }}
-              >
-                {renderCard(item, i)}
-              </Box>
-            ))}
+            <Button
+              variant={viewMode === "grid" ? "contained" : "text"}
+              startIcon={<ViewModuleIcon />}
+              onClick={() => setViewMode("grid")}
+              sx={{
+                textTransform: "none",
+                borderRadius: "8px",
+                px: 3,
+                backgroundColor: viewMode === "grid" ? "#002855" : "transparent",
+                color: viewMode === "grid" ? "white" : "#002855",
+                "&:hover": {
+                  backgroundColor: viewMode === "grid" ? "#1C2B39" : "rgba(0, 40, 85, 0.08)"
+                }
+              }}
+            >
+              Grid View
+            </Button>
+            <Button
+              variant={viewMode === "list" ? "contained" : "text"}
+              startIcon={<ViewListIcon />}
+              onClick={() => setViewMode("list")}
+              sx={{
+                textTransform: "none",
+                borderRadius: "8px",
+                px: 3,
+                backgroundColor: viewMode === "list" ? "#002855" : "transparent",
+                color: viewMode === "list" ? "white" : "#002855",
+                "&:hover": {
+                  backgroundColor: viewMode === "list" ? "#1C2B39" : "rgba(0, 40, 85, 0.08)"
+                }
+              }}
+            >
+              List View
+            </Button>
           </Box>
-
-          {/* Navigation Buttons */}
-          <IconButton
-            onClick={handlePrev}
-            aria-label="Previous slide"
-            sx={{
-              position: "absolute",
-              left: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              backgroundColor: theme.palette.primary.main,
-              color: "#fff",
-              "&:hover": { backgroundColor: theme.palette.primary.dark }
-            }}
-          >
-            <ArrowBackIosNewIcon />
-          </IconButton>
-
-          <IconButton
-            onClick={handleNext}
-            aria-label="Next slide"
-            sx={{
-              position: "absolute",
-              right: 0,
-              top: "50%",
-              transform: "translateY(-50%)",
-              backgroundColor: theme.palette.primary.main,
-              color: "#fff",
-              "&:hover": { backgroundColor: theme.palette.primary.dark }
-            }}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
         </Box>
-      </>
-    )}
-  </Box>
-);};
+      )}
+
+      {/* Mobile Summary */}
+      {isMobile && !showAll && (
+        <Alert 
+          severity="info" 
+          sx={{ 
+            mb: 3,
+            backgroundColor: "rgba(0, 40, 85, 0.05)",
+            border: "1px solid rgba(0, 40, 85, 0.1)",
+            borderRadius: "12px"
+          }}
+        >
+          Showing 3 most critical issues. Tap "Show All Issues" to see the complete list.
+        </Alert>
+      )}
+
+      {/* Issues Grid */}
+      <Grid container spacing={{ xs: 2, sm: 3 }}>
+        {displayedStats.map((item, index) => renderCard(item, index))}
+      </Grid>
+
+      {/* Mobile Show More/Less Button */}
+      {isMobile && (
+        <Box sx={{ textAlign: "center", mt: 3 }}>
+          <Button
+            variant="outlined"
+            size="large"
+            onClick={() => setShowAll(!showAll)}
+            startIcon={showAll ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            sx={{
+              textTransform: "none",
+              borderColor: "#002855",
+              color: "#002855",
+              borderRadius: "12px",
+              px: 4,
+              py: 1.5,
+              fontSize: "1rem",
+              fontWeight: "medium",
+              "&:hover": {
+                backgroundColor: "rgba(0, 40, 85, 0.08)",
+                borderColor: "#002855"
+              }
+            }}
+            aria-expanded={showAll}
+            aria-controls="issues-list"
+          >
+            {showAll ? "Show Fewer Issues" : "Show All Issues"} ({stats.length})
+          </Button>
+        </Box>
+      )}
 
 
+
+      {/* Call to Action */}
+      
+    </Box>
+  );
+};
 
 export default IssuesSection;
