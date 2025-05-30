@@ -65,13 +65,6 @@ const AppContent = () => {
 
   return (
     <>
-      {/* Show intro overlay only on homepage and when content shouldn't be shown */}
-      {isHomePage && !showContent && 
-        <IntroOverlay 
-          hasScrolled={hasScrolled}
-          onExploreClick={handleExploreClick}
-        />
-      }
       
       {/* Regular website content */}
       <Box
