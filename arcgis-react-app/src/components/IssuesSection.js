@@ -267,7 +267,7 @@ const IssuesSection = () => {
               fontWeight: "bold", 
               mb: 0.5, // Reduced margin
               fontSize: { xs: "1.5rem", sm: "2rem" }, // Reduced font size
-              color: "#EAAA00"
+              color: "#fff"
             }}
           >
             {item.value}
