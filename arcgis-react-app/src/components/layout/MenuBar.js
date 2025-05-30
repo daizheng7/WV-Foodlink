@@ -1,34 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
-  Box,
-  Button,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  useTheme,
-  useMediaQuery,
-  Collapse,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import {
-  Menu as MenuIcon,
-  ZoomIn,
-  RestaurantMenu,
+  Home,
+  Map,
+  Info,
+  Search,
+  Restaurant,
   HelpCenter,
   FoodBank,
-  Home,
-  Info,
   Group,
+  Gavel,
   Book,
-  Map,
-  GavelOutlined,
   CreditCard,
   School,
-  Restaurant,
-  LocalMall,
+  ShoppingBag,
   Storefront,
   Agriculture,
   NaturePeople,
@@ -36,6 +20,7 @@ import {
   Public,
   ExpandMore,
   ExpandLess,
+  Menu as MenuIcon,
 } from "@mui/icons-material";
 
 const WVUHeader = () => (
@@ -83,49 +68,47 @@ const WVUHeader = () => (
 );
 
 const WVUMenuBar = () => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [openIndex, setOpenIndex] = useState(null);
-  const [anchorEls, setAnchorEls] = useState({});
-
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-  const handleItemToggle = (index) => setOpenIndex(openIndex === index ? null : index);
-
-  const handleDesktopMenuOpen = (event, index) => {
-    setAnchorEls(prev => ({ ...prev, [index]: event.currentTarget }));
-  };
-
-  const handleDesktopMenuClose = (index) => {
-    setAnchorEls(prev => ({ ...prev, [index]: null }));
-  };
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [openSubMenus, setOpenSubMenus] = useState(new Set());
+  const [focusedIndex, setFocusedIndex] = useState(-1);
+  const menuRef = useRef(null);
+  const itemRefs = useRef([]);
 
   const menuItems = [
-    { label: "Home", icon: <Home />, href: "/" },
+    { 
+      label: "Home", 
+      href: "/",
+      icon: <Home />
+    },
     {
       label: "Food Atlas",
-      icon: <Map />,
       href: "https://experience.arcgis.com/experience/61e914cf99364188a23f20b46721f2a3",
+      icon: <Map />
     },
-    { label: "About Us", icon: <Info />, href: "/about" },
+    { 
+      label: "About Us", 
+      href: "/about",
+      icon: <Info />
+    },
     {
       label: "Find",
-      icon: <ZoomIn />,
+      icon: <Search />,
       children: [
-        { label: "Food", href: "/food", icon: <RestaurantMenu /> },
+        { label: "Food", href: "/food", icon: <Restaurant /> },
         { label: "Assistance", href: "/assistance", icon: <HelpCenter /> },
         { label: "Charities", href: "/charities", icon: <FoodBank /> },
       ],
     },
     {
       label: "Organize",
-      icon: <Group />,
       href: "https://wvfoodlink-wvu.hub.arcgis.com/pages/organize-1",
+      icon: <Group />
     },
     {
       label: "Policies",
-      icon: <GavelOutlined />,
       href: "https://wvfoodlink-wvu.hub.arcgis.com/pages/nourishing-networks-reports",
+      icon: <Gavel />
     },
     {
       label: "Resources",
@@ -149,7 +132,7 @@ const WVUMenuBar = () => {
         {
           label: "Charitable Food",
           href: "https://wvu.maps.arcgis.com/apps/dashboards/783922e1a38646bda92e8ddfbb37961b",
-          icon: <LocalMall />,
+          icon: <ShoppingBag />,
         },
         {
           label: "Farmers Markets",
@@ -171,267 +154,391 @@ const WVUMenuBar = () => {
           href: "https://www.arcgis.com/apps/dashboards/28258179da3a4fd0b1dcd0a053d402ec",
           icon: <AccountBalance />,
         },
-        { label: "County Summary", href: "/county", icon: <Public /> },
+        { 
+          label: "County Summary", 
+          href: "/county", 
+          icon: <Public />
+        },
       ],
     },
   ];
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const toggleSearch = () => {
+    setSearchOpen(!searchOpen);
+  };
+
+  const toggleSubMenu = (index) => {
+    const newOpenSubMenus = new Set(openSubMenus);
+    if (newOpenSubMenus.has(index)) {
+      newOpenSubMenus.delete(index);
+    } else {
+      newOpenSubMenus.add(index);
+    }
+    setOpenSubMenus(newOpenSubMenus);
+  };
+
+  const handleKeyDown = (event, index, isChild = false, childIndex = null) => {
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        if (menuItems[index].children && !isChild) {
+          toggleSubMenu(index);
+        }
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        if (menuItems[index].children && !isChild && !openSubMenus.has(index)) {
+          toggleSubMenu(index);
+        }
+        // Navigate to next item
+        const nextIndex = index + 1;
+        if (nextIndex < itemRefs.current.length && itemRefs.current[nextIndex]) {
+          itemRefs.current[nextIndex].focus();
+        }
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        // Navigate to previous item
+        const prevIndex = index - 1;
+        if (prevIndex >= 0 && itemRefs.current[prevIndex]) {
+          itemRefs.current[prevIndex].focus();
+        }
+        break;
+      case 'Escape':
+        if (openSubMenus.has(index)) {
+          toggleSubMenu(index);
+        } else {
+          setMobileMenuOpen(false);
+        }
+        break;
+    }
+  };
+
+  // Close mobile menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMobileMenuOpen(false);
+        setOpenSubMenus(new Set());
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
+
   return (
-    <nav
-      aria-label="Main navigation"
-      className="wvu-site-nav bg-wvu-accent--blue-dark navbar navbar-expand-lg p-0 navbar-dark w-100"
-    >
-      <div className="container d-flex align-items-center">
-        {/* Mobile hamburger */}
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { lg: "none" }, color: '#fff' }}
-          >
-            <MenuIcon />
-          </IconButton>
-        )}
-
-        {/* Desktop menu */}
-        <Box sx={{ display: { xs: 'none', lg: 'flex' }, alignItems: 'center', flexGrow: 1 }}>
-          {menuItems.map((item, index) => (
-            <Box key={index} sx={{ position: 'relative' }}>
-              {item.children ? (
-                <>
-                  <Button
-                    onClick={(e) => handleDesktopMenuOpen(e, index)}
-                    onMouseEnter={(e) => handleDesktopMenuOpen(e, index)}
-                    sx={{
-                      color: 'white',
-                      textTransform: 'none',
-                      px: 2,
-                      py: 1,
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 1,
-                      '&:hover': {
-                        backgroundColor: 'rgba(255,255,255,0.08)'
-                      },
-                      '&:focus': {
-                        outline: '2px solid #fff',
-                        outlineOffset: '2px'
-                      }
-                    }}
-                    endIcon={<ExpandMore />}
-                    aria-haspopup="true"
-                    aria-expanded={Boolean(anchorEls[index])}
-                    aria-controls={`menu-${index}`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </Button>
-                  <Menu
-                    id={`menu-${index}`}
-                    anchorEl={anchorEls[index]}
-                    open={Boolean(anchorEls[index])}
-                    onClose={() => handleDesktopMenuClose(index)}
-                    MenuListProps={{
-                      onMouseLeave: () => handleDesktopMenuClose(index),
-                    }}
-                    sx={{
-                      '& .MuiPaper-root': {
-                        backgroundColor: theme.palette.primary.dark,
-                        color: 'white',
-                        minWidth: 200
-                      }
-                    }}
-                  >
-                    {item.children.map((child, childIndex) => (
-                      <MenuItem
-                        key={childIndex}
-                        onClick={() => handleDesktopMenuClose(index)}
-                        component="a"
-                        href={child.href}
-                        target={child.href?.startsWith("http") ? "_blank" : "_self"}
-                        rel={child.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                        sx={{
-                          color: 'white',
-                          textDecoration: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 1,
-                          '&:hover': {
-                            backgroundColor: 'rgba(255,255,255,0.08)'
-                          },
-                          '&:focus': {
-                            outline: '2px solid #fff',
-                            outlineOffset: '2px'
-                          }
-                        }}
-                      >
-                        {child.icon}
-                        {child.label}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </>
-              ) : (
-                <Button
-                  component="a"
-                  href={item.href}
-                  target={item.href?.startsWith("http") ? "_blank" : "_self"}
-                  rel={item.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                  sx={{
-                    color: 'white',
-                    textTransform: 'none',
-                    px: 2,
-                    py: 1,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    textDecoration: 'none',
-                    '&:hover': {
-                      backgroundColor: 'rgba(255,255,255,0.08)'
-                    },
-                    '&:focus': {
-                      outline: '2px solid #fff',
-                      outlineOffset: '2px'
-                    }
-                  }}
-                >
-                  {item.icon}
-                  {item.label}
-                </Button>
-              )}
-            </Box>
-          ))}
-        </Box>
-
-        {/* Search toggle */}
-        <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-          <IconButton
-            sx={{ 
-              color: 'white',
-              '&:focus': {
-                outline: '2px solid #fff',
-                outlineOffset: '2px'
+    <>
+      <nav 
+        ref={menuRef}
+        aria-label="Main navigation" 
+        className="wvu-site-nav bg-wvu-accent--blue-dark navbar navbar-expand-lg p-0 navbar-dark w-100"
+      >
+        <div className="container">
+          {/* Mobile hamburger button */}
+          <button 
+            aria-controls="wvu-site-nav__items" 
+            aria-expanded={mobileMenuOpen}
+            type="button" 
+            className="wvu-site-nav__toggle border-0 bg-wvu-accent--blue-dark text-white position-relative ps-0 pe-2 d-flex d-lg-none align-items-center"
+            onClick={toggleMobileMenu}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggleMobileMenu();
               }
             }}
-            data-bs-toggle="collapse"
-            data-bs-target="#wvuNavSearchCollapse2"
-            aria-controls="wvuNavSearchCollapse2"
-            aria-expanded="false"
-            aria-label="Toggle Search"
           >
-            <span className="fa-solid fa-magnifying-glass" />
-          </IconButton>
-        </Box>
-      </div>
+            <span aria-hidden="true" className={`wvu-hamburger ${mobileMenuOpen ? 'active' : ''}`}>
+              <MenuIcon style={{ fontSize: '1.5rem' }} />
+            </span>
+            <span className="ms-2">{mobileMenuOpen ? 'Close Menu' : 'Open Menu'}</span>
+          </button>
 
-      {/* Mobile drawer */}
-      <Drawer
-        anchor="left"
-        open={mobileOpen}
-        onClose={handleDrawerToggle}
-        sx={{
-          "& .MuiDrawer-paper": {
-            backgroundColor: theme.palette.primary.dark,
-            color: "#fff",
-            width: 280,
-          },
-        }}
-      >
-        <Box role="presentation" sx={{ p: 2 }}>
-          <List>
+          {/* Desktop and Mobile Menu Items */}
+          <ul 
+            id="wvu-site-nav__items"
+            className={`wvu-site-nav__items position-static list-unstyled d-lg-flex align-items-lg-center flex-lg-wrap mb-0 ${
+              mobileMenuOpen ? 'd-block' : 'd-none d-lg-flex'
+            }`}
+            role="menubar"
+          >
             {menuItems.map((item, index) => (
-              <React.Fragment key={index}>
+              <li 
+                key={index}
+                className={`${item.children ? 'wvu-site-nav__menu-item-has-children position-relative d-lg-flex' : ''}`}
+                role="none"
+              >
                 {item.children ? (
                   <>
-                    <ListItem
-                      button
-                      onClick={() => handleItemToggle(index)}
-                      sx={{
-                        color: 'white',
-                        '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
-                        '&:focus': {
-                          outline: '2px solid #fff',
-                          outlineOffset: '2px'
-                        }
-                      }}
+                    <button
+                      ref={el => itemRefs.current[index] = el}
+                      className="nav-link px-1 py-2 fw-normal flex-grow-1 border-0 bg-transparent text-white d-flex align-items-center justify-content-between w-100"
+                      onClick={() => toggleSubMenu(index)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      aria-expanded={openSubMenus.has(index)}
+                      aria-haspopup="true"
+                      role="menuitem"
+                      tabIndex="0"
                     >
-                      <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
-                        {item.icon}
-                      </Box>
-                      <ListItemText primary={item.label} sx={{ color: 'white' }} />
-                      {openIndex === index ? <ExpandLess /> : <ExpandMore />}
-                    </ListItem>
-                    <Collapse in={openIndex === index} timeout="auto" unmountOnExit>
-                      <List component="div" disablePadding>
-                        {item.children.map((child, childIndex) => (
-                          <ListItem
-                            key={childIndex}
-                            button
-                            component="a"
+                      <span className="d-flex align-items-center">
+                        <span className="me-2" style={{ display: 'flex', alignItems: 'center', fontSize: '1.2rem' }}>
+                          {item.icon}
+                        </span>
+                        {item.label}
+                      </span>
+                      <span className="dropdown-indicator" style={{ display: 'flex', alignItems: 'center', fontSize: '1rem' }}>
+                        {openSubMenus.has(index) ? <ExpandLess /> : <ExpandMore />}
+                      </span>
+                    </button>
+                    <ul 
+                      className={`wvu-site-nav__sub-menu small bg-wvu-accent--blue-dark list-unstyled ms-2 ms-lg-0 ${
+                        openSubMenus.has(index) ? 'd-block' : 'd-none'
+                      } d-lg-block`}
+                      role="menu"
+                      aria-labelledby={`menu-${index}`}
+                    >
+                      {item.children.map((child, childIndex) => (
+                        <li key={childIndex} role="none">
+                          <a 
+                            ref={el => itemRefs.current[`${index}-${childIndex}`] = el}
+                            className="nav-link px-1 py-2 fw-normal flex-grow-1 d-flex align-items-center text-decoration-none text-white"
                             href={child.href}
                             target={child.href?.startsWith("http") ? "_blank" : "_self"}
                             rel={child.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                            onClick={() => setMobileOpen(false)}
-                            sx={{
-                              pl: 6,
-                              color: 'white',
-                              textDecoration: 'none',
-                              '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
-                              '&:focus': {
-                                outline: '2px solid #fff',
-                                outlineOffset: '2px'
-                              }
-                            }}
+                            role="menuitem"
+                            tabIndex="0"
+                            onKeyDown={(e) => handleKeyDown(e, index, true, childIndex)}
                           >
-                            <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
+                            <span className="me-2" style={{ display: 'flex', alignItems: 'center', fontSize: '1.1rem' }}>
                               {child.icon}
-                            </Box>
-                            <ListItemText primary={child.label} sx={{ color: 'white' }} />
-                          </ListItem>
-                        ))}
-                      </List>
-                    </Collapse>
+                            </span>
+                            {child.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </>
                 ) : (
-                  <ListItem
-                    button
-                    component="a"
+                  <a 
+                    ref={el => itemRefs.current[index] = el}
+                    className="nav-link px-1 py-2 fw-normal flex-grow-1 d-flex align-items-center text-decoration-none text-white"
                     href={item.href}
                     target={item.href?.startsWith("http") ? "_blank" : "_self"}
                     rel={item.href?.startsWith("http") ? "noopener noreferrer" : undefined}
-                    onClick={() => setMobileOpen(false)}
-                    sx={{
-                      color: 'white',
-                      textDecoration: 'none',
-                      '&:hover': { backgroundColor: 'rgba(255,255,255,0.08)' },
-                      '&:focus': {
-                        outline: '2px solid #fff',
-                        outlineOffset: '2px'
-                      }
-                    }}
+                    role="menuitem"
+                    tabIndex="0"
+                    onKeyDown={(e) => handleKeyDown(e, index)}
                   >
-                    <Box sx={{ mr: 2, display: 'flex', alignItems: 'center', color: 'white' }}>
+                    <span className="me-2" style={{ display: 'flex', alignItems: 'center', fontSize: '1.2rem' }}>
                       {item.icon}
-                    </Box>
-                    <ListItemText primary={item.label} sx={{ color: 'white' }} />
-                  </ListItem>
+                    </span>
+                    {item.label}
+                  </a>
                 )}
-              </React.Fragment>
+              </li>
             ))}
-          </List>
-        </Box>
-      </Drawer>
-    </nav>
+          </ul>
+
+          {/* Search toggle */}
+          <div className="d-flex align-items-center">
+            <button 
+              className="bg-transparent border-0 text-white py-2 px-2 py-lg-0 px-lg-0" 
+              type="button" 
+              onClick={toggleSearch}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  toggleSearch();
+                }
+              }}
+              aria-expanded={searchOpen}
+              aria-controls="wvuNavSearchCollapse"
+              tabIndex="0"
+            >
+              <Search style={{ fontSize: '1.5rem' }} />
+              <span className="visually-hidden">Toggle Search</span>
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Search Section */}
+      <section 
+        aria-label="nav-quicklinks" 
+        className={`collapse multi-collapse ${searchOpen ? 'show' : ''}`} 
+        id="wvuNavSearchCollapse"
+      >
+        <div className="bg-light py-4 w-100 text-white bg-wvu-accent--blue-dark wvu-bg-vignetting--20">
+          <div className="container wvu-z-index-content">
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-6">
+                <div className="row">
+                  <div className="col-md-12">
+                    <form className="form-inline w-100" role="search" aria-label="Site Search">
+                      <label id="search-label" htmlFor="q">
+                        <span className="visually-hidden">Search</span>
+                      </label>
+                      <div className="input-group shadow-sm w-100">
+                        <input 
+                          id="q" 
+                          className="form-control p-2" 
+                          name="q" 
+                          type="search" 
+                          placeholder="Search" 
+                          aria-label="Search"
+                          tabIndex="0"
+                        />
+                        <button className="btn btn-primary px-3 px-lg-4" type="submit" tabIndex="0">
+                          <span className="h5 mb-0" style={{ display: 'flex', alignItems: 'center' }}>
+                            <Search />
+                          </span>
+                          <span className="visually-hidden">Search</span>
+                        </button>
+                      </div>
+                      <div className="row pt-1">
+                        <fieldset className="col-12">
+                          <legend className="visually-hidden">
+                            Would you like to search this site specifically, or all WVU websites?
+                          </legend>
+                          <div className="d-inline-block pe-2">
+                            <input 
+                              id="form-search__sitesearch" 
+                              type="radio" 
+                              name="as_sitesearch" 
+                              value="foodlink.wvu.edu" 
+                              defaultChecked
+                              tabIndex="0"
+                            />
+                            <label className="d-inline-block" htmlFor="form-search__sitesearch">
+                              Search this site
+                            </label>
+                          </div>
+                          <div className="d-inline-block">
+                            <input 
+                              id="form-search__wvusearch" 
+                              type="radio" 
+                              name="as_sitesearch" 
+                              value="wvu.edu"
+                              tabIndex="0"
+                            />
+                            <label className="d-inline-block" htmlFor="form-search__wvusearch">
+                              Search WVU
+                            </label>
+                          </div>
+                        </fieldset>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <style jsx>{`
+        .wvu-hamburger {
+          width: 20px;
+          height: 16px;
+          position: relative;
+          transform: rotate(0deg);
+          transition: .5s ease-in-out;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .wvu-site-nav__sub-menu {
+          position: static;
+        }
+
+        @media (min-width: 992px) {
+          .wvu-site-nav__sub-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 200px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+          }
+
+          .wvu-site-nav__menu-item-has-children:hover .wvu-site-nav__sub-menu {
+            display: block !important;
+          }
+        }
+
+        .nav-link:hover {
+          background-color: rgba(255,255,255,0.08);
+        }
+
+        .nav-link:focus {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+          background-color: rgba(255,255,255,0.15);
+        }
+
+        button:focus {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+          background-color: rgba(255,255,255,0.15) !important;
+        }
+
+        input:focus {
+          outline: 2px solid #0066cc;
+          outline-offset: 2px;
+        }
+
+        .dropdown-indicator {
+          margin-left: auto;
+        }
+
+        @media (max-width: 991px) {
+          .wvu-site-nav__items {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: inherit;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1000;
+          }
+
+          .wvu-site-nav__sub-menu {
+            padding-left: 1rem;
+          }
+
+          .dropdown-indicator {
+            display: block !important;
+          }
+        }
+
+        @media (min-width: 992px) {
+          .dropdown-indicator {
+            display: none;
+          }
+        }
+      `}</style>
+    </>
   );
 };
 
 const MenuBar = () => (
-  <Box>
+  <>
     <WVUHeader />
     <WVUMenuBar />
-  </Box>
+  </>
 );
 
 export default MenuBar;
