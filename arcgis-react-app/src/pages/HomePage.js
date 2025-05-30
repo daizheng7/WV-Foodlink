@@ -36,7 +36,7 @@ const QuickAccessSection = () => {
     {
       title: "Find Food Assistance",
       description: "Locate food assistance programs, pantries, and SNAP retailers near you in West Virginia.",
-      link: "/food",
+      link: "https://foodlink.wvu.edu/",
       bgColor: "bg-wvu-accent--blue"
     },
     {

@@ -765,18 +765,10 @@ const FoodRetailer = () => {
           backgroundColor: "rgba(255, 255, 255, 0.97)"
         }}
       >
-        <Box sx={{ p: 2, pb: 1 }}>
-          <Typography variant="h5" component="h1" fontWeight="bold" gutterBottom>
-            Food Retailers
-          </Typography>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            Explore food access options in your area
-          </Typography>
-          <Divider sx={{ my: 1 }} />
-        </Box>
+        
 
         <Box sx={{ p: 2 }}>
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          <Typography variant="h5" component="h1" fontWeight="bold" gutterBottom>
             Retailer Type
           </Typography>
 
@@ -829,7 +821,7 @@ const FoodRetailer = () => {
 
           <Divider sx={{ my: 2 }} />
           
-          <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
+          <Typography variant="h5" component="h1" fontWeight="bold"  gutterBottom>
             Food Access Options
           </Typography>
           
