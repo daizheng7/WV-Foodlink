@@ -23,6 +23,21 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 
+// Skip to Main Content component
+const SkipToMain = () => (
+  <a 
+    href="#main-content" 
+    className="skip-to-main visually-hidden-focusable position-absolute"
+    style={{
+      zIndex: 9999,
+      top: '10px',
+      left: '10px'
+    }}
+  >
+    Skip to main content
+  </a>
+);
+
 const WVUHeader = () => (
   <header className="wvu-masthead bg-wvu-blue py-3">
     <div className="container">
@@ -448,6 +463,36 @@ const WVUMenuBar = () => {
       </section>
 
       <style jsx>{`
+        /* Skip to main content styles */
+        .skip-to-main {
+          background: #000;
+          color: #fff;
+          padding: 8px 16px;
+          text-decoration: none;
+          border-radius: 4px;
+          font-weight: bold;
+          z-index: 9999;
+        }
+
+        .skip-to-main:focus {
+          outline: 2px solid #fff;
+          outline-offset: 2px;
+          color: #fff;
+          text-decoration: none;
+        }
+
+        .visually-hidden-focusable:not(:focus):not(:focus-within) {
+          position: absolute !important;
+          width: 1px !important;
+          height: 1px !important;
+          padding: 0 !important;
+          margin: -1px !important;
+          overflow: hidden !important;
+          clip: rect(0, 0, 0, 0) !important;
+          white-space: nowrap !important;
+          border: 0 !important;
+        }
+
         .wvu-hamburger {
           width: 20px;
           height: 16px;
@@ -536,6 +581,8 @@ const WVUMenuBar = () => {
 
 const MenuBar = () => (
   <>
+    {/* Skip to Main Content - MUST be first focusable element */}
+    <SkipToMain />
     <WVUHeader />
     <WVUMenuBar />
   </>
