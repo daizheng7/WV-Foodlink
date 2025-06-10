@@ -343,40 +343,74 @@ const IssuesSection = () => {
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)"
             }}
           >
-            <Button
-              variant={viewMode === "grid" ? "contained" : "text"}
-              startIcon={<ViewModuleIcon />}
-              onClick={() => setViewMode("grid")}
-              sx={{
-                textTransform: "none",
-                borderRadius: "8px",
-                px: 3,
-                backgroundColor: viewMode === "grid" ? "#002855" : "transparent",
-                color: viewMode === "grid" ? "white" : "#002855",
-                "&:hover": {
-                  backgroundColor: viewMode === "grid" ? "#1C2B39" : "rgba(0, 40, 85, 0.08)"
-                }
-              }}
-            >
-              Grid View
-            </Button>
-            <Button
-              variant={viewMode === "list" ? "contained" : "text"}
-              startIcon={<ViewListIcon />}
-              onClick={() => setViewMode("list")}
-              sx={{
-                textTransform: "none",
-                borderRadius: "8px",
-                px: 3,
-                backgroundColor: viewMode === "list" ? "#002855" : "transparent",
-                color: viewMode === "list" ? "white" : "#002855",
-                "&:hover": {
-                  backgroundColor: viewMode === "list" ? "#1C2B39" : "rgba(0, 40, 85, 0.08)"
-                }
-              }}
-            >
-              List View
-            </Button>
+        
+
+<Button
+  variant={viewMode === "grid" ? "contained" : "text"}
+  startIcon={<ViewModuleIcon />}
+  onClick={() => setViewMode("grid")}
+  sx={{
+    textTransform: "none",
+    borderRadius: "8px",
+    px: 3,
+    backgroundColor: viewMode === "grid" ? "#002855 !important" : "white !important", 
+    color: viewMode === "grid" ? "white !important" : "#002855 !important", 
+    "&:hover": {
+      backgroundColor: viewMode === "grid" ? "#1C2B39 !important" : "rgba(0, 40, 85, 0.08) !important",
+      color: viewMode === "grid" ? "white !important" : "#002855 !important"
+    },
+    "&:focus": {
+      outline: "2px solid #EAAA00",
+      outlineOffset: "2px",
+      backgroundColor: viewMode === "grid" ? "#002855 !important" : "white !important",
+      color: viewMode === "grid" ? "white !important" : "#002855 !important"
+    },
+    "&.Mui-focusVisible": {
+      backgroundColor: viewMode === "grid" ? "#002855 !important" : "white !important",
+      color: viewMode === "grid" ? "white !important" : "#002855 !important"
+    },
+    "&:active": {
+      backgroundColor: viewMode === "grid" ? "#002855 !important" : "white !important",
+      color: viewMode === "grid" ? "white !important" : "#002855 !important"
+    }
+  }}
+>
+  Grid View
+</Button>
+
+<Button
+  variant={viewMode === "list" ? "contained" : "text"}
+  startIcon={<ViewListIcon />}
+  onClick={() => setViewMode("list")}
+  sx={{
+    textTransform: "none",
+    borderRadius: "8px",
+    px: 3,
+    backgroundColor: viewMode === "list" ? "#002855 !important" : "white !important", // Force white background when not active
+    color: viewMode === "list" ? "white !important" : "#002855 !important", // Force blue text when not active
+    "&:hover": {
+      backgroundColor: viewMode === "list" ? "#1C2B39 !important" : "rgba(0, 40, 85, 0.08) !important",
+      color: viewMode === "list" ? "white !important" : "#002855 !important"
+    },
+    "&:focus": {
+      outline: "2px solid #EAAA00",
+      outlineOffset: "2px",
+      backgroundColor: viewMode === "list" ? "#002855 !important" : "white !important",
+      color: viewMode === "list" ? "white !important" : "#002855 !important"
+    },
+    "&.Mui-focusVisible": {
+      backgroundColor: viewMode === "list" ? "#002855 !important" : "white !important",
+      color: viewMode === "list" ? "white !important" : "#002855 !important"
+    },
+    "&:active": {
+      backgroundColor: viewMode === "list" ? "#002855 !important" : "white !important",
+      color: viewMode === "list" ? "white !important" : "#002855 !important"
+    }
+  }}
+>
+  List View
+</Button>
+
           </Box>
         </Box>
       )}
