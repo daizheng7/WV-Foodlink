@@ -39,12 +39,12 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 const categoryStyles = {
-  Grocery: { color: "#002855", textColor: "#ffffff", icon: <LocalGroceryStoreIcon /> }, // wvu-blue
-  "Farmers Market": { color: "#9DDAE6", textColor: "#1C2B39", icon: <ShoppingBasketIcon /> }, // wvu-accent--blue-light
+  Grocery: { color: "#9DDAE6", textColor: "#1C2B39", icon: <LocalGroceryStoreIcon /> }, // wvu-blue
+  "Farmers Market": { color: "#B3A169", textColor: "#1C2B39", icon: <ShoppingBasketIcon /> }, // wvu-accent--blue-light
   Convenience: { color: "#EAAA00", textColor: "#1C2B39", icon: <LocalConvenienceStoreIcon /> }, // wvu-accent--blue
-  "Small Box": { color: "#554741", textColor: "#ffffff", icon: <StorefrontIcon /> }, // warm-gray-dark
+  "Small Box": { color: "#988E8B", textColor: "#1C2B39", icon: <StorefrontIcon /> }, // warm-gray-dark
   Specialty: { color: "#F58672", textColor: "#1C2B39", icon: <BusinessIcon /> }, // sunset
-  "Big Box": { color: "#7F6310", textColor: "#ffffff", icon: <BusinessIcon /> }, // old-gold
+  "Big Box": { color: "#FFE539", textColor: "#1C2B39", icon: <BusinessIcon /> }, // old-gold
 };
 
 const FoodRetailer = () => {
@@ -76,12 +76,15 @@ const FoodRetailer = () => {
 
   // Memoize handler functions to prevent unnecessary rerenders
   const toggleCategory = useCallback((category) => {
-    setActiveCategories((prev) => 
-      prev.includes(category) ? 
-        prev.filter(cat => cat !== category) : 
-        [...prev, category]
-    );
-  }, []);
+  setActiveCategories((prev) => {
+    const newCategories = prev.includes(category) ? 
+      prev.filter(cat => cat !== category) : 
+      [...prev, category];
+    return newCategories;
+  });
+}, []);
+
+
 
   const getUserLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
@@ -789,28 +792,28 @@ const FoodRetailer = () => {
                   size="small"
                   sx={{
                     display: "flex",
-                    alignItems: "center",
-                    px: 1.5,
-                    py: 0.5,
-                    fontSize: {
-                      xs: "0.72rem",
-                      sm: "0.8rem",
-                    },
-                    minWidth: 0,
-                    maxWidth: "100%",
-                    flex: "1 1 130px",
-                    textTransform: "none",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                    backgroundColor: activeCategories.includes(category) ? style.color : "transparent",
-                    borderColor: style.color,
-                    color: activeCategories.includes(category) ? style.textColor : style.color,
-                    
-                    '&:focus': {
-                      outline: '2px solid #005fcc',
-                      outlineOffset: '2px'
-                    }
+                      alignItems: "center",
+                      px: 1.5,
+                      py: 0.5,
+                      fontSize: {
+                        xs: "0.72rem",
+                        sm: "0.8rem",
+                      },
+                      minWidth: 0,
+                      maxWidth: "100%",
+                      flex: "1 1 130px",
+                      textTransform: "none",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      backgroundColor: activeCategories.includes(category) ? style.color : "white",
+                      borderColor: activeCategories.includes(category) ? style.color : "primary.main",
+                      color: activeCategories.includes(category) ? style.textColor : "primary.main",
+                      
+                      '&:focus': {
+                        outline: '2px solid #005fcc',
+                        outlineOffset: '2px'
+                      }
                   }}
                 >
                   {category}
