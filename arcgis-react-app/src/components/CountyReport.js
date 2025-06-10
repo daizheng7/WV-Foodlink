@@ -1340,8 +1340,7 @@ const exportToExcel = () => {
               )}
             />
           </FormControl>
-
-         <Button
+<Button
   onClick={exportToExcel}
   startIcon={<DownloadIcon />}
   variant="contained"
@@ -1353,23 +1352,41 @@ const exportToExcel = () => {
     px: 3,
     fontWeight: 600,
     mt: { xs: 1, sm: 0 },
-    color: '#fff', // Initial text color
-    backgroundColor: theme.palette.primary.main,
-    border: `2px solid ${theme.palette.primary.main}`,
+    color: '#fff !important', // Force white text
+    backgroundColor: '#002855 !important', // Force blue background
+    border: `2px solid #002855 !important`, // Force blue border
     '&:hover': {
-      backgroundColor: theme.palette.primary.dark,
-      borderColor: theme.palette.primary.dark,
-      color: '#fff', // <- ensure this stays white
+      backgroundColor: '#1C2B39 !important', // Force darker blue on hover
+      borderColor: '#1C2B39 !important', // Force darker blue border on hover
+      color: '#fff !important', // Force white text on hover
+    },
+    '&:focus': {
+      outline: '2px solid #EAAA00',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important', // Force blue background on focus
+      borderColor: '#002855 !important', // Force blue border on focus
+      color: '#fff !important', // Force white text on focus
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important', // Force blue background when focused
+      borderColor: '#002855 !important', // Force blue border when focused
+      color: '#fff !important', // Force white text when focused
+    },
+    '&:active': {
+      backgroundColor: '#002855 !important', // Force blue background when clicked
+      borderColor: '#002855 !important', // Force blue border when clicked
+      color: '#fff !important', // Force white text when clicked
     },
     '&.Mui-disabled': {
-      backgroundColor: theme.palette.grey[300],
-      borderColor: theme.palette.grey[300],
-      color: theme.palette.grey[500],
+      backgroundColor: '#e0e0e0 !important', // Force gray background when disabled
+      borderColor: '#e0e0e0 !important', // Force gray border when disabled
+      color: '#9e9e9e !important', // Force gray text when disabled
     }
   }}
 >
   Download County Data
 </Button>
+      
         </Box>
 
         {selectedCounty && (
@@ -1455,46 +1472,59 @@ const exportToExcel = () => {
           Skip Map
         </Button>
 
-        {/* Step 9: Enhanced keyboard navigation button */}
-        <Button
-          id="keyboard-nav-button"
-          variant="contained"
-          size="medium"
-          onClick={() => {
-            if (visibleFeatures.length > 0) {
-              setFocusedPoiIndex(0);
-              setIsPoiListVisible(true);
-            }
-          }}
-          disabled={visibleFeatures.length === 0}
-          startIcon={<KeyboardIcon />}
-          sx={{
-            position: 'absolute',
-            top: 16,
-            right: 16,
-            zIndex: 1001,
-            backgroundColor: theme.palette.primary.main,
-            color: '#fff',
-            px: 3,
-            py: 1.5,
-            fontWeight: 600,
-            borderRadius: 3,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-            '&:hover': {
-  backgroundColor: theme.palette.primary.dark,
-  transform: 'translateY(-2px)',
-  boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
-  color: '#fff', 
-},
-            '&.Mui-disabled': {
-              backgroundColor: alpha(theme.palette.primary.main, 0.4),
-              color: '#fff'
-            },
-            transition: 'all 0.2s ease'
-          }}
-        >
-          Navigation (K)
-        </Button>
+<Button
+  id="keyboard-nav-button"
+  variant="contained"
+  size="medium"
+  onClick={() => {
+    if (visibleFeatures.length > 0) {
+      setFocusedPoiIndex(0);
+      setIsPoiListVisible(true);
+    }
+  }}
+  disabled={visibleFeatures.length === 0}
+  startIcon={<KeyboardIcon />}
+  sx={{
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    zIndex: 1001,
+    backgroundColor: '#002855 !important', // Force blue background
+    color: '#fff !important', // Force white text
+    px: 3,
+    py: 1.5,
+    fontWeight: 600,
+    borderRadius: 3,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    '&:hover': {
+      backgroundColor: '#1C2B39 !important', // Force darker blue on hover
+      transform: 'translateY(-2px)',
+      boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
+      color: '#fff !important', // Force white text on hover
+    },
+    '&:focus': {
+      outline: '2px solid #EAAA00',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important', // Force blue background on focus
+      color: '#fff !important', // Force white text on focus
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important', // Force blue background when focused
+      color: '#fff !important', // Force white text when focused
+    },
+    '&:active': {
+      backgroundColor: '#002855 !important', // Force blue background when clicked
+      color: '#fff !important', // Force white text when clicked
+    },
+    '&.Mui-disabled': {
+      backgroundColor: 'rgba(0, 40, 85, 0.4) !important', // Force semi-transparent blue when disabled
+      color: '#fff !important', // Force white text when disabled
+    },
+    transition: 'all 0.2s ease'
+  }}
+>
+  Navigation (K)
+</Button>
 
         {/* ARIA live region for screen reader announcements */}
         <div
