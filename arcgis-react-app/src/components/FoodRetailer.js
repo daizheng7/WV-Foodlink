@@ -585,7 +585,7 @@ const FoodRetailer = () => {
                   size="small"
                   sx={{ 
                     backgroundColor: categoryStyles[popupContent.category]?.color || "#757575",
-                    color: "white",
+                    color: "#002855",
                     mt: 0.5
                   }}
                 />
@@ -637,17 +637,28 @@ const FoodRetailer = () => {
                 </Grid>
               </Grid>
               
-              <Button 
+             <Button 
   variant="contained"
   color="primary"
   fullWidth
   startIcon={<NearMeIcon />}
   sx={{ 
     mt: 1,
-    color: 'white',
-    backgroundColor: 'primary.main',
+    backgroundColor: '#002855 !important',
+    color: 'white !important',
     '&:hover': {
-      backgroundColor: 'white'
+      backgroundColor: '#001a3d !important',
+      color: 'white !important'
+    },
+    '&:focus': {
+      outline: '2px solid #005fcc',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
     }
   }}
   onClick={() => {
@@ -861,43 +872,68 @@ const FoodRetailer = () => {
         
         <Box sx={{ p: 2, pt: 0 }}>
           <Divider sx={{ my: 2 }} />
+        <Button
+  variant="contained"
+  startIcon={<MyLocationIcon />}
+  onClick={getUserLocation}
+  fullWidth
+  color="primary"
+  sx={{
+    mb: 1,
+    backgroundColor: '#002855 !important', // Specific blue color
+    color: 'white !important',
+    '&:hover': {
+      backgroundColor: '#1565c0 !important', // Darker blue for hover
+      color: 'white !important'
+    },
+    '&:focus': {
+      outline: '2px solid #002855',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    }
+  }}
+>
+  Find My Location
+</Button>
           <Button
-            variant="contained"
-            startIcon={<MyLocationIcon />}
-            onClick={getUserLocation}
-            fullWidth
-            color="primary"
-            sx={{ 
-              mb: 1,
-              '&:focus': {
-                outline: '2px solid #005fcc',
-                outlineOffset: '2px'
-              }
-            }}
-          >
-            Find My Location
-          </Button>
-          
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={() => {
-              setIsPoiListVisible(true);
-              if (visibleFeatures.length > 0) {
-                setFocusedPoiIndex(0);
-              }
-            }}
-            sx={{ 
-              mt: 1,
-              '&:focus': {
-                outline: '2px solid #005fcc',
-                outlineOffset: '2px'
-              }
-            }}
-          >
-            Enter Keyboard Navigation Mode
-          </Button>
+  variant="contained"
+  color="primary"
+  fullWidth
+  onClick={() => {
+    setIsPoiListVisible(true);
+    if (visibleFeatures.length > 0) {
+      setFocusedPoiIndex(0);
+    }
+  }}
+  sx={{ 
+    mt: 1,
+    backgroundColor: '#002855 !important',
+    color: 'white !important',
+    '&:hover': {
+      backgroundColor: '#001a3d !important',
+      color: 'white !important'
+    },
+    '&:focus': {
+      outline: '2px solid #005fcc',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    }
+  }}
+>
+  Enter Keyboard Navigation Mode
+</Button>
+
+
         </Box>
       </Paper>
 

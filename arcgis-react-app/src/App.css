@@ -1,38 +1,39 @@
 .skip-link {
-    position: absolute;
-    left: -999px;
-    top: auto;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    z-index: 10000;
-  }
-  .skip-link:focus {
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    background: white;
-    color: black;
-    padding: 8px 12px;
-    border: 2px solid black;
-  }
+  position: absolute;
+  left: -999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 10000;
+}
 
-  .dark-background a {
-    color: white !important;
-  }
-  
-  .dark-background a:hover {
-    color: #f0f0f0 !important;
-  }
-  
-  html, body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow-x: hidden;
-  }
-  
+.skip-link:focus {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  background: white;
+  color: black;
+  padding: 8px 12px;
+  border: 2px solid black;
+}
+
+.dark-background a {
+  color: white !important;
+}
+
+.dark-background a:hover {
+  color: #f0f0f0 !important;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 /* Disable all focus in the map */
 .esri-view * {
   pointer-events: none !important;
@@ -53,4 +54,29 @@
 .esri-ui-corner,
 .esri-ui-inner-container {
   display: none !important;
+}
+
+/* Fix for MUI Button focus states - use actual color values instead of CSS variables */
+.esri-view .MuiButton-root:focus,
+.esri-view .MuiButton-root.Mui-focusVisible {
+  background-color: #1976d2 !important; /* Default MUI primary color */
+  color: white !important;
+  outline: 2px solid #005fcc !important;
+  outline-offset: 2px !important;
+}
+
+.esri-view .MuiButton-contained:focus,
+.esri-view .MuiButton-contained.Mui-focusVisible {
+  background-color: #002855 !important; /* Default MUI primary color */
+  color: white !important;
+}
+
+/* Add this to your app.css */
+.MuiButton-root:focus {
+  outline: none !important;
+}
+
+.MuiButton-root:focus-visible {
+  outline: 2px solid #005fcc !important;
+  outline-offset: 2px !important;
 }
