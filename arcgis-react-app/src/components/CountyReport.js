@@ -485,7 +485,7 @@ const CountyReport = () => {
         borderRadius: 3,
         boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
         border: '2px solid',
-        borderColor: categoryColor,
+        borderColor: '#002855',
         minWidth: 350,
         maxWidth: '90vw'
       }}
@@ -501,8 +501,8 @@ const CountyReport = () => {
         backgroundColor: alpha(categoryColor, 0.05)
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <KeyboardIcon sx={{ mr: 1, color: categoryColor }} />
-          <Typography variant="subtitle1" sx={{ fontWeight: 600, color: categoryColor }}>
+          <KeyboardIcon sx={{ mr: 1, color: '#002855' }} />
+          <Typography variant="subtitle1" sx={{ fontWeight: 600, color:'#002855'  }}>
             {focusedIndex + 1} of {features.length}
           </Typography>
         </Box>
@@ -513,7 +513,7 @@ const CountyReport = () => {
             onClick={() => onFocusChange((focusedIndex - 1 + features.length) % features.length)}
             startIcon={<ArrowBackIcon />}
             variant="outlined"
-            sx={{ borderColor: categoryColor, color: categoryColor }}
+            sx={{ borderColor:'#002855' , color: '#002855'  }}
           >
             Prev
           </Button>
@@ -523,7 +523,7 @@ const CountyReport = () => {
             onClick={() => onFocusChange((focusedIndex + 1) % features.length)}
             endIcon={<ArrowForwardIcon />}
             variant="outlined"
-            sx={{ borderColor: categoryColor, color: categoryColor }}
+            sx={{ borderColor: '#002855' , color: '#002855'  }}
           >
             Next
           </Button>
@@ -533,7 +533,7 @@ const CountyReport = () => {
             variant="outlined" 
             onClick={onClose}
             startIcon={<CloseIcon />}
-            sx={{ borderColor: categoryColor, color: categoryColor }}
+            sx={{ borderColor: '#002855' , color: '#002855' }}
           >
             ESC
           </Button>
@@ -548,7 +548,7 @@ const CountyReport = () => {
             label={focusedFeature.category}
             sx={{
               backgroundColor: alpha(categoryColor, 0.15),
-              color: darken(categoryColor, 0.3),
+              color:'#002855',
               fontWeight: 600,
               mb: 1
             }}
@@ -795,64 +795,68 @@ const CountyReport = () => {
   );
 
   const renderLayerSummary = () => (
-    <Grid container spacing={2}>
-      {layerCounts.map(({ title, count, icon, color }) => (
-        <Grid item xs={12} sm={6} md={4} key={title}>
-          <Paper
-            sx={{
-              padding: 2,
-              display: "flex",
-              alignItems: "center",
-              borderRadius: 2,
-              boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
-              background: `linear-gradient(135deg, ${alpha(color || theme.palette.primary.main, 0.08)} 0%, ${alpha(color || theme.palette.primary.main, 0.02)} 100%)`,
-              border: '1px solid',
-              borderColor: alpha(color || theme.palette.primary.main, 0.2),
-              transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
-              '&:hover': {
-                transform: 'translateY(-3px)',
-                boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
-              },
+  <Grid container spacing={2}>
+    {layerCounts.map(({ title, count, icon, color }) => (
+      <Grid item xs={12} sm={6} md={4} key={title}>
+        <Paper
+          sx={{
+            padding: 2,
+            display: "flex",
+            alignItems: "center",
+            borderRadius: 2,
+            boxShadow: '0 4px 14px rgba(0,0,0,0.08)',
+            background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.primary.main, 0.02)} 100%)`, // Use primary color
+            border: '1px solid',
+            borderColor: alpha(theme.palette.primary.main, 0.2), // Use primary color
+            transition: 'transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out',
+            '&:hover': {
+              transform: 'translateY(-3px)',
+              boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+            },
+          }}
+          elevation={0}
+        >
+          <Avatar 
+            sx={{ 
+              backgroundColor: `${theme.palette.primary.main} !important`, // Force primary color for all icons
+              color: '#fff !important', // Force white for icon color
+              marginRight: 2,
+              width: 56,
+              height: 56,
+              boxShadow: `0 4px 10px ${alpha(theme.palette.primary.main, 0.4)}`, // Primary shadow
+              '& svg': {
+                color: '#fff !important' // Force white for SVG icons
+              }
             }}
-            elevation={0}
           >
-            <Avatar 
+            {icon}
+          </Avatar>
+          <Box>
+            <Typography 
+              variant="subtitle1" 
               sx={{ 
-                backgroundColor: color || theme.palette.primary.main, 
-                marginRight: 2,
-                width: 56,
-                height: 56,
-                boxShadow: `0 4px 10px ${alpha(color || theme.palette.primary.main, 0.4)}`,
+                fontWeight: 500, 
+                color: `${theme.palette.primary.main} !important`, // Force primary color for title
+                fontSize: '0.85rem',
               }}
             >
-              {icon}
-            </Avatar>
-            <Box>
-              <Typography 
-                variant="subtitle1" 
-                sx={{ 
-                  fontWeight: 500, 
-                  color: 'text.secondary',
-                  fontSize: '0.85rem',
-                }}
-              >
-                {title}
-              </Typography>
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  fontWeight: 700,
-                  color: color || theme.palette.primary.main,
-                }}
-              >
-                {count}
-              </Typography>
-            </Box>
-          </Paper>
-        </Grid>
-      ))}
-    </Grid>
-  );
+              {title}
+            </Typography>
+            <Typography 
+              variant="h4" 
+              sx={{ 
+                fontWeight: 700,
+                color: `${theme.palette.primary.main} !important`, // Force primary color for numbers
+              }}
+            >
+              {count}
+            </Typography>
+          </Box>
+        </Paper>
+      </Grid>
+    ))}
+  </Grid>
+);
 
 const exportToExcel = () => {
   if (!selectedCounty || !layerData) return;
