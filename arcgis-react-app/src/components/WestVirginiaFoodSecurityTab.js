@@ -14,6 +14,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { keyframes } from '@mui/system';
+import { Link as RouterLink } from 'react-router-dom';
 
 // Import your components
 import FoodSecuritySummary from './FoodSecuritySummary';
@@ -139,8 +140,9 @@ const WestVirginiaFoodSecurityTabs = () => {
         }}
       >
         <Button
-          variant="contained"
-          href="https://westvirginiauniversity-my.sharepoint.com/:b:/g/personal/jlohnes_mail_wvu_edu/EZFZYTYKi7BMoKriEEJdFLgBoUCVXh44eYkt58poE5H8iQ?e=HPln6v"
+           variant="contained"
+  component={RouterLink}
+  to="/proposal"
           target="_blank"
           rel="noopener noreferrer"
           startIcon={<DescriptionIcon />}
@@ -170,13 +172,7 @@ const WestVirginiaFoodSecurityTabs = () => {
               transformOrigin: 'bottom right',
               transition: 'transform 0.3s',
             },
-            '&:hover': {
-              bgcolor: '#a50000',
-              '&::after': {
-                transform: 'scaleX(1)',
-                transformOrigin: 'bottom left',
-              }
-            },
+           
             transition: 'background-color 0.3s',
             width: { xs: '100%', sm: 'auto' },
             maxWidth: { xs: '100%', sm: '320px' },

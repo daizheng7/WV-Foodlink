@@ -579,7 +579,7 @@ const HomePage = () => {
       title: "Explore Food Resilience in Appalachia",
       subtitle: "Visualize and analyze regional food system data with our analysis.",
       align: "right", 
-      layout: "split-right", 
+      // layout: "split-right", 
       variant: "featured",
       dividerStyle: "none"
     },
@@ -601,9 +601,9 @@ const HomePage = () => {
     const handleFocus = (e) => {
       const isInExplorer = e.target.closest('[data-component="appalachian-explorer"]');
       if (isInExplorer) {
-        if (!e.target.hasAttribute('data-user-focus')) {
-          window.scrollTo(0, 0);
-        }
+        // if (!e.target.hasAttribute('data-user-focus')) {
+        //   window.scrollTo(0, 0);
+        // }
       }
     };
     

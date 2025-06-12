@@ -231,26 +231,26 @@ const PartnerHome = () => {
               </CardContent>
               
               <Divider />
-              <CardActions sx={{ p: 3, gap: 2, justifyContent: isMobile ? 'center' : 'flex-end' }}>
-                <Button 
-                  variant="outlined" 
-                  color="#002855" 
-                  onClick={() => handleOpenDialog('resilient')}
-                  startIcon={<InfoIcon />}
-                >
-                  Learn More
-                </Button>
-                <Button 
-                  variant="contained" 
-                  color="#002855" 
-                  href="https://resilientcommunities.wvu.edu/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  endIcon={<OpenInNewIcon />}
-                >
-                  Visit Website
-                </Button>
-              </CardActions>
+            <CardActions sx={{ p: 3, gap: 2, justifyContent: isMobile ? 'center' : 'flex-end' }}>
+  <Button 
+    variant="outlined" 
+    color="#002855" 
+    onClick={() => handleOpenDialog('resilient')}
+    startIcon={<InfoIcon />}
+  >
+    Learn More About WVU Center for Resilient Communities
+  </Button>
+  <Button 
+    variant="contained" 
+    color="#002855" 
+    href="https://resilientcommunities.wvu.edu/"
+    target="_blank"
+    rel="noopener noreferrer"
+    endIcon={<OpenInNewIcon />}
+  >
+    Visit WVU Center for Resilient Communities Website
+  </Button>
+</CardActions>
             </Card>
             
             {/* Dialog for CRC */}
@@ -469,25 +469,25 @@ const PartnerHome = () => {
               
               <Divider />
               <CardActions sx={{ p: 3, gap: 2, justifyContent: isMobile ? 'center' : 'flex-end' }}>
-                <Button 
-                  variant="outlined" 
-                  color="#002855" 
-                  onClick={() => handleOpenDialog('nutrition')}
-                  startIcon={<InfoIcon />}
-                >
-                  Learn More
-                </Button>
-                <Button 
-                  variant="contained" 
-                  color="#002855" 
-                  href="https://extension.wvu.edu/food-health/nutrition/fnp"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  endIcon={<OpenInNewIcon />}
-                >
-                  Visit Website
-                </Button>
-              </CardActions>
+  <Button 
+    variant="outlined" 
+    color="#002855" 
+    onClick={() => handleOpenDialog('nutrition')}
+    startIcon={<InfoIcon />}
+  >
+    Learn More About Family Nutrition Program
+  </Button>
+  <Button 
+    variant="contained" 
+    color="#002855" 
+    href="https://extension.wvu.edu/food-health/nutrition/fnp"
+    target="_blank"
+    rel="noopener noreferrer"
+    endIcon={<OpenInNewIcon />}
+  >
+    Visit Family Nutrition Program Website
+  </Button>
+</CardActions>
             </Card>
             
             {/* Dialog for FNP */}

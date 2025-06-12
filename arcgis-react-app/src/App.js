@@ -12,6 +12,7 @@ import About from "./pages/About";
 import County from "./pages/County";
 import CharitiesPage from "./pages/Charities";
 import FoodPage from "./pages/Food";
+import Proposal from "./pages/Proposal";
 
 const theme = createTheme({
   palette: {
@@ -88,6 +89,7 @@ const AppContent = () => {
             <Route path="/county" element={<County />} />
             <Route path="/charities" element={<CharitiesPage />} />
             <Route path="/food" element={<FoodPage />} />
+             <Route path="/proposal" element={<Proposal />} />
           </Routes>
         </Box>
       </main>

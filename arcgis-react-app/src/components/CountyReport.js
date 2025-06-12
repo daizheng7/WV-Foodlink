@@ -1449,32 +1449,45 @@ const exportToExcel = () => {
         />
 
         {/* Skip map button for accessibility */}
-        <Button
-          sx={{
-            position: 'absolute',
-            top: -100,
-            left: 0,
-            zIndex: 1000,
-            '&:focus': {
-              top: 0,
-              left: 0,
-              backgroundColor: '#fff',
-            },
-          }}
-          onClick={() => {
-            const focusable = document.querySelectorAll(
-              'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
-            );
-            for (let i = 0; i < focusable.length; i++) {
-              if (focusable[i] === mapDiv.current && focusable[i + 1]) {
-                focusable[i + 1].focus();
-                break;
-              }
-            }
-          }}
-        >
-          Skip Map
-        </Button>
+      <Button
+  sx={{
+    position: 'absolute',
+    top: -100, // Hidden by default
+    left: 20,   // Move away from left edge where zoom controls might be
+    zIndex: 1000,
+    backgroundColor: '#fff',
+    color: '#002855',
+    border: '2px solid #002855',
+    fontWeight: 600,
+    px: 3,
+    py: 1,
+    '&:focus': {
+      top: 20,    // Position below the top edge when focused
+      left: 20,   // Consistent left positioning
+      backgroundColor: '#fff',
+      color: '#002855',
+      outline: '2px solid #EAAA00', // WVU gold outline for visibility
+      outlineOffset: '2px',
+      boxShadow: '0 4px 12px rgba(0,0,0,0.3)', // Strong shadow for visibility
+    },
+    '&:hover:focus': {
+      backgroundColor: '#f5f5f5',
+    }
+  }}
+  onClick={() => {
+    const focusable = document.querySelectorAll(
+      'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    for (let i = 0; i < focusable.length; i++) {
+      if (focusable[i] === mapDiv.current && focusable[i + 1]) {
+        focusable[i + 1].focus();
+        break;
+      }
+    }
+  }}
+>
+  Skip Map
+</Button>
 
 <Button
   id="keyboard-nav-button"

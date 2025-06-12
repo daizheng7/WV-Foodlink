@@ -200,29 +200,27 @@ const AppalachianFoodSystemsExplorer = () => {
     setIsFullScreen(!isFullScreen);
   };
 
-  const handleNext = () => {
-    const nextIndex = (activeMap + 1) % maps.length;
-    setActiveMap(nextIndex);
-    
-    // If the enlarged view is open, we need to refresh the iframe
-    if (enlargedImageOpen) {
-      // Close and reopen the dialog to force iframe refresh
-      setEnlargedImageOpen(false);
-      setTimeout(() => setEnlargedImageOpen(true), 100);
-    }
-  };
+// Scroll-safe handlers
+const handleNext = (e) => {
+  if (e) e.preventDefault();
+  const nextIndex = (activeMap + 1) % maps.length;
+  setActiveMap(nextIndex);
+  setTimeout(() => {
+    const closeBtn = document.querySelector('[aria-label="Close map viewer"]');
+    if (closeBtn) closeBtn.focus();
+  }, 100);
+};
 
-  const handleBack = () => {
-    const prevIndex = (activeMap - 1 + maps.length) % maps.length;
-    setActiveMap(prevIndex);
-    
-    // If the enlarged view is open, we need to refresh the iframe
-    if (enlargedImageOpen) {
-      // Close and reopen the dialog to force iframe refresh
-      setEnlargedImageOpen(false);
-      setTimeout(() => setEnlargedImageOpen(true), 100);
-    }
-  };
+const handleBack = (e) => {
+  if (e) e.preventDefault();
+  const prevIndex = (activeMap - 1 + maps.length) % maps.length;
+  setActiveMap(prevIndex);
+  setTimeout(() => {
+    const closeBtn = document.querySelector('[aria-label="Close map viewer"]');
+    if (closeBtn) closeBtn.focus();
+  }, 100);
+};
+
 
   const handlePreviewOpen = (event, index) => {
     setPreviewAnchorEl(event.currentTarget);
@@ -541,116 +539,204 @@ const AppalachianFoodSystemsExplorer = () => {
 
         {/* Enlarged Map Dialog with iframe */}
         <Dialog
-          open={enlargedImageOpen}
-          onClose={() => setEnlargedImageOpen(false)}
-          maxWidth="xl"
-          fullWidth
-          fullScreen={isMobile}
-          TransitionComponent={Zoom}
-        >
-          <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6" component="div" fontWeight="bold" color="primary">
-              {maps[activeMap].title}
-            </Typography>
-            <IconButton 
-              edge="end" 
-              color="inherit" 
-              onClick={() => setEnlargedImageOpen(false)} 
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent dividers sx={{ p: 0, height: '75vh' }}>
-            <Box
-              component="iframe"
-              src={maps[activeMap].url}
-              title={maps[activeMap].title}
-              sx={{
-                width: '100%',
-                height: '100%',
-                border: 'none',
-              }}
-              allowFullScreen
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button 
-              onClick={handleBack} 
-              disabled={activeMap === 0} 
-              startIcon={<ChevronLeftIcon />}
-            >
-              Previous
-            </Button>
-            <Button 
-              onClick={() => setEnlargedImageOpen(false)} 
-              color="primary"
-            >
-              Close
-            </Button>
-            <Button 
-              onClick={handleNext} 
-              disabled={activeMap === maps.length - 1} 
-              endIcon={<ChevronRightIcon />}
-            >
-              Next
-            </Button>
-          </DialogActions>
-        </Dialog>
+  open={enlargedImageOpen}
+  onClose={() => setEnlargedImageOpen(false)}
+  maxWidth="xl"
+  fullWidth
+  fullScreen={isMobile}
+  TransitionComponent={Zoom}
+  // Add these props to fix focus and scroll issues
+  disableRestoreFocus={true}  
+  disableEnforceFocus={false}
+  keepMounted={false}
+  scroll="body"
+  PaperProps={{
+    sx: {
+      // Prevent the dialog from affecting page scroll
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      maxHeight: '90vh',
+      overflow: 'hidden'
+    }
+  }}
+>
+  <DialogTitle sx={{ 
+    display: 'flex', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    
+    tabIndex: 0
+  }}>
+    <Typography variant="h6" component="div" fontWeight="bold" color="primary">
+      {maps[activeMap].title}
+    </Typography>
+    <IconButton 
+      edge="end" 
+      color="inherit" 
+      onClick={() => setEnlargedImageOpen(false)} 
+      aria-label="Close map viewer"
+      // Ensure this button is properly focusable
+      tabIndex={0}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+  <Button
+    variant="outlined"
+    size="small"
+    onClick={() => {
+      const closeButton = document.querySelector('[aria-label="Close map viewer"]');
+      if (closeButton) closeButton.focus();
+    }}
+    sx={{
+      position: 'absolute',
+      top: 8,
+      left: 8,
+      zIndex: 1000,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      '&:not(:focus)': {
+        opacity: 0,
+        height: 1,
+        width: 1,
+        overflow: 'hidden',
+        position: 'absolute'
+      }
+    }}
+    tabIndex={0}
+  >
+    Skip  Content
+  </Button>
+  
+  <DialogContent 
+  dividers 
+  sx={{ 
+    p: 0, 
+    height: '75vh',
+    overflow: 'hidden',
+    position: 'relative'
+  }}
+>
+  <Box
+    sx={{
+      width: '100%',
+      height: '100%',
+      position: 'relative'
+    }}
+    onKeyDown={(e) => {
+      if (e.key === 'Escape') {
+        setEnlargedImageOpen(false);
+      } else if (e.key === 'ArrowLeft' && activeMap > 0) {
+        e.preventDefault();
+        handleBack(e);
+      } else if (e.key === 'ArrowRight' && activeMap < maps.length - 1) {
+        e.preventDefault();
+        handleNext(e);
+      }
+    }}
+    tabIndex={0} // Make it focusable for tab loop
+  >
+    {/* Focusable Overlay */}
+    <Box
+      sx={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1,
+        cursor: 'pointer',
+        backgroundColor: 'transparent',
+        '&:focus': {
+          outline: '2px dashed #002855'
+        }
+      }}
+      role="button"
+      aria-label="Click to activate map interaction"
+      onClick={() => {
+        const iframe = document.querySelector('iframe');
+        if (iframe) {
+          iframe.style.pointerEvents = 'auto';
+          iframe.focus();
+        }
+      }}
+      tabIndex={0}
+    />
 
-        {/* Info Dialog */}
-        <Dialog
-          open={infoDialogOpen}
-          onClose={() => setInfoDialogOpen(false)}
-          maxWidth="md"
-          TransitionComponent={Slide}
-          TransitionProps={{ direction: 'up' }}
-        >
-          <DialogTitle>
-            <Typography variant="h5" component="div" fontWeight="bold" color="primary">
-              {maps[activeMap].title}
-            </Typography>
-          </DialogTitle>
-          <DialogContent dividers>
-            <Typography variant="body1" paragraph>
-              {maps[activeMap].description}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              This interactive map is part of a comprehensive study on food systems in the Appalachian region. 
-              The data visualized here represents extensive research conducted by regional universities and 
-              community partners working together to improve food access and sustainability.
-            </Typography>
-            <Box
-              component="img"
-              src={maps[activeMap].thumbnail}
-              alt={`Preview of ${maps[activeMap].title}`}
-              sx={{
-                width: '100%',
-                height: 'auto',
-                maxHeight: 300,
-                objectFit: 'cover',
-                borderRadius: 1,
-                mt: 2
-              }}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setInfoDialogOpen(false)} color="primary">
-              Close
-            </Button>
-            <Button 
-              variant="contained" 
-              color="primary"
-              onClick={() => {
-                setInfoDialogOpen(true);
-                setActiveMap(activeMap);
-                setEnlargedImageOpen(true); // Open the enlarged image instead
-              }}
-            >
-              View Map
-            </Button>
-          </DialogActions>
-        </Dialog>
+    {/* Iframe */}
+    <Box
+      component="iframe"
+      key={`${activeMap}-${maps[activeMap].id}`}
+      src={maps[activeMap].url}
+      title={`${maps[activeMap].title} - Interactive Map`}
+      sx={{
+        width: '100%',
+        height: '100%',
+        border: 'none',
+        pointerEvents: 'none',
+        '&:focus': {
+          pointerEvents: 'auto'
+        }
+      }}
+      allowFullScreen
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+      tabIndex={-1}
+    />
+  </Box>
+</DialogContent>
+
+  <DialogActions sx={{ 
+    justifyContent: 'space-between',
+    px: 3,
+    py: 2
+  }}>
+    <Box>
+      <Button 
+        onClick={handleBack} 
+        disabled={activeMap === 0} 
+        startIcon={<ChevronLeftIcon />}
+        variant="outlined"
+        // Improve button accessibility
+        aria-label={`Go to previous map: ${activeMap > 0 ? maps[activeMap - 1].title : ''}`}
+      >
+        Previous
+      </Button>
+    </Box>
+    
+    <Box sx={{ display: 'flex', gap: 1 }}>
+      {/* Add map indicator */}
+      <Typography variant="body2" sx={{ 
+        alignSelf: 'center', 
+        color: 'text.secondary',
+        mx: 2
+      }}>
+        {activeMap + 1} of {maps.length}
+      </Typography>
+    </Box>
+    
+    <Box sx={{ display: 'flex', gap: 1 }}>
+      <Button 
+        onClick={() => setEnlargedImageOpen(false)} 
+        color="primary"
+        variant="outlined"
+      >
+        Close
+      </Button>
+      <Button 
+        onClick={handleNext} 
+        disabled={activeMap === maps.length - 1} 
+        endIcon={<ChevronRightIcon />}
+        variant="outlined"
+        // Improve button accessibility
+        aria-label={`Go to next map: ${activeMap < maps.length - 1 ? maps[activeMap + 1].title : ''}`}
+      >
+        Next
+      </Button>
+    </Box>
+  </DialogActions>
+</Dialog>
       </Box>
     </ThemeProvider>
   );
