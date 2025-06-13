@@ -289,7 +289,7 @@ const DataPartners = () => {
                         }
                       }}
                     >
-                      Visit Website
+                      Visit {partner.name} Website
                     </Box>
                   </CardContent>
                 </Card>
