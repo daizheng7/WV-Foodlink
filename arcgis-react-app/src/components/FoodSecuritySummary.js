@@ -92,8 +92,6 @@ const FoodSecuritySummary = () => {
           position: 'relative'
         }}
       >
-        
-
         {/* Content */}
         <Grid container>
           {/* Left Column - The Challenge */}
@@ -169,8 +167,9 @@ const FoodSecuritySummary = () => {
                     secondaryTypographyProps={{
                       variant: 'caption',
                       sx: { 
-                        display: hoveredItem === 'programs' ? 'block' : 'none',
-                        mt: 0.5
+                        display: 'block', // CHANGED: Always show instead of on hover only
+                        mt: 0.5,
+                        color: '#666'
                       }
                     }}
                   />
@@ -205,8 +204,9 @@ const FoodSecuritySummary = () => {
                     secondaryTypographyProps={{
                       variant: 'caption',
                       sx: { 
-                        display: hoveredItem === 'funding' ? 'block' : 'none',
-                        mt: 0.5
+                        display: 'block', // CHANGED: Always show
+                        mt: 0.5,
+                        color: '#666'
                       }
                     }}
                   />
@@ -240,8 +240,9 @@ const FoodSecuritySummary = () => {
                     secondaryTypographyProps={{
                       variant: 'caption',
                       sx: { 
-                        display: hoveredItem === 'initiatives' ? 'block' : 'none',
-                        mt: 0.5
+                        display: 'block', // CHANGED: Always show
+                        mt: 0.5,
+                        color: '#666'
                       }
                     }}
                   />
@@ -418,12 +419,8 @@ const FoodSecuritySummary = () => {
                 </Zoom>
               </Grid>
             </Grid>
-            
-            
           </Grid>
         </Grid>
-        
-       
       </Paper>
     </Fade>
   );

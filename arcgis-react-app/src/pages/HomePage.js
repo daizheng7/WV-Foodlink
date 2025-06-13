@@ -258,11 +258,84 @@ const Section = ({
   dividerStyle = "none",
   containerPadding = true,
   customSx = {},
-  isMapSection = false
+  isMapSection = false,
+  isTabComponent = false  // ← Add this prop
 }) => {
   const isLight = backgroundColor === colors.base || backgroundColor === colors.light || backgroundColor === colors.medium;
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  // ← ADD THIS: Special rendering for tab components
+  if (isTabComponent) {
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          backgroundColor,
+          py: { xs: 6, md: 8 },
+          display: "flex",
+          justifyContent: "center",
+          position: "relative",
+          margin: 0,
+          padding: 0,
+          // Minimal styling to avoid tab conflicts
+          ...customSx
+        }}
+      >
+        <Container
+          maxWidth="xl"
+          sx={{
+            width: "100%",
+            mx: "auto",
+            px: { xs: 2, md: 3 },
+          }}
+        >
+          {/* Render title separately for tab components */}
+          {title && (
+            <Box sx={{ mb: 4, textAlign: align }}>
+              <Typography
+                variant="h2"
+                component="h2"
+                className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
+                sx={{
+                  fontSize: { xs: "1.85rem", md: "2.75rem" },
+                  fontWeight: 800,
+                  color: isLight ? "#222" : "#fff",
+                  mb: 1.5,
+                  letterSpacing: "-0.02em",
+                }}
+              >
+                {title}
+              </Typography>
+              {subtitle && (
+                <Typography
+                  variant="h6"
+                  component="p"
+                  sx={{
+                    fontSize: { xs: "1.1rem", md: "1.25rem" },
+                    fontWeight: 400,
+                    color: isLight ? alpha("#333", 0.8) : alpha("#fff", 0.9),
+                    maxWidth: "800px",
+                    mx: align === "center" ? "auto" : 0,
+                    mt: 1.5,
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {subtitle}
+                </Typography>
+              )}
+            </Box>
+          )}
+          
+          {/* Render children with minimal wrapping */}
+          <Box sx={{ width: "100%" }}>
+            {children}
+          </Box>
+        </Container>
+      </Box>
+    );
+  }
+
 
   const TopDivider = () => {
     if (dividerStyle === "none") return null;
@@ -579,7 +652,7 @@ const HomePage = () => {
       title: "Explore Food Resilience in Appalachia",
       subtitle: "Visualize and analyze regional food system data with our analysis.",
       align: "right", 
-      // layout: "split-right", 
+      
       variant: "featured",
       dividerStyle: "none"
     },
@@ -589,7 +662,7 @@ const HomePage = () => {
       title: "Proposal for a West Virginia Office of Community Food Security",
       subtitle: "Addressing the urgent need for coordinated action on food insecurity",
       align: "center",
-      layout: "standard",
+      isTabComponent: true,
       variant: "featured",
       dividerStyle: "none"
     }
