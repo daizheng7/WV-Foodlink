@@ -105,22 +105,22 @@ const LAYER_PORTAL_ITEMS = {
 
 const categoryStyles = {
   "Charitable Food Programs": {
-    color: "#4285F4",
+    color: "#002855",
     icon: <EmojiFoodBeverageIcon />,
     description: "Programs providing food assistance to those in need",
   },
   "Congregate Meal Program": {
-    color: "#0F9D58",
+    color: "#7F6310",
     icon: <RestaurantIcon />,
     description: "Community meal services for groups of people",
   },
   "Backpack Program": {
-    color: "#F4B400",
+    color: "#554741",
     icon: <BackpackIcon />,
     description: "Programs sending food home with children for weekends/holidays",
   },
   "Food Pantry": {
-    color: "#DB4437",
+    color: "#0062A3",
     icon: <LocalDiningIcon />,
     description: "Locations distributing groceries to individuals and families",
   },
@@ -650,9 +650,15 @@ const Charities = () => {
             startIcon={<MyLocationIcon />}
             onClick={getUserLocation}
             sx={{
-              backgroundColor: "darkred",
+              backgroundColor: "#002855",
               color: "white",
-              '&:hover': { backgroundColor: "#a00000" },
+              '&:hover': { backgroundColor: "white" , color: "#002855"},
+              '&:focus-visible': {
+      outline: '#002855', // Or any high contrast color
+      outlineOffset: '2px',
+      backgroundColor: "#002855",
+      color: "#002855"
+    }
             }}
             disabled={loading || !arcgis}
           >

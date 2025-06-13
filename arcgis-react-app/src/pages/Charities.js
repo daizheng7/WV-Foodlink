@@ -13,12 +13,10 @@ import {
 } from "@mui/material";
 import InfoIcon from "@mui/icons-material/Info";
 import Charities from "../components/Charities";
-import Footer from "../components/layout/Footer";
 import esriConfig from "@arcgis/core/config";
-import FoodResourcesPanel from "../components/FoodResourcePanel";
+import QuickAccessSection from "../components/QuickAccessSection";
 
-// WebMap ID (Replace with your actual WebMap ID)
-const webmapId = "YOUR_WEBMAP_ID_HERE"; 
+
 
 // Food resource layer configurations
 const foodResourceLayers = [
@@ -209,14 +207,7 @@ const CharitiesPage = () => {
             overflow: "hidden"
           }}
         >
-          <FoodResourcesPanel 
-            foodResourceLayers={foodResourceLayers}
-            selectedCategory={selectedCategory}
-            selectedArea={selectedArea}
-            onCategorySelect={handleCategorySelect}
-            webmapId={webmapId}
-            isMobile={isMobile}
-          />
+          <QuickAccessSection/>
         </Box>
       </Box>
 
