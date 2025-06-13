@@ -27,7 +27,7 @@ const colors = {
   sectionBorder: alpha(MAIN_COLOR, 0.1),
   sectionHighlight: alpha(SECONDARY_COLOR, 0.1),
 };
-// Add this component after your HeroSection component in the same file
+
 
 const QuickAccessSection = () => {
   const isSmallScreen = window.innerWidth <= 768;

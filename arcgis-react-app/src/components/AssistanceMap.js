@@ -723,7 +723,13 @@ const AssistanceMap = () => {
             sx={{
               backgroundColor: "#002855",
               color: "white",
-              '&:hover': { backgroundColor: "#a00000" },
+              '&:hover': { backgroundColor: "white" , color: "#002855"},
+              '&:focus-visible': {
+      outline: '#002855', // Or any high contrast color
+      outlineOffset: '2px',
+      backgroundColor: "#002855",
+      color: "#002855"
+    }
             }}
             disabled={loading || !arcgis}
           >

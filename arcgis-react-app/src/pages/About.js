@@ -114,7 +114,7 @@ const About = () => {
         
         {/* Page Title */}
         <Typography
-            variant="h1"
+            variant="h2"
             className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
             sx={{
               
@@ -175,7 +175,7 @@ const About = () => {
                 }}
               >
                 <Typography
-                  variant="h1"
+                  variant="h2"
                   component="a"
                   href="https://resilientcommunities.wvu.edu/"
                   target="_blank"
@@ -250,7 +250,7 @@ const About = () => {
                     }
                   }}
                 >
-                  Visit Website
+                  Visit WVU Center for Resilient Communities Website
                 </Button>
               </Box>
             </Paper>
@@ -291,7 +291,7 @@ const About = () => {
                 }}
               >
                 <Typography
-                  variant="h1"
+                  variant="h2"
                   component="a"
                   href="https://extension.wvu.edu/food-health/nutrition/fnp"
                   target="_blank"
@@ -366,7 +366,7 @@ const About = () => {
                     }
                   }}
                 >
-                  Visit Website
+                  Visit WVU Extension Family Nutrition Program Website
                 </Button>
               </Box>
             </Paper>
@@ -387,7 +387,7 @@ const About = () => {
           textAlign: "center",
         }}>
           <Typography
-            variant="h1"
+            variant="h2"
             className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
             sx={{
               
@@ -417,42 +417,26 @@ const About = () => {
           </Typography>
 
           {/* Funding Partner Slider - Improved Layout */}
-          <Grid 
-            container 
-            spacing={2} 
-            justifyContent="center"
-            sx={{ mt: 2 }}
-          >
-            {fundingPartners.map((partner, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Button
-                  variant={selectedPartner.name === partner.name ? "contained" : "outlined"}
-                  color="primary"
-                  onClick={() => setSelectedPartner(partner)}
-                  sx={{
-                    width: "100%",
-                    textTransform: "none",
-                    fontWeight: "bold",
-                    fontSize: { xs: "11px", sm: "12px", md: "13px" },
-                    padding: { xs: "8px 4px", sm: "10px 8px" },
-                    borderRadius: "8px",
-                    transition: "all 0.3s ease",
-                    backgroundColor: selectedPartner.name === partner.name ? "#002855" : "white",
-                    borderColor: "#002855",
-                    color: selectedPartner.name === partner.name ? "#ffffff" : "#002855",
-                    '&:hover': {
-                      backgroundColor: selectedPartner.name === partner.name ? "#7a0218" : "rgba(0, 40, 85, 0.1)",
-                      borderColor: "#002855",
-                      transform: "translateY(-2px)",
-                      boxShadow: "0 4px 8px rgba(0,0,0,0.1)"
-                    },
-                  }}
-                >
-                  {partner.name}
-                </Button>
-              </Grid>
-            ))}
-          </Grid>
+          {/* Funding Partners - Chip Style */}
+<Box sx={{ mt: 2, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 1 }}>
+  {fundingPartners.map((partner, index) => (
+    <Typography
+      key={index}
+      variant="body2"
+      sx={{
+        color: '#002855',
+        bgcolor: 'rgba(0,40,85,0.08)',
+        fontWeight: 600,
+        px: 2,
+        py: 0.5,
+        borderRadius: 3,
+        border: '1px solid rgba(0,40,85,0.2)'
+      }}
+    >
+      {partner.name}
+    </Typography>
+  ))}
+</Box>
         </Box>
         
         {/* What We Do Component */}
