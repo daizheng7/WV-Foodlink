@@ -383,15 +383,12 @@ const WestVirginiaFoodSecurityTabs = () => {
             </Box>
           )}
         </Box>
-      </Paper>
-      
-      {/* Call to Action Button */}
-      <Box 
+        <Box 
         sx={{ 
           display: 'flex', 
           justifyContent: 'center',
           mt: 4,
-          mb: 5,
+       
         }}
       >
         <Button
@@ -415,6 +412,7 @@ const WestVirginiaFoodSecurityTabs = () => {
             transition: 'all 0.3s ease',
             '&:hover': {
               bgcolor: '#003366',
+              color: 'white',
               transform: 'translateY(-2px)',
               boxShadow: '0 6px 20px rgba(0,40,85,0.4)'
             },
@@ -427,6 +425,8 @@ const WestVirginiaFoodSecurityTabs = () => {
           Read Our Full Proposal
         </Button>
       </Box>
+      </Paper>
+      
     </Box>
   );
 };

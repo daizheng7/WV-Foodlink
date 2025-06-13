@@ -648,23 +648,24 @@ const HomePage = () => {
           </div>
         </Box>
       ),
-      backgroundColor: colors.medium,
+      backgroundColor: colors.light,
       title: "Explore Food Resilience in Appalachia",
       subtitle: "Visualize and analyze regional food system data with our analysis.",
-      align: "right", 
+       
       
       variant: "featured",
       dividerStyle: "none"
     },
     {
       component: <WestVirginiaFoodSecurityTabs />,
-      backgroundColor: colors.medium,
+      backgroundColor: colors.base,
       title: "Proposal for a West Virginia Office of Community Food Security",
       subtitle: "Addressing the urgent need for coordinated action on food insecurity",
       align: "center",
       isTabComponent: true,
       variant: "featured",
-      dividerStyle: "none"
+      dividerStyle: "none",
+      
     }
   ];
 
