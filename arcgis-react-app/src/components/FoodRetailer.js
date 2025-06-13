@@ -50,6 +50,7 @@ const categoryStyles = {
 const FoodRetailer = () => {
   const mapDiv = useRef(null);
   const mapViewRef = useRef(null);
+ 
   const [view, setView] = useState(null);
   const [activeCategories, setActiveCategories] = useState(Object.keys(categoryStyles));
   const [filterWIC, setFilterWIC] = useState(false);
@@ -64,6 +65,13 @@ const FoodRetailer = () => {
   const [focusedPoiIndex, setFocusedPoiIndex] = useState(-1);
   const [isPoiListVisible, setIsPoiListVisible] = useState(false);
   const [isHelpVisible, setIsHelpVisible] = useState(false);
+   const navPanelRef = useRef(null);
+
+useEffect(() => {
+  if (isPoiListVisible && navPanelRef.current) {
+    navPanelRef.current.focus();
+  }
+}, [isPoiListVisible]);
 
   // Calculate number of active filters
   useEffect(() => {
@@ -675,11 +683,13 @@ const FoodRetailer = () => {
       {/* Keyboard Navigation Panel */}
       {isPoiListVisible && visibleFeatures.length > 0 && (
         <Paper
-          elevation={4}
-          role="dialog"
-          aria-labelledby="keyboard-navigation-title"
-          aria-describedby="keyboard-navigation-description"
-          onKeyDown={handlePoiKeyDown}
+  elevation={4}
+  role="dialog"
+  ref={navPanelRef}
+  tabIndex={-1}
+  aria-labelledby="keyboard-navigation-title"
+  aria-describedby="keyboard-navigation-description"
+  onKeyDown={handlePoiKeyDown}
           sx={{
             position: "absolute",
             bottom: 20,
@@ -707,55 +717,95 @@ const FoodRetailer = () => {
           </Typography>
           
           <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-            <Button 
-              onClick={() => setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1)}
-              startIcon={<KeyboardArrowLeftIcon />}
-              variant="contained"
-              color="primary"
-              size="small"
-              sx={{ mr: 1 }}
-            >
-              Previous
-            </Button>
+            {/* <Button 
+  onClick={() => setFocusedPoiIndex(prev => prev <= 0 ? visibleFeatures.length - 1 : prev - 1)}
+  startIcon={<KeyboardArrowLeftIcon />}
+  variant="contained"
+  color="primary"
+  size="small"
+  tabIndex={0}
+  sx={{
+    mr: 1,
+    '&:focus': {
+      outline: '2px solid #005fcc',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    }
+  }}
+>
+  Previous
+</Button>
             
             <Button 
-              onClick={() => setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1)}
-              endIcon={<KeyboardArrowRightIcon />}
-              variant="contained"
-              color="primary"
-              size="small"
-              sx={{ ml: 1 }}
-            >
-              Next
-            </Button>
+  onClick={() => setFocusedPoiIndex(prev => prev >= visibleFeatures.length - 1 ? 0 : prev + 1)}
+  endIcon={<KeyboardArrowRightIcon />}
+  variant="contained"
+  color="primary"
+  size="small"
+  tabIndex={0}
+  sx={{
+    ml: 1,
+    '&:focus': {
+      outline: '2px solid #005fcc',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    }
+  }}
+>
+  Next
+</Button> */}
+
           </Box>
           
           <Button 
-            onClick={() => {
-              if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
-                const feature = visibleFeatures[focusedPoiIndex];
-                const attributes = feature.attributes || {};
-                setPopupContent({
-                  title: attributes.Store_Name || "No Name Available",
-                  category: attributes.Retail_Category || "N/A",
-                  address: attributes.Address || "N/A",
-                  city: attributes.City || "N/A",
-                  state: attributes.State || "N/A",
-                  zip: attributes.Zip || "N/A",
-                  freshProduce: attributes.Fresh_Produce === "Yes",
-                  snap: attributes.SNAP === "Yes",
-                  wic: attributes.WIC === "Yes"
-                });
-              }
-            }}
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ mb: 1 }}
-            disabled={focusedPoiIndex < 0}
-          >
-            View Details
-          </Button>
+  onClick={() => {
+    if (focusedPoiIndex >= 0 && focusedPoiIndex < visibleFeatures.length) {
+      const feature = visibleFeatures[focusedPoiIndex];
+      const attributes = feature.attributes || {};
+      setPopupContent({
+        title: attributes.Store_Name || "No Name Available",
+        category: attributes.Retail_Category || "N/A",
+        address: attributes.Address || "N/A",
+        city: attributes.City || "N/A",
+        state: attributes.State || "N/A",
+        zip: attributes.Zip || "N/A",
+        freshProduce: attributes.Fresh_Produce === "Yes",
+        snap: attributes.SNAP === "Yes",
+        wic: attributes.WIC === "Yes"
+      });
+    }
+  }}
+  variant="contained"
+  color="primary"
+  size="small"
+  tabIndex={0}
+  disabled={focusedPoiIndex < 0}
+  sx={{
+    mb: 1,
+    '&:focus': {
+      outline: '2px solid #005fcc',
+      outlineOffset: '2px',
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    },
+    '&.Mui-focusVisible': {
+      backgroundColor: '#002855 !important',
+      color: 'white !important'
+    }
+  }}
+>
+  View Details
+</Button>
           
           <Typography variant="caption" color="text.secondary">
             Use ← → arrow keys to navigate • Enter to select • Esc to exit navigation mode
