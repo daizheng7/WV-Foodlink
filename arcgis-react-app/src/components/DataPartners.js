@@ -142,7 +142,7 @@ const DataPartners = () => {
       }}
     >
       <Typography
-            variant="h1"
+            variant="h2"
             className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
             sx={{
               

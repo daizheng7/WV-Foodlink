@@ -450,7 +450,7 @@ const SNACMembers = () => {
       {/* Header Section */}
       <Box sx={{ mb: 5, textAlign: "center" }}>
         <Typography
-                    variant="h1"
+                    variant="h2"
                     className="text-wvu-blue display-3 wvu-bar wvu-bar--center wvu-bar--bottom wvu-shout"
                     sx={{
                       
