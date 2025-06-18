@@ -74,21 +74,22 @@ const AppalachianFoodSystemsExplorer = () => {
                   gutterBottom
                 >
                   <Link
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    underline="hover"
-                    color="inherit"
-                    aria-label={`Open map: ${title}`}
-                    sx={{
-                      '&:focus': {
-                        outline: '2px solid #FFB81C',
-                        outlineOffset: '2px',
-                      },
-                    }}
-                  >
-                    {title}
-                  </Link>
+  href={url}
+  target="_blank"
+  rel="noopener noreferrer"
+  underline="hover"
+  color="inherit"
+  aria-label={`Open map: ${title}`} // optional
+  sx={{
+    '&:focus': {
+      outline: '2px solid #FFB81C',
+      outlineOffset: '2px',
+    },
+  }}
+>
+  {title}
+</Link>
+
                 </Typography>
                 <Typography
                   id={`map-desc-${id}`}
@@ -101,28 +102,25 @@ const AppalachianFoodSystemsExplorer = () => {
               </CardContent>
               <Box sx={{ p: 2, pt: 0 }}>
                 <Button
-                  fullWidth
-                  endIcon={<OpenInNewIcon />}
-                  onClick={() => window.open(url, '_blank')}
-                  aria-label={`Open map: ${title}`}
-                  sx={{
-                    backgroundColor: '#002855',
-                    color: '#FFFFFF',
-                    textTransform: 'none',
-                    fontWeight: 600,
-                    '&:hover': {
-                      backgroundColor: '#002855', // same as default
-                      color: 'white',
-                    },
-                    '&:focus': {
-                      outline: '2px solid #002855',
-                      outlineOffset: '2px',
-                      color: '#002855',
-                    },
-                  }}
-                >
-                  Open '{title}' Story Map
-                </Button>
+  fullWidth
+  endIcon={<OpenInNewIcon />}
+  onClick={() => window.open(url, '_blank')}
+  sx={{
+    backgroundColor: '#002855',
+    color: '#FFFFFF',
+    textTransform: 'none',
+    fontWeight: 600,
+    '&:hover': {
+      backgroundColor: '#002855',
+    },
+    '&:focus': {
+      outline: '2px solid #FFB81C',
+      outlineOffset: '2px',
+    },
+  }}
+>
+  Open '{title}' Story Map
+</Button>
               </Box>
             </Card>
           </Grid>
