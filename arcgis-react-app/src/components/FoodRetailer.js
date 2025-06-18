@@ -1086,29 +1086,31 @@ useEffect(() => {
       )}
 
       {/* Screen reader only: accessible list of POIs */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '-10000px',
-          width: '1px',
-          height: '1px',
-          overflow: 'hidden'
-        }}
-        aria-label="List of visible food retailers on the map"
-      >
-        <ul>
-          {visibleFeatures.map((feature, i) => {
-            const a = feature.attributes || {};
-            return (
-              <li key={i}>
-                {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
-                Category: {a.Retail_Category || 'N/A'}.
-                SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+      {visibleFeatures.length > 0 && (
+  <div
+    style={{
+      position: 'absolute',
+      left: '-10000px',
+      width: '1px',
+      height: '1px',
+      overflow: 'hidden'
+    }}
+    aria-label="List of visible food retailers on the map"
+  >
+    <ul>
+      {visibleFeatures.map((feature, i) => {
+        const a = feature.attributes || {};
+        return (
+          <li key={i}>
+            {a.Store_Name || 'Unknown'}, {a.Address}, {a.City}, {a.State} {a.Zip}.
+            Category: {a.Retail_Category || 'N/A'}.
+            SNAP: {a.SNAP}, WIC: {a.WIC}, Fresh Produce: {a.Fresh_Produce}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+)}
     </Box>
   );
 };
