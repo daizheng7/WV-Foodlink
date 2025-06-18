@@ -162,7 +162,7 @@ const IssuesSection = () => {
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`${item.title}: ${item.value}. ${item.description}. Priority: ${item.priority}. Source: ${item.org}. Click to learn more.`}
+      aria-labelledby={`card-title-${index}`}
       sx={{
         p: { xs: 1.5, sm: 2 }, // Reduced from { xs: 2, sm: 3 }
         backgroundColor: item.bgColor,
@@ -240,6 +240,7 @@ const IssuesSection = () => {
             {item.icon}
           </Box>
           <Typography 
+            id={`card-title-${index}`}
             variant={isMobile ? "subtitle1" : "h6"} // Smaller variant
             component="h3"
             sx={{ 
