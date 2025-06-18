@@ -1508,8 +1508,7 @@ const exportToExcel = () => {
     zIndex: 1001,
     backgroundColor: '#002855 !important', // Force blue background
     color: '#fff !important', // Force white text
-    px: 3,
-    py: 1.5,
+    padding: '0.75em 1.5em',
     fontWeight: 600,
     borderRadius: 3,
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
