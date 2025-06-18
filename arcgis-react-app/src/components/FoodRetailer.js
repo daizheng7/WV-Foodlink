@@ -529,7 +529,7 @@ useEffect(() => {
         ref={mapDiv}
         style={{ width: "100%", height: "100%" }}
         aria-label="Interactive map showing locations of food retailers. Press 'K' to enter keyboard navigation mode."
-        role="img"
+        role="region"
       />
 
       {/* ARIA live region for screen reader announcements */}
