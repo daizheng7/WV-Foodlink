@@ -276,7 +276,7 @@ const DataTable = () => {
       textAlign: "center",
       padding: "40px",
       fontSize: "18px",
-      color: "#7f8c8d"
+      color: "##002855"
     },
     errorMessage: {
       color: "#e74c3c",
@@ -291,7 +291,7 @@ const DataTable = () => {
       textAlign: "center",
       padding: "40px",
       fontSize: "16px",
-      color: "#7f8c8d",
+      color: "##002855",
       backgroundColor: "#f7f9fa",
       borderRadius: "4px",
       border: "1px dashed #ddd"
