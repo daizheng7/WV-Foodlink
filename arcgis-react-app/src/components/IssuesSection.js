@@ -143,8 +143,8 @@ const IssuesSection = () => {
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "critical": return "#d32f2f";
-      case "high": return "#f57c00";
-      case "medium": return "#1976d2";
+      case "high": return "#d32f2f";
+      case "medium": return "#d32f2f";
       default: return "#757575";
     }
   };
