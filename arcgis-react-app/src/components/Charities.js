@@ -678,16 +678,13 @@ const Charities = () => {
             >
               Filters
               {nearbyResults.length > 0 && (
-                <span style={{
-                  marginLeft: '8px',
-                  background: '#4285F4',
-                  borderRadius: '50%',
-                  padding: '2px 8px',
-                  fontSize: '0.8rem'
-                }}>
-                  {nearbyResults.length}
-                </span>
-              )}
+  <List>
+    {nearbyResults.map((result, index) => (
+      <ListItem key={index}>...</ListItem>
+    ))}
+  </List>
+)}
+
             </Button>
           )}
         </Paper>
