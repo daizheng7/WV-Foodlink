@@ -162,7 +162,7 @@ const IssuesSection = () => {
       href={item.link}
       target="_blank"
       rel="noopener noreferrer"
-      aria-labelledby={`card-title-${index}`}
+      aria-label={`${item.title}, ${item.description} — Source: ${item.org}`}
       sx={{
         p: { xs: 1.5, sm: 2 }, // Reduced from { xs: 2, sm: 3 }
         backgroundColor: item.bgColor,
