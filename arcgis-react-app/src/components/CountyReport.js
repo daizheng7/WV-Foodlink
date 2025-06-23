@@ -1488,7 +1488,6 @@ const exportToExcel = () => {
 >
   Skip Map
 </Button>
-
 <Button
   id="keyboard-nav-button"
   variant="contained"
@@ -1506,41 +1505,48 @@ const exportToExcel = () => {
     top: 16,
     right: 16,
     zIndex: 1001,
-    backgroundColor: '#002855 !important', // Force blue background
-    color: '#fff !important', // Force white text
-    padding: '0.75em 1.5em',
+    backgroundColor: '#002855 !important',
+    color: '#fff !important',
+    px: 2,
+    py: 1,
+    whiteSpace: 'normal',
+    lineHeight: 1.25,
+    textAlign: 'center',
+    minWidth: 'fit-content',
+    maxWidth: '100%',
     fontWeight: 600,
     borderRadius: 3,
     boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+    transition: 'all 0.2s ease',
     '&:hover': {
-      backgroundColor: '#1C2B39 !important', // Force darker blue on hover
+      backgroundColor: '#1C2B39 !important',
       transform: 'translateY(-2px)',
       boxShadow: '0 6px 16px rgba(0,0,0,0.25)',
-      color: '#fff !important', // Force white text on hover
+      color: '#fff !important',
     },
     '&:focus': {
       outline: '2px solid #EAAA00',
       outlineOffset: '2px',
-      backgroundColor: '#002855 !important', // Force blue background on focus
-      color: '#fff !important', // Force white text on focus
+      backgroundColor: '#002855 !important',
+      color: '#fff !important',
     },
     '&.Mui-focusVisible': {
-      backgroundColor: '#002855 !important', // Force blue background when focused
-      color: '#fff !important', // Force white text when focused
+      backgroundColor: '#002855 !important',
+      color: '#fff !important',
     },
     '&:active': {
-      backgroundColor: '#002855 !important', // Force blue background when clicked
-      color: '#fff !important', // Force white text when clicked
+      backgroundColor: '#002855 !important',
+      color: '#fff !important',
     },
     '&.Mui-disabled': {
-      backgroundColor: 'rgba(0, 40, 85, 0.4) !important', // Force semi-transparent blue when disabled
-      color: '#fff !important', // Force white text when disabled
+      backgroundColor: 'rgba(0, 40, 85, 0.4) !important',
+      color: '#fff !important',
     },
-    transition: 'all 0.2s ease'
   }}
 >
   Navigation (K)
 </Button>
+
 
         {/* ARIA live region for screen reader announcements */}
         <div
