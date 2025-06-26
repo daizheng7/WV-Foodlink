@@ -117,7 +117,7 @@ const WVUMenuBar = () => {
     },
     {
       label: "Organize",
-      href: "https://wvfoodlink-wvu.hub.arcgis.com/pages/organize-1",
+      href: "https://organize-communities-wvu.hub.arcgis.com/",
       icon: <Group />
     },
     {
@@ -136,7 +136,7 @@ const WVUMenuBar = () => {
         },
         {
           label: "SNAP-ED",
-          href: "https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851",
+          href: "https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=59e0598fe7404e4f91874f1d344b6c1c",
           icon: <School />,
         },
         {

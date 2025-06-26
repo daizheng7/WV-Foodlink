@@ -67,7 +67,7 @@ const WVFooter = () => {
 
   const resourcesItems = [
     { title: 'SNAP + WIC', icon: <CreditCard sx={{ color: '#ffffff' }} />, description: 'Enrollment in Cash-Equivalent Public Nutrition Assistance Programs.', url: 'https://www.arcgis.com/apps/dashboards/f44ec87fbabf4697959012640dc2d29f' },
-    { title: 'SNAP-ED', icon: <School sx={{ color: '#ffffff' }} />, description: 'Food Policy, Systems and Environmental Change interventions.', url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851' },
+    { title: 'SNAP-ED', icon: <School sx={{ color: '#ffffff' }} />, description: 'Food Policy, Systems and Environmental Change interventions.', url: 'https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=59e0598fe7404e4f91874f1d344b6c1c' },
     { title: 'Farmers Markets', icon: <Storefront sx={{ color: '#ffffff' }} />, description: 'Local farmer-to-consumer markets and nutrition incentives.', url: 'https://www.arcgis.com/apps/dashboards/5095c3fd9b0c4934be43bc8f65c93b36' },
     { title: 'Find Food', icon: <ZoomIn sx={{ color: '#ffffff' }} />, description: 'App to help you find fresh food based on your location.', url: '/food' },
   ];

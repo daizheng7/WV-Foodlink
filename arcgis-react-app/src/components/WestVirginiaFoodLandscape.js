@@ -34,7 +34,7 @@ const categories = [
     icon: School,
     color: '#0062A3',
     description: 'Food Policy, Systems and Environmental Change interventions for Healthy Food Access Programming.',
-    url: 'https://wvu.maps.arcgis.com/apps/dashboards/a2bc19f10d9647c39992283e9ec4d851',
+    url: 'https://wvu.maps.arcgis.com/apps/instant/portfolio/index.html?appid=59e0598fe7404e4f91874f1d344b6c1c',
   },
   {
     title: 'Congregate Meals',
