@@ -3,13 +3,12 @@ import { Box, useMediaQuery, useTheme, alpha, Typography, Container, Grid, Divid
 import IssuesSection from "../components/IssuesSection";
 import WestVirginiaFoodLandscape from "../components/WestVirginiaFoodLandscape";
 import InteractiveWheel from "../components/InteractiveWheel";
-import IntroModal from "../components/IntroModal";
 import FoodRetailer from "../components/FoodRetailer";
 import CountyReport from "../components/CountyReport";
 import PartnerHome from "../components/PartnerHome";
 import WestVirginiaFoodSecurityTabs from "../components/WestVirginiaFoodSecurityTab";
 import AppalachianFoodSystemsExplorer from "../components/AppalachianFoodSystemsExplorer";
-import IntroOverlay from "../components/IntroOverlay";
+import Mailchimp from "../components/mailchimp/Mailchimp";
 import HeroSection from "../components/HeroSection";
 
 // Main color theme
@@ -666,7 +665,29 @@ const HomePage = () => {
       variant: "featured",
       dividerStyle: "none",
       
-    }
+    },
+    {
+  component: (
+    <Mailchimp
+      actionUrl="https://wvu.us14.list-manage.com/subscribe/post?u=4effc41d710bda5f3c7b5e38c&id=1deebabe7d&f_id=00bebbe5f0"
+      hiddenInputName="b_4effc41d710bda5f3c7b5e38c_1deebabe7d"
+      buttonLabel="Subscribe"
+      target="_blank"
+      showNameFields
+      requireConsent
+      palette={{ MAIN_COLOR: MAIN_COLOR, SECONDARY_COLOR: SECONDARY_COLOR }}
+      size="comfortable"
+    />
+  ),
+  backgroundColor: colors.light,
+  title: "Stay in the loop",
+  subtitle: "Subscribe to get updates right in your inbox.",
+  align: "center",
+  layout: "stacked",
+  variant: "featured",
+  dividerStyle: "none",
+}
+
   ];
 
   useEffect(() => {
